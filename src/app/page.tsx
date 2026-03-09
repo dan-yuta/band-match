@@ -8,23 +8,23 @@ import { Header, Footer } from '@/components/layout';
 const features = [
   {
     icon: '🎯',
-    title: '曲ベースマッチング',
-    description: 'やりたい曲・弾ける曲から、同じ曲をやりたい仲間を見つけます。地域・楽器・スキルも考慮。',
-  },
-  {
-    icon: '🎵',
-    title: 'セットリスト管理',
-    description: 'コピバンのセットリストを管理。練習状況をメンバーと共有できます。',
-  },
-  {
-    icon: '🤝',
-    title: 'コピバンコミュニティ',
-    description: 'カバー動画の共有や練習ログで、コピバン仲間と一緒に成長できます。',
+    title: '仲間を見つける',
+    description: 'やりたい曲・弾ける曲から、同じ曲をやりたい仲間を見つけます。曲ベースマッチングで最適な仲間と出会える。',
   },
   {
     icon: '🎸',
-    title: 'コピバン結成',
-    description: 'コピーするアーティスト・曲を決めてバンド結成。メンバー募集もかんたん。',
+    title: 'コピバンを組む',
+    description: 'コピーするアーティスト・曲を決めてバンド結成。セットリスト管理やメンバー募集もかんたん。',
+  },
+  {
+    icon: '🎤',
+    title: 'ライブに出る',
+    description: 'コピバンイベントを探してエントリー。初心者OKのイベントも多数。ステージに立とう!',
+  },
+  {
+    icon: '💪',
+    title: '挫折しない仕組み',
+    description: '練習トラッカー・ストリーク・コミュニティで、ライブ本番まで楽しく続けられる。',
   },
 ];
 
@@ -53,13 +53,13 @@ export default function LandingPage() {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-4xl sm:text-6xl font-bold mb-6 leading-tight">
-              <span className="gradient-text">やりたい曲で</span>
+              <span className="gradient-text">やりたい曲で仲間を見つけて</span>
               <br />
-              仲間を見つけよう。
+              コピバンを組んで、ライブに出よう。
             </h1>
             <p className="text-lg sm:text-xl text-text-secondary max-w-2xl mx-auto mb-10">
-              BandMatchはコピバン仲間を見つけるためのアプリ。
-              同じ曲をやりたい仲間を見つけて、一緒にステージに立とう。
+              BandMatchは「コピバンを組んでライブに出る」を実現するアプリ。
+              曲ベースマッチングで仲間を見つけて、ステージに立とう。
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/register">
@@ -124,9 +124,9 @@ export default function LandingPage() {
           </div>
           <div className="grid sm:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {[
-              { step: '01', title: 'プロフィール作成', desc: 'やりたい曲・弾ける曲・好きなアーティストを登録' },
-              { step: '02', title: 'コピバン仲間を探す', desc: '同じ曲をやりたい仲間を見つける' },
-              { step: '03', title: 'コピバンイベントに出る', desc: 'コピバンイベントでステージデビュー' },
+              { step: '01', title: '仲間を見つける', desc: 'やりたい曲で検索して、同じ曲をやりたい仲間とマッチング' },
+              { step: '02', title: 'コピバンを結成', desc: 'メンバーを集めてバンド結成。セットリストを決めて練習開始' },
+              { step: '03', title: 'ライブに出る!', desc: 'イベントにエントリーしてステージデビュー。初心者OKも多数' },
             ].map((item) => (
               <div key={item.step} className="text-center">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold mx-auto mb-4">

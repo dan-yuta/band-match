@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/lib/auth';
 import { GlassCard, Button, Badge } from '@/components/ui';
@@ -39,10 +40,28 @@ export default function PracticePage() {
 
   return (
     <div className="space-y-6">
+      {/* Live Goal Banner */}
+      <Link href="/bands">
+        <GlassCard className="border-primary/30 hover:border-primary/50 transition-all cursor-pointer">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">🎤</span>
+              <div>
+                <p className="text-sm font-semibold text-foreground">練習はライブに出るための準備!</p>
+                <p className="text-xs text-text-muted">バンドのセットリストを確認して、本番に備えよう</p>
+              </div>
+            </div>
+            <svg className="w-5 h-5 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </div>
+        </GlassCard>
+      </Link>
+
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold gradient-text">練習トラッカー</h1>
-        <p className="text-text-muted text-sm mt-1">毎日の練習を記録して、ストリークを伸ばそう</p>
+        <p className="text-text-muted text-sm mt-1">毎日の練習を記録して、ライブ本番に備えよう</p>
       </div>
 
       {/* Streak & Stats */}

@@ -6,8 +6,8 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/lib/auth';
 import { GlassCard, Card, Badge, Button, Avatar } from '@/components/ui';
 import { mockPosts, mockEvents, mockBands, mockUsers } from '@/data';
-import { mockPracticeLogs, mockNotifications } from '@/data/mockPractice';
-import { INSTRUMENTS, COPY_SONGS, BADGES } from '@/lib/constants';
+import { mockPracticeLogs } from '@/data/mockPractice';
+import { INSTRUMENTS, COPY_SONGS } from '@/lib/constants';
 
 const container = {
   hidden: { opacity: 0 },
@@ -31,30 +31,18 @@ function getUserName(userId: string): string {
   return found?.nickname ?? found?.name ?? 'Unknown';
 }
 
-function formatRelativeTime(dateStr: string): string {
-  const now = new Date();
-  const date = new Date(dateStr);
-  const diffMs = now.getTime() - date.getTime();
-  const diffMin = Math.floor(diffMs / 60000);
-  if (diffMin < 60) return `${diffMin}分前`;
-  const diffHour = Math.floor(diffMin / 60);
-  if (diffHour < 24) return `${diffHour}時間前`;
-  const diffDay = Math.floor(diffHour / 24);
-  if (diffDay < 7) return `${diffDay}日前`;
-  return date.toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' });
-}
-
 function formatEventDate(dateStr: string): string {
   const date = new Date(dateStr);
   return date.toLocaleDateString('ja-JP', { month: 'long', day: 'numeric', weekday: 'short' });
 }
 
-const postTypeLabels: Record<string, { label: string; variant: 'primary' | 'secondary' | 'accent' | 'success' }> = {
-  practice_log: { label: '練習ログ', variant: 'secondary' },
-  milestone: { label: 'マイルストーン', variant: 'accent' },
-  general: { label: '一般', variant: 'primary' },
-  question: { label: '質問', variant: 'success' },
-};
+const journeySteps = [
+  { id: 1, label: 'プロフィール完成', icon: '1', href: '/profile' },
+  { id: 2, label: '仲間を見つける', icon: '2', href: '/matching' },
+  { id: 3, label: 'コピバンを結成', icon: '3', href: '/bands' },
+  { id: 4, label: 'セットリストを決める', icon: '4', href: '/bands' },
+  { id: 5, label: 'ライブに出る', icon: '5', href: '/events' },
+];
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -71,38 +59,28 @@ export default function DashboardPage() {
     return mockEvents
       .filter((e) => new Date(e.date) >= now)
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-      .slice(0, 2);
-  }, []);
-
-  const recentPosts = useMemo(() => {
-    return [...mockPosts]
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
       .slice(0, 3);
   }, []);
 
-  const stats = useMemo(() => {
-    const practicePostsThisWeek = mockPosts.filter((p) => {
-      if (p.type !== 'practice_log') return false;
-      const postDate = new Date(p.createdAt);
-      const now = new Date();
-      const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-      return postDate >= weekAgo;
-    });
-    const totalPracticeMinutes = practicePostsThisWeek.reduce(
-      (sum, p) => sum + (p.practiceMinutes ?? 0),
-      0
-    );
-    const practiceHours = Math.round((totalPracticeMinutes / 60) * 10) / 10;
+  // Determine current journey step
+  const currentStep = useMemo(() => {
+    if (!user) return 1;
+    const hasProfile = user.instruments?.length > 0;
+    const hasBand = userBands.length > 0;
+    const hasSetlist = userBands.some((b) => b.setlist && b.setlist.length > 0);
+    const hasUpcomingEvent = upcomingEvents.length > 0;
 
-    return {
-      matches: 12,
-      bands: userBands.length,
-      practiceHours,
-      events: upcomingEvents.length,
-    };
-  }, [userBands, upcomingEvents]);
+    if (hasUpcomingEvent) return 5;
+    if (hasSetlist) return 4;
+    if (hasBand) return 3;
+    if (hasProfile) return 2;
+    return 1;
+  }, [user, userBands, upcomingEvents]);
 
   if (!user) return null;
+
+  const streak = user.practiceStreak;
+  const totalHours = Math.floor((streak?.totalMinutes || 0) / 60);
 
   return (
     <motion.div
@@ -121,102 +99,317 @@ export default function DashboardPage() {
                 おかえりなさい、{user.nickname || user.name}さん!
               </h1>
               <p className="text-text-secondary mt-1">
-                今日もコピバン活動を楽しみましょう
+                コピバンを組んでライブに出よう
               </p>
             </div>
           </div>
         </GlassCard>
       </motion.div>
 
-      {/* Practice Streak Card */}
+      {/* Journey Progress - MAIN FEATURE */}
       <motion.div variants={item}>
         <GlassCard>
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-3xl font-bold">{user.practiceStreak?.currentStreak || 0}日</div>
-              <div className="text-sm text-text-muted">連続練習ストリーク 🔥</div>
-            </div>
-            <div className="text-right">
-              <div className="text-sm text-text-muted">最長 {user.practiceStreak?.longestStreak || 0}日</div>
-              <div className="text-sm text-text-muted">累計 {Math.floor((user.practiceStreak?.totalMinutes || 0) / 60)}時間</div>
+          <h2 className="text-lg font-semibold text-foreground mb-1">ライブ出演への道</h2>
+          <p className="text-xs text-text-muted mb-5">あなたのステップ</p>
+          <div className="relative">
+            {/* Progress bar background */}
+            <div className="absolute top-5 left-5 right-5 h-1 bg-surface-lighter rounded-full" />
+            {/* Progress bar filled */}
+            <div
+              className="absolute top-5 left-5 h-1 bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-700"
+              style={{ width: `${Math.max(0, ((currentStep - 1) / (journeySteps.length - 1)) * 100)}%`, maxWidth: 'calc(100% - 40px)' }}
+            />
+            {/* Steps */}
+            <div className="relative flex justify-between">
+              {journeySteps.map((step) => {
+                const isCompleted = step.id < currentStep;
+                const isCurrent = step.id === currentStep;
+                return (
+                  <Link
+                    key={step.id}
+                    href={step.href}
+                    className="flex flex-col items-center text-center group"
+                    style={{ width: '18%' }}
+                  >
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold mb-2 transition-all ${
+                        isCompleted
+                          ? 'bg-gradient-to-br from-primary to-secondary text-white shadow-lg shadow-primary/30'
+                          : isCurrent
+                          ? 'bg-gradient-to-br from-primary to-secondary text-white ring-4 ring-primary/20 shadow-lg shadow-primary/30'
+                          : 'bg-surface-lighter text-text-muted'
+                      }`}
+                    >
+                      {isCompleted ? (
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                      ) : (
+                        step.icon
+                      )}
+                    </div>
+                    <span className={`text-[11px] leading-tight ${
+                      isCurrent ? 'text-primary-light font-semibold' : isCompleted ? 'text-foreground' : 'text-text-muted'
+                    } group-hover:text-primary-light transition-colors`}>
+                      {step.label}
+                    </span>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </GlassCard>
       </motion.div>
 
-      {/* Today's Practice */}
+      {/* Quick Actions */}
       <motion.div variants={item}>
-        <GlassCard>
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-lg font-semibold text-foreground">今日の練習</h2>
-              <p className="text-xs text-text-muted mt-1">今日はまだ練習を記録していません</p>
-            </div>
-            <Link href="/practice">
-              <Button variant="primary" size="sm">練習を記録</Button>
-            </Link>
-          </div>
-        </GlassCard>
+        <h2 className="text-lg font-semibold text-foreground mb-4">次のアクション</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <Link href="/matching" className="col-span-2 md:col-span-1">
+            <Button variant="primary" fullWidth className="h-auto py-5 flex-col gap-2">
+              <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+              </svg>
+              <span className="text-sm font-semibold">仲間を探す</span>
+            </Button>
+          </Link>
+          <Link href="/bands">
+            <Button variant="secondary" fullWidth className="h-auto py-5 flex-col gap-2">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+              <span className="text-xs">コピバンを作る</span>
+            </Button>
+          </Link>
+          <Link href="/events">
+            <Button variant="secondary" fullWidth className="h-auto py-5 flex-col gap-2">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span className="text-xs">イベントを探す</span>
+            </Button>
+          </Link>
+          <Link href="/practice">
+            <Button variant="ghost" fullWidth className="h-auto py-5 flex-col gap-2">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="text-xs">練習を記録</span>
+            </Button>
+          </Link>
+        </div>
       </motion.div>
 
-      {/* Weekly Progress */}
+      {/* Your Bands Section */}
       <motion.div variants={item}>
-        <GlassCard>
-          <h2 className="text-lg font-semibold text-foreground mb-4">今週の練習</h2>
-          <div className="flex justify-between items-end gap-2">
-            {['月', '火', '水', '木', '金', '土', '日'].map((day, i) => {
-              const practiced = i < 5;
-              const mins = practiced ? 20 + Math.floor(Math.random() * 40) : 0;
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-foreground">マイコピバン</h2>
+          <Link href="/bands">
+            <Button variant="ghost" size="sm">すべて見る</Button>
+          </Link>
+        </div>
+        {userBands.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {userBands.map((band) => {
+              const memberInBand = band.members.find((m) => m.userId === user.id);
+              const setlistCount = band.setlist?.length || 0;
               return (
-                <div key={day} className="flex-1 text-center">
-                  <div className="relative h-20 bg-surface-light rounded-lg overflow-hidden mb-1">
-                    <motion.div
-                      className={`absolute bottom-0 w-full rounded-lg ${practiced ? 'bg-gradient-to-t from-primary to-primary-light' : 'bg-surface-lighter'}`}
-                      initial={{ height: 0 }}
-                      animate={{ height: `${practiced ? Math.max(20, mins) : 5}%` }}
-                      transition={{ delay: i * 0.1 }}
-                    />
+                <Card key={band.id} padding="md" hover>
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-lg shrink-0">
+                      {band.name.charAt(0)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm font-semibold text-foreground truncate">
+                        {band.name}
+                      </h3>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-xs text-text-muted">
+                          {band.members.length}/{band.maxMembers}人
+                        </span>
+                        {memberInBand && (
+                          <Badge
+                            variant={memberInBand.role === 'leader' ? 'accent' : 'primary'}
+                            size="sm"
+                          >
+                            {memberInBand.role === 'leader' ? 'リーダー' : 'メンバー'}
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs text-text-muted">
+                          セットリスト: {setlistCount}曲
+                        </span>
+                        {band.isRecruiting && (
+                          <Badge variant="success" size="sm">募集中</Badge>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end gap-1">
+                      {memberInBand && (
+                        <span className="text-[10px] text-text-muted">
+                          {getInstrumentLabel(memberInBand.instrument)}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <div className="text-xs text-text-muted">{day}</div>
-                  {practiced && <div className="text-[10px] text-primary-light">{mins}分</div>}
-                </div>
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {band.genre.map((g) => (
+                      <Badge key={g} variant="default" size="sm">{g}</Badge>
+                    ))}
+                  </div>
+                </Card>
               );
             })}
           </div>
-        </GlassCard>
+        ) : (
+          <GlassCard>
+            <div className="text-center py-6">
+              <p className="text-3xl mb-3">🎸</p>
+              <p className="text-sm text-text-muted mb-1">まだコピバンに参加していません</p>
+              <p className="text-xs text-text-muted mb-4">仲間を見つけてコピバンを結成しよう!</p>
+              <div className="flex items-center justify-center gap-3">
+                <Link href="/matching">
+                  <Button variant="primary" size="sm">仲間を探す</Button>
+                </Link>
+                <Link href="/bands">
+                  <Button variant="secondary" size="sm">コピバンを探す</Button>
+                </Link>
+              </div>
+            </div>
+          </GlassCard>
+        )}
       </motion.div>
 
-      {/* Friend Activity Feed */}
+      {/* Upcoming Events */}
+      <motion.div variants={item}>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-foreground">今後のイベント</h2>
+          <Link href="/events">
+            <Button variant="ghost" size="sm">すべて見る</Button>
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {upcomingEvents.map((event) => (
+            <GlassCard key={event.id} padding="md">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-start justify-between">
+                  <h3 className="text-sm font-semibold text-foreground line-clamp-1">
+                    {event.title}
+                  </h3>
+                  {event.isBeginnerFriendly && (
+                    <Badge variant="success" size="sm">初心者OK</Badge>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 text-xs text-text-muted">
+                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span>{formatEventDate(event.date)}</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-text-muted">
+                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                  </svg>
+                  <span className="line-clamp-1">{event.venue}</span>
+                </div>
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {event.tags.map((tag) => (
+                    <Badge key={tag} variant="default" size="sm">{tag}</Badge>
+                  ))}
+                </div>
+              </div>
+            </GlassCard>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Practice Streak & Friend Activity - compact bottom section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Compact Practice Streak */}
+        <motion.div variants={item}>
+          <Link href="/practice">
+            <GlassCard className="hover:border-primary/30 transition-all">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="text-2xl">🔥</div>
+                  <div>
+                    <div className="text-sm font-semibold text-foreground">
+                      {streak?.currentStreak || 0}日連続
+                      <span className="text-text-muted font-normal mx-2">·</span>
+                      累計{totalHours}h
+                    </div>
+                    <div className="text-xs text-text-muted">練習ストリーク</div>
+                  </div>
+                </div>
+                <Button variant="ghost" size="sm">練習を記録</Button>
+              </div>
+            </GlassCard>
+          </Link>
+        </motion.div>
+
+        {/* Stats summary */}
+        <motion.div variants={item}>
+          <GlassCard>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-foreground">12</div>
+                  <div className="text-[10px] text-text-muted">マッチ</div>
+                </div>
+                <div className="w-px h-8 bg-border-light" />
+                <div className="text-center">
+                  <div className="text-lg font-bold text-foreground">{userBands.length}</div>
+                  <div className="text-[10px] text-text-muted">コピバン</div>
+                </div>
+                <div className="w-px h-8 bg-border-light" />
+                <div className="text-center">
+                  <div className="text-lg font-bold text-foreground">{upcomingEvents.length}</div>
+                  <div className="text-[10px] text-text-muted">イベント</div>
+                </div>
+              </div>
+              <Link href="/ranking">
+                <Button variant="ghost" size="sm">ランキング</Button>
+              </Link>
+            </div>
+          </GlassCard>
+        </motion.div>
+      </div>
+
+      {/* Friend Activity (compact) */}
       <motion.div variants={item}>
         <GlassCard>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-semibold text-foreground">フレンドの活動</h2>
+            <h2 className="text-sm font-semibold text-foreground">フレンドの活動</h2>
             <Link href="/community">
               <Button variant="ghost" size="sm">もっと見る</Button>
             </Link>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-2">
             {(() => {
               const friendIds = user.friends || [];
               const friendLogs = mockPracticeLogs
                 .filter(l => friendIds.includes(l.userId))
-                .slice(0, 5);
+                .slice(0, 3);
               if (friendLogs.length === 0) {
-                return <p className="text-sm text-text-muted text-center py-2">フレンドの練習記録はまだありません</p>;
+                return <p className="text-sm text-text-muted text-center py-2">フレンドの活動はまだありません</p>;
               }
               return friendLogs.map(log => {
                 const friendUser = mockUsers.find(u => u.id === log.userId);
                 const song = COPY_SONGS.find(s => s.id === log.songId);
                 return (
-                  <div key={log.id} className="flex items-center gap-3 py-2 border-b border-border-light last:border-0">
+                  <div key={log.id} className="flex items-center gap-2 py-1.5 border-b border-border-light last:border-0">
                     <Avatar name={friendUser?.name || ''} size="sm" online={friendUser?.isOnline} />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-foreground">
-                        <span className="font-medium">{friendUser?.nickname || friendUser?.name}</span>さんが
-                        <span className="text-primary-light font-medium">{song?.title || '自由練習'}</span>を{log.minutes}分練習
+                      <p className="text-xs text-foreground">
+                        <span className="font-medium">{friendUser?.nickname || friendUser?.name}</span>
+                        {' · '}
+                        <span className="text-primary-light">{song?.title || '練習'}</span>
+                        {' '}{log.minutes}分
                       </p>
-                      <p className="text-xs text-text-muted">{log.date}</p>
                     </div>
+                    <span className="text-[10px] text-text-muted">{log.date}</span>
                   </div>
                 );
               });
@@ -224,320 +417,6 @@ export default function DashboardPage() {
           </div>
         </GlassCard>
       </motion.div>
-
-      {/* Stats Grid */}
-      <motion.div variants={item}>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            {
-              label: 'マッチング',
-              value: stats.matches,
-              unit: '件',
-              icon: (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              ),
-              color: 'from-primary/20 to-primary/5 text-primary-light',
-            },
-            {
-              label: '参加コピバン',
-              value: stats.bands,
-              unit: '組',
-              icon: (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                </svg>
-              ),
-              color: 'from-secondary/20 to-secondary/5 text-secondary-light',
-            },
-            {
-              label: '今週の練習',
-              value: stats.practiceHours,
-              unit: '時間',
-              icon: (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              ),
-              color: 'from-accent/20 to-accent/5 text-accent',
-            },
-            {
-              label: '予定イベント',
-              value: stats.events,
-              unit: '件',
-              icon: (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              ),
-              color: 'from-emerald-500/20 to-emerald-500/5 text-emerald-400',
-            },
-          ].map((stat) => (
-            <Card key={stat.label} padding="md">
-              <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center`}>
-                  {stat.icon}
-                </div>
-                <div>
-                  <p className="text-xs text-text-muted">{stat.label}</p>
-                  <p className="text-xl font-bold text-foreground">
-                    {stat.value}
-                    <span className="text-xs font-normal text-text-secondary ml-0.5">
-                      {stat.unit}
-                    </span>
-                  </p>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* Quick Actions */}
-      <motion.div variants={item}>
-        <h2 className="text-lg font-semibold text-foreground mb-4">クイックアクション</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {[
-            {
-              label: 'コピバン仲間検索',
-              href: '/matching',
-              icon: (
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                </svg>
-              ),
-              variant: 'primary' as const,
-            },
-            {
-              label: 'コピバン作成',
-              href: '/bands',
-              icon: (
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-              ),
-              variant: 'secondary' as const,
-            },
-            {
-              label: 'イベント一覧',
-              href: '/events',
-              icon: (
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              ),
-              variant: 'ghost' as const,
-            },
-            {
-              label: '練習ログ',
-              href: '/community',
-              icon: (
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                </svg>
-              ),
-              variant: 'ghost' as const,
-            },
-          ].map((action) => (
-            <Link key={action.label} href={action.href}>
-              <Button variant={action.variant} fullWidth className="h-auto py-4 flex-col gap-2">
-                {action.icon}
-                <span className="text-xs">{action.label}</span>
-              </Button>
-            </Link>
-          ))}
-        </div>
-      </motion.div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Recent Activity Feed */}
-        <motion.div variants={item} className="lg:col-span-2">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-foreground">最近のアクティビティ</h2>
-            <Link href="/community">
-              <Button variant="ghost" size="sm">すべて見る</Button>
-            </Link>
-          </div>
-          <div className="space-y-3">
-            {recentPosts.map((post) => {
-              const postUser = mockUsers.find((u) => u.id === post.userId);
-              const typeInfo = postTypeLabels[post.type] ?? postTypeLabels.general;
-              return (
-                <Card key={post.id} padding="md" hover>
-                  <div className="flex gap-3">
-                    <Avatar
-                      name={postUser?.name ?? 'U'}
-                      src={postUser?.avatar}
-                      size="md"
-                      online={postUser?.isOnline}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-medium text-sm text-foreground">
-                          {getUserName(post.userId)}
-                        </span>
-                        <Badge variant={typeInfo.variant} size="sm">
-                          {typeInfo.label}
-                        </Badge>
-                        <span className="text-xs text-text-muted ml-auto">
-                          {formatRelativeTime(post.createdAt)}
-                        </span>
-                      </div>
-                      <p className="text-sm text-text-secondary mt-1 line-clamp-2">
-                        {post.content}
-                      </p>
-                      <div className="flex items-center gap-4 mt-2 text-xs text-text-muted">
-                        <span className="flex items-center gap-1">
-                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                          </svg>
-                          {post.likes.length}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
-                          </svg>
-                          {post.comments.length}
-                        </span>
-                        {post.practiceMinutes != null && (
-                          <span className="flex items-center gap-1">
-                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            {post.practiceMinutes}分
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              );
-            })}
-          </div>
-        </motion.div>
-
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Upcoming Events */}
-          <motion.div variants={item}>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-foreground">今後のイベント</h2>
-              <Link href="/events">
-                <Button variant="ghost" size="sm">もっと見る</Button>
-              </Link>
-            </div>
-            <div className="space-y-3">
-              {upcomingEvents.map((event) => (
-                <GlassCard key={event.id} padding="md">
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-start justify-between">
-                      <h3 className="text-sm font-semibold text-foreground line-clamp-1">
-                        {event.title}
-                      </h3>
-                      {event.isBeginnerFriendly && (
-                        <Badge variant="success" size="sm">初心者OK</Badge>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 text-xs text-text-muted">
-                      <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      <span>{formatEventDate(event.date)}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs text-text-muted">
-                      <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                      </svg>
-                      <span className="line-clamp-1">{event.venue}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs text-text-muted">
-                      <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <span>{event.startTime} - {event.endTime}</span>
-                    </div>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {event.tags.map((tag) => (
-                        <Badge key={tag} variant="default" size="sm">{tag}</Badge>
-                      ))}
-                    </div>
-                  </div>
-                </GlassCard>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* My Bands */}
-          <motion.div variants={item}>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-foreground">マイコピバン</h2>
-              <Link href="/bands">
-                <Button variant="ghost" size="sm">管理</Button>
-              </Link>
-            </div>
-            {userBands.length > 0 ? (
-              <div className="space-y-3">
-                {userBands.map((band) => {
-                  const memberInBand = band.members.find((m) => m.userId === user.id);
-                  return (
-                    <Card key={band.id} padding="md" hover>
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-sm shrink-0">
-                          {band.name.charAt(0)}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-sm font-semibold text-foreground truncate">
-                            {band.name}
-                          </h3>
-                          <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-xs text-text-muted">
-                              {band.members.length}/{band.maxMembers}人
-                            </span>
-                            {memberInBand && (
-                              <Badge
-                                variant={memberInBand.role === 'leader' ? 'accent' : 'primary'}
-                                size="sm"
-                              >
-                                {memberInBand.role === 'leader' ? 'リーダー' : 'メンバー'}
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                        <div className="flex flex-col items-end gap-1">
-                          {memberInBand && (
-                            <span className="text-[10px] text-text-muted">
-                              {getInstrumentLabel(memberInBand.instrument)}
-                            </span>
-                          )}
-                          {band.isRecruiting && (
-                            <Badge variant="success" size="sm">募集中</Badge>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex flex-wrap gap-1 mt-2">
-                        {band.genre.map((g) => (
-                          <Badge key={g} variant="default" size="sm">{g}</Badge>
-                        ))}
-                      </div>
-                    </Card>
-                  );
-                })}
-              </div>
-            ) : (
-              <Card padding="md">
-                <div className="text-center py-4">
-                  <p className="text-sm text-text-muted mb-3">まだコピバンに参加していません</p>
-                  <Link href="/bands">
-                    <Button variant="secondary" size="sm">コピバンを探す</Button>
-                  </Link>
-                </div>
-              </Card>
-            )}
-          </motion.div>
-        </div>
-      </div>
     </motion.div>
   );
 }

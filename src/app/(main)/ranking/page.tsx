@@ -55,7 +55,7 @@ export default function RankingPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold gradient-text">ランキング</h1>
-        <p className="text-text-muted text-sm mt-1">練習時間で競い合おう</p>
+        <p className="text-text-muted text-sm mt-1">練習を続けてライブに備えよう</p>
       </div>
 
       {/* Tabs */}

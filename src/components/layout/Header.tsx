@@ -20,9 +20,6 @@ export default function Header() {
         {user ? (
           <div className="flex items-center gap-4">
             <nav className="hidden md:flex items-center gap-1">
-              <Link href="/dashboard" className="px-3 py-2 text-sm text-text-secondary hover:text-foreground rounded-lg hover:bg-surface-light transition-colors">
-                ダッシュボード
-              </Link>
               <Link href="/matching" className="px-3 py-2 text-sm text-text-secondary hover:text-foreground rounded-lg hover:bg-surface-light transition-colors">
                 マッチング
               </Link>
@@ -32,14 +29,11 @@ export default function Header() {
               <Link href="/events" className="px-3 py-2 text-sm text-text-secondary hover:text-foreground rounded-lg hover:bg-surface-light transition-colors">
                 イベント
               </Link>
-              <Link href="/practice" className="px-3 py-2 text-sm text-text-secondary hover:text-foreground rounded-lg hover:bg-surface-light transition-colors">
-                練習
-              </Link>
-              <Link href="/ranking" className="px-3 py-2 text-sm text-text-secondary hover:text-foreground rounded-lg hover:bg-surface-light transition-colors">
-                ランキング
-              </Link>
               <Link href="/community" className="px-3 py-2 text-sm text-text-secondary hover:text-foreground rounded-lg hover:bg-surface-light transition-colors">
                 コミュニティ
+              </Link>
+              <Link href="/practice" className="px-3 py-2 text-sm text-text-muted hover:text-foreground rounded-lg hover:bg-surface-light transition-colors">
+                練習
               </Link>
               {user.isAdmin && (
                 <Link href="/admin" className="px-3 py-2 text-sm text-accent hover:text-accent-light rounded-lg hover:bg-surface-light transition-colors">
