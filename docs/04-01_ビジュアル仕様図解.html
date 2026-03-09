@@ -660,7 +660,7 @@
 <!-- ===== HEADER ===== -->
 <div class="doc-header">
   <h1>BandMatch</h1>
-  <p>初心者バンドマン向けコミュニティアプリ ビジュアル仕様書</p>
+  <p>初心者バンドマン向け Web / iOS / Android コミュニティアプリ ビジュアル仕様書</p>
   <span class="version">v1.0.0 | 2026.03</span>
 </div>
 
@@ -677,6 +677,7 @@
   <a href="#models">🗄️ データモデル</a>
   <a href="#wireframes">🖥️ ワイヤーフレーム</a>
   <a href="#mobile">📱 モバイル</a>
+  <a href="#techstack">🛠️ 技術スタック</a>
   <a href="#security">🔒 セキュリティ</a>
   <a href="#animations">✨ アニメーション</a>
 </nav>
@@ -1346,7 +1347,7 @@
 <!-- ===== MOBILE ===== -->
 <section class="section" id="mobile">
   <h2 class="section-title"><span class="icon">📱</span>モバイルUI</h2>
-  <p class="section-desc">ボトムナビゲーションによるモバイルファーストな操作性</p>
+  <p class="section-desc">Capacitor 6 による iOS / Android ネイティブアプリ対応。ボトムナビゲーションによるモバイルファーストな操作性</p>
 
   <div style="display: flex; gap: 32px; justify-content: center; flex-wrap: wrap;">
     <div class="mobile-nav-demo">
@@ -1409,6 +1410,47 @@
           <div class="mobile-nav-item"><span class="nav-icon">👤</span>プロフィール</div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== TECH STACK ===== -->
+<section class="section" id="techstack">
+  <h2 class="section-title"><span class="icon">🛠️</span>技術スタック</h2>
+  <p class="section-desc">Web / iOS / Android クロスプラットフォーム対応の技術構成</p>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+    <div class="glass" style="padding: 20px; border-radius: 12px; text-align: center;">
+      <div style="font-size: 1.5rem; margin-bottom: 8px;">N</div>
+      <div style="font-weight: 700; font-size: 0.9rem;">Next.js 16</div>
+      <div style="font-size: 0.75rem; color: var(--text-muted);">React フレームワーク</div>
+    </div>
+    <div class="glass" style="padding: 20px; border-radius: 12px; text-align: center;">
+      <div style="font-size: 1.5rem; margin-bottom: 8px;">TS</div>
+      <div style="font-weight: 700; font-size: 0.9rem;">TypeScript</div>
+      <div style="font-size: 0.75rem; color: var(--text-muted);">型安全な開発</div>
+    </div>
+    <div class="glass" style="padding: 20px; border-radius: 12px; text-align: center;">
+      <div style="font-size: 1.5rem; margin-bottom: 8px;">TW</div>
+      <div style="font-weight: 700; font-size: 0.9rem;">Tailwind CSS</div>
+      <div style="font-size: 0.75rem; color: var(--text-muted);">ユーティリティ CSS</div>
+    </div>
+    <div class="glass" style="padding: 20px; border-radius: 12px; text-align: center; border: 1px solid rgba(34,197,94,0.3);">
+      <div style="font-size: 1.5rem; margin-bottom: 8px;">📱</div>
+      <div style="font-weight: 700; font-size: 0.9rem; color: #22c55e;">Capacitor 6</div>
+      <div style="font-size: 0.75rem; color: var(--text-muted);">iOS / Android ネイティブアプリ対応</div>
+    </div>
+    <div class="glass" style="padding: 20px; border-radius: 12px; text-align: center;">
+      <div style="font-size: 1.5rem; margin-bottom: 8px;">FM</div>
+      <div style="font-weight: 700; font-size: 0.9rem;">Framer Motion</div>
+      <div style="font-size: 0.75rem; color: var(--text-muted);">アニメーション</div>
+    </div>
+    <div class="glass" style="padding: 20px; border-radius: 12px; text-align: center;">
+      <div style="font-size: 1.5rem; margin-bottom: 8px;">☁️</div>
+      <div style="font-weight: 700; font-size: 0.9rem;">AWS</div>
+      <div style="font-size: 0.75rem; color: var(--text-muted);">クラウドインフラ</div>
     </div>
   </div>
 </section>

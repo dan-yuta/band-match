@@ -18,6 +18,7 @@
 | アニメーション | Framer Motion |
 | データ管理 | localStorage（モック） |
 | 決済 | Stripe（モックUI） |
+| モバイル | Capacitor (iOS / Android) |
 
 ## セットアップ
 
@@ -33,9 +34,35 @@ npm run build
 
 # 本番サーバー起動
 npm start
+
+# モバイルビルド（iOS）
+npm run mobile:ios
+
+# モバイルビルド（Android）
+npm run mobile:android
 ```
 
 http://localhost:3000 でアクセスできます。
+
+## モバイルアプリ
+
+Capacitor を使用して iOS / Android ネイティブアプリとしてもビルドできます。
+
+### 前提条件
+- iOS: macOS + Xcode 15+
+- Android: Android Studio + JDK 17+
+
+### ビルド手順
+```bash
+# 初回セットアップ
+npm install
+npx cap add ios      # iOS プロジェクト追加
+npx cap add android  # Android プロジェクト追加
+
+# ビルド＆起動
+npm run mobile:ios     # iOS シミュレータで起動
+npm run mobile:android # Android エミュレータで起動
+```
 
 ## テストアカウント
 

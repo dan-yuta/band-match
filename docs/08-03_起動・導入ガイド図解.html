@@ -609,7 +609,7 @@
 <div class="container">
   <div class="section-header">
     <h2><span class="icon" style="background:rgba(124,58,237,0.15); color:var(--primary-light);">&#127928;</span> このアプリは何？</h2>
-    <p>BandMatch は「初心者バンドマンが仲間を見つけてライブに出る」までをサポートするWebアプリです</p>
+    <p>BandMatch は「初心者バンドマンが仲間を見つけてライブに出る」までをサポートする Web / iOS / Android アプリです</p>
   </div>
 
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 30px;">
@@ -1034,6 +1034,12 @@
       <div class="tech-ver">v12.x</div>
       <div class="tech-desc">アニメーション</div>
     </div>
+    <div class="tech-card">
+      <div class="tech-icon" style="background: rgba(34,197,94,0.15); color: var(--green);">📱</div>
+      <div class="tech-name">Capacitor</div>
+      <div class="tech-ver">v6.x</div>
+      <div class="tech-desc">iOS / Android<br>ネイティブアプリ対応</div>
+    </div>
   </div>
 
   <h3 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 14px; color: var(--accent);">&#128679; バックエンド・インフラ（今後構築）</h3>
@@ -1343,6 +1349,18 @@
     <div class="cmd-card">
       <div class="cmd-text">git pull origin main</div>
       <div class="cmd-desc">最新コードを取得。作業開始時に毎回。</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-text">npx cap sync</div>
+      <div class="cmd-desc">Capacitor プラグイン同期。iOS/Android ネイティブプロジェクトを更新。</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-text">npx cap open ios</div>
+      <div class="cmd-desc">Xcode でiOSプロジェクトを開く。実機/シミュレータでビルド・実行。</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-text">npx cap open android</div>
+      <div class="cmd-desc">Android Studio でプロジェクトを開く。エミュレータ/実機でビルド・実行。</div>
     </div>
   </div>
 </div>

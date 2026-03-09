@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
+const isMobileBuild = process.env.NEXT_OUTPUT === 'export';
+
 const nextConfig: NextConfig = {
+  ...(isMobileBuild ? { output: 'export', images: { unoptimized: true } } : {}),
   async headers() {
     return [
       {
