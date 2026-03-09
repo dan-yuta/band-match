@@ -32,6 +32,12 @@ export default function Header() {
               <Link href="/events" className="px-3 py-2 text-sm text-text-secondary hover:text-foreground rounded-lg hover:bg-surface-light transition-colors">
                 イベント
               </Link>
+              <Link href="/practice" className="px-3 py-2 text-sm text-text-secondary hover:text-foreground rounded-lg hover:bg-surface-light transition-colors">
+                練習
+              </Link>
+              <Link href="/ranking" className="px-3 py-2 text-sm text-text-secondary hover:text-foreground rounded-lg hover:bg-surface-light transition-colors">
+                ランキング
+              </Link>
               <Link href="/community" className="px-3 py-2 text-sm text-text-secondary hover:text-foreground rounded-lg hover:bg-surface-light transition-colors">
                 コミュニティ
               </Link>
@@ -41,6 +47,12 @@ export default function Header() {
                 </Link>
               )}
             </nav>
+            <div className="relative">
+              <Link href="/dashboard" className="p-2 text-text-secondary hover:text-foreground rounded-lg hover:bg-surface-light transition-colors relative">
+                <span className="text-lg">🔔</span>
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent rounded-full text-[10px] text-white flex items-center justify-center font-bold">3</span>
+              </Link>
+            </div>
             <Link href="/profile" className="flex items-center gap-2">
               <Avatar name={user.name} size="sm" online />
             </Link>

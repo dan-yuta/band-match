@@ -214,6 +214,23 @@ export default function MatchingPage() {
                     <ScoreBar label="スケジュール" value={match.breakdown.schedule} max={35} color="bg-accent" />
                     <ScoreBar label="共通の曲" value={match.breakdown.songs} max={30} color="bg-pink-500" />
                   </div>
+                  {/* Friend Status */}
+                  <div className="mt-3 text-center">
+                    {user && (user.friends || []).includes(match.user.id) ? (
+                      <Badge variant="success" size="sm">フレンド</Badge>
+                    ) : (
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        fullWidth
+                        onClick={() => {
+                          alert(`${match.user.name}さんにフレンド申請を送りました！`);
+                        }}
+                      >
+                        フレンド追加
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
             </GlassCard>

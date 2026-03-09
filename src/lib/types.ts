@@ -27,6 +27,63 @@ export interface Schedule {
   endTime: string;
 }
 
+export interface PracticeLog {
+  id: string;
+  userId: string;
+  songId: string;
+  minutes: number;
+  note: string;
+  date: string;
+}
+
+export interface PracticeStreak {
+  currentStreak: number;
+  longestStreak: number;
+  lastPracticeDate: string;
+  totalMinutes: number;
+  weeklyGoalDays: number;
+  weeklyGoalMinutes: number;
+}
+
+export interface Badge {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  earnedAt?: string;
+}
+
+export interface SocialAccount {
+  provider: 'x' | 'instagram' | 'line' | 'youtube';
+  username: string;
+  url: string;
+}
+
+export interface FriendRelation {
+  userId: string;
+  friendId: string;
+  since: string;
+}
+
+export type NotificationType =
+  | 'practice_reminder'
+  | 'friend_practiced'
+  | 'streak_warning'
+  | 'rank_change'
+  | 'milestone'
+  | 'slacking'
+  | 'band_reminder';
+
+export interface AppNotification {
+  id: string;
+  userId: string;
+  type: NotificationType;
+  title: string;
+  message: string;
+  read: boolean;
+  createdAt: string;
+}
+
 export interface User {
   id: string;
   email: string;
@@ -44,6 +101,10 @@ export interface User {
   wantToPlaySongs: string[];   // CopySong IDs
   canPlaySongs: string[];       // CopySong IDs
   favoriteArtists: string[];    // コピーしたいアーティスト
+  practiceStreak: PracticeStreak;
+  socialAccounts: SocialAccount[];
+  friends: string[];  // friend user IDs
+  badges: string[];   // badge IDs
   isAdmin: boolean;
   subscription: SubscriptionPlan;
   createdAt: string;

@@ -6,7 +6,8 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/lib/auth';
 import { GlassCard, Card, Badge, Button, Avatar } from '@/components/ui';
 import { mockPosts, mockEvents, mockBands, mockUsers } from '@/data';
-import { INSTRUMENTS } from '@/lib/constants';
+import { mockPracticeLogs, mockNotifications } from '@/data/mockPractice';
+import { INSTRUMENTS, COPY_SONGS, BADGES } from '@/lib/constants';
 
 const container = {
   hidden: { opacity: 0 },
@@ -123,6 +124,103 @@ export default function DashboardPage() {
                 今日もコピバン活動を楽しみましょう
               </p>
             </div>
+          </div>
+        </GlassCard>
+      </motion.div>
+
+      {/* Practice Streak Card */}
+      <motion.div variants={item}>
+        <GlassCard>
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-3xl font-bold">{user.practiceStreak?.currentStreak || 0}日</div>
+              <div className="text-sm text-text-muted">連続練習ストリーク 🔥</div>
+            </div>
+            <div className="text-right">
+              <div className="text-sm text-text-muted">最長 {user.practiceStreak?.longestStreak || 0}日</div>
+              <div className="text-sm text-text-muted">累計 {Math.floor((user.practiceStreak?.totalMinutes || 0) / 60)}時間</div>
+            </div>
+          </div>
+        </GlassCard>
+      </motion.div>
+
+      {/* Today's Practice */}
+      <motion.div variants={item}>
+        <GlassCard>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-foreground">今日の練習</h2>
+              <p className="text-xs text-text-muted mt-1">今日はまだ練習を記録していません</p>
+            </div>
+            <Link href="/practice">
+              <Button variant="primary" size="sm">練習を記録</Button>
+            </Link>
+          </div>
+        </GlassCard>
+      </motion.div>
+
+      {/* Weekly Progress */}
+      <motion.div variants={item}>
+        <GlassCard>
+          <h2 className="text-lg font-semibold text-foreground mb-4">今週の練習</h2>
+          <div className="flex justify-between items-end gap-2">
+            {['月', '火', '水', '木', '金', '土', '日'].map((day, i) => {
+              const practiced = i < 5;
+              const mins = practiced ? 20 + Math.floor(Math.random() * 40) : 0;
+              return (
+                <div key={day} className="flex-1 text-center">
+                  <div className="relative h-20 bg-surface-light rounded-lg overflow-hidden mb-1">
+                    <motion.div
+                      className={`absolute bottom-0 w-full rounded-lg ${practiced ? 'bg-gradient-to-t from-primary to-primary-light' : 'bg-surface-lighter'}`}
+                      initial={{ height: 0 }}
+                      animate={{ height: `${practiced ? Math.max(20, mins) : 5}%` }}
+                      transition={{ delay: i * 0.1 }}
+                    />
+                  </div>
+                  <div className="text-xs text-text-muted">{day}</div>
+                  {practiced && <div className="text-[10px] text-primary-light">{mins}分</div>}
+                </div>
+              );
+            })}
+          </div>
+        </GlassCard>
+      </motion.div>
+
+      {/* Friend Activity Feed */}
+      <motion.div variants={item}>
+        <GlassCard>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-semibold text-foreground">フレンドの活動</h2>
+            <Link href="/community">
+              <Button variant="ghost" size="sm">もっと見る</Button>
+            </Link>
+          </div>
+          <div className="space-y-3">
+            {(() => {
+              const friendIds = user.friends || [];
+              const friendLogs = mockPracticeLogs
+                .filter(l => friendIds.includes(l.userId))
+                .slice(0, 5);
+              if (friendLogs.length === 0) {
+                return <p className="text-sm text-text-muted text-center py-2">フレンドの練習記録はまだありません</p>;
+              }
+              return friendLogs.map(log => {
+                const friendUser = mockUsers.find(u => u.id === log.userId);
+                const song = COPY_SONGS.find(s => s.id === log.songId);
+                return (
+                  <div key={log.id} className="flex items-center gap-3 py-2 border-b border-border-light last:border-0">
+                    <Avatar name={friendUser?.name || ''} size="sm" online={friendUser?.isOnline} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-foreground">
+                        <span className="font-medium">{friendUser?.nickname || friendUser?.name}</span>さんが
+                        <span className="text-primary-light font-medium">{song?.title || '自由練習'}</span>を{log.minutes}分練習
+                      </p>
+                      <p className="text-xs text-text-muted">{log.date}</p>
+                    </div>
+                  </div>
+                );
+              });
+            })()}
           </div>
         </GlassCard>
       </motion.div>

@@ -5,8 +5,8 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/lib/auth';
 import { GlassCard, Card, Badge, Button, Input, Avatar } from '@/components/ui';
 import { useToast } from '@/components/ui/Toast';
-import { INSTRUMENTS, SKILL_LEVELS, GENRES, PREFECTURES, DAYS_OF_WEEK, POPULAR_ARTISTS, COPY_SONGS } from '@/lib/constants';
-import type { UserInstrument, Schedule, SkillLevel, DayOfWeek } from '@/lib/types';
+import { INSTRUMENTS, SKILL_LEVELS, GENRES, PREFECTURES, DAYS_OF_WEEK, POPULAR_ARTISTS, COPY_SONGS, BADGES, SOCIAL_PROVIDERS } from '@/lib/constants';
+import type { UserInstrument, Schedule, SkillLevel, DayOfWeek, SocialAccount } from '@/lib/types';
 
 const container = {
   hidden: { opacity: 0 },
@@ -69,6 +69,7 @@ export default function ProfilePage() {
   const [formFavoriteArtists, setFormFavoriteArtists] = useState<string[]>([]);
   const [formWantToPlaySongs, setFormWantToPlaySongs] = useState<string[]>([]);
   const [formCanPlaySongs, setFormCanPlaySongs] = useState<string[]>([]);
+  const [formSocialAccounts, setFormSocialAccounts] = useState<SocialAccount[]>([]);
 
   const enterEditMode = useCallback(() => {
     if (!user) return;
@@ -84,6 +85,7 @@ export default function ProfilePage() {
     setFormFavoriteArtists([...(user.favoriteArtists || [])]);
     setFormWantToPlaySongs([...(user.wantToPlaySongs || [])]);
     setFormCanPlaySongs([...(user.canPlaySongs || [])]);
+    setFormSocialAccounts([...(user.socialAccounts || [])]);
     setIsEditing(true);
   }, [user]);
 
@@ -117,6 +119,7 @@ export default function ProfilePage() {
       favoriteArtists: formFavoriteArtists,
       wantToPlaySongs: formWantToPlaySongs,
       canPlaySongs: formCanPlaySongs,
+      socialAccounts: formSocialAccounts.filter(a => a.username.trim()),
     });
 
     setIsEditing(false);
@@ -134,6 +137,7 @@ export default function ProfilePage() {
     formFavoriteArtists,
     formWantToPlaySongs,
     formCanPlaySongs,
+    formSocialAccounts,
     updateUser,
     showToast,
   ]);
@@ -181,6 +185,28 @@ export default function ProfilePage() {
   const getSongTitle = useCallback((songId: string) => {
     const song = COPY_SONGS.find((s) => s.id === songId);
     return song ? `${song.title} / ${song.artist}` : songId;
+  }, []);
+
+  const addSocialAccount = useCallback((providerId: SocialAccount['provider']) => {
+    setFormSocialAccounts((prev) => {
+      if (prev.some(a => a.provider === providerId)) return prev;
+      const provider = SOCIAL_PROVIDERS.find(p => p.id === providerId);
+      return [...prev, { provider: providerId, username: '', url: provider?.urlPrefix || '' }];
+    });
+  }, []);
+
+  const removeSocialAccount = useCallback((providerId: string) => {
+    setFormSocialAccounts((prev) => prev.filter(a => a.provider !== providerId));
+  }, []);
+
+  const updateSocialUsername = useCallback((providerId: string, username: string) => {
+    setFormSocialAccounts((prev) =>
+      prev.map(a => {
+        if (a.provider !== providerId) return a;
+        const provider = SOCIAL_PROVIDERS.find(p => p.id === providerId);
+        return { ...a, username, url: provider?.urlPrefix ? `${provider.urlPrefix}${username}` : username };
+      })
+    );
   }, []);
 
   const addScheduleSlot = useCallback(() => {
@@ -315,6 +341,139 @@ export default function ProfilePage() {
             </div>
           </div>
         </GlassCard>
+      </motion.div>
+
+      {/* Practice Stats & Friend Count */}
+      <motion.div variants={item}>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <Card padding="md">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-foreground">{user.practiceStreak?.currentStreak || 0}日</div>
+              <div className="text-xs text-text-muted mt-1">🔥 ストリーク</div>
+            </div>
+          </Card>
+          <Card padding="md">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-foreground">{Math.floor((user.practiceStreak?.totalMinutes || 0) / 60)}h</div>
+              <div className="text-xs text-text-muted mt-1">累計練習</div>
+            </div>
+          </Card>
+          <Card padding="md">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-foreground">{(user.badges || []).length}</div>
+              <div className="text-xs text-text-muted mt-1">バッジ</div>
+            </div>
+          </Card>
+          <Card padding="md">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-foreground">{(user.friends || []).length}</div>
+              <div className="text-xs text-text-muted mt-1">フレンド</div>
+            </div>
+          </Card>
+        </div>
+      </motion.div>
+
+      {/* Badges Collection */}
+      <motion.div variants={item}>
+        <Card padding="lg">
+          <h2 className="text-lg font-semibold text-foreground mb-4">獲得バッジ</h2>
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+            {BADGES.map(badge => {
+              const earned = (user.badges || []).includes(badge.id);
+              return (
+                <div
+                  key={badge.id}
+                  className={`text-center p-3 rounded-xl border ${
+                    earned ? 'border-primary/50 bg-surface-light' : 'border-border-light opacity-30'
+                  }`}
+                >
+                  <div className="text-2xl mb-1">{badge.icon}</div>
+                  <div className="text-xs font-medium">{badge.name}</div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      </motion.div>
+
+      {/* SNS Links */}
+      <motion.div variants={item}>
+        <Card padding="lg">
+          <h2 className="text-lg font-semibold text-foreground mb-4">SNS連携</h2>
+          {isEditing ? (
+            <div className="space-y-4">
+              <div className="flex flex-wrap gap-2 mb-3">
+                {SOCIAL_PROVIDERS.map(provider => {
+                  const exists = formSocialAccounts.some(a => a.provider === provider.id);
+                  return (
+                    <button
+                      key={provider.id}
+                      type="button"
+                      onClick={() => exists ? removeSocialAccount(provider.id) : addSocialAccount(provider.id as SocialAccount['provider'])}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-sm transition-all duration-200 ${
+                        exists
+                          ? 'border-primary/50 bg-primary/10 text-primary-light'
+                          : 'border-border-light bg-surface-light/30 text-text-secondary hover:border-primary/30'
+                      }`}
+                    >
+                      <span>{provider.icon}</span>
+                      <span>{provider.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              {formSocialAccounts.map(account => {
+                const provider = SOCIAL_PROVIDERS.find(p => p.id === account.provider);
+                return (
+                  <div key={account.provider} className="flex items-center gap-3 rounded-xl bg-surface-light/30 px-4 py-2">
+                    <span className="text-lg">{provider?.icon}</span>
+                    <span className="text-sm text-foreground min-w-[80px]">{provider?.name}</span>
+                    <input
+                      type="text"
+                      value={account.username}
+                      onChange={(e) => updateSocialUsername(account.provider, e.target.value)}
+                      placeholder="ユーザー名"
+                      className="flex-1 rounded-lg bg-surface border border-border-light text-foreground text-sm px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeSocialAccount(account.provider)}
+                      className="text-text-muted hover:text-red-400 transition-colors p-1"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div>
+              {(user.socialAccounts || []).length > 0 ? (
+                <div className="flex flex-wrap gap-3">
+                  {user.socialAccounts.map(account => {
+                    const provider = SOCIAL_PROVIDERS.find(p => p.id === account.provider);
+                    return (
+                      <a
+                        key={account.provider}
+                        href={account.url || '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-light/30 border border-border-light hover:border-primary/30 transition-all"
+                      >
+                        <span className="text-lg">{provider?.icon}</span>
+                        <span className="text-sm text-foreground">@{account.username}</span>
+                      </a>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-sm text-text-muted">SNSアカウントが登録されていません</p>
+              )}
+            </div>
+          )}
+        </Card>
       </motion.div>
 
       {/* Instruments */}

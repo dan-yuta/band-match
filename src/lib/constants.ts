@@ -95,6 +95,35 @@ export const COPY_SONGS: CopySong[] = [
   { id: 'song-20', title: '残酷な天使のテーゼ', artist: '高橋洋子', genre: 'アニソン' },
 ];
 
+export const BADGES = [
+  { id: 'streak-3', name: '3日連続', description: '3日連続で練習達成', icon: '🔥' },
+  { id: 'streak-7', name: '7日連続', description: '1週間連続で練習達成', icon: '🔥🔥' },
+  { id: 'streak-30', name: '30日連続', description: '1ヶ月連続で練習達成', icon: '🔥🔥🔥' },
+  { id: 'first-song', name: '初めての1曲', description: '1曲を「演奏可能」にした', icon: '🎸' },
+  { id: 'first-band', name: '初コピバン結成', description: 'コピバンに参加した', icon: '🎤' },
+  { id: 'setlist-complete', name: 'セットリスト完成', description: 'バンドの全曲が演奏可能に', icon: '🎵' },
+  { id: 'first-live', name: '初ライブ', description: 'イベントに出演した', icon: '🎪' },
+  { id: 'practice-100h', name: '100時間練習', description: '累計練習100時間達成', icon: '⏱' },
+  { id: 'practice-10h', name: '10時間練習', description: '累計練習10時間達成', icon: '⏱' },
+  { id: 'practice-500h', name: '500時間練習', description: '累計練習500時間達成', icon: '🏆' },
+  { id: 'encourager', name: '応援者', description: 'フレンドを10回応援した', icon: '👏' },
+  { id: 'rank-1', name: 'ランキング1位', description: '週間ランキングで1位を獲得', icon: '👑' },
+];
+
+export const SOCIAL_PROVIDERS = [
+  { id: 'x', name: 'X (Twitter)', icon: '𝕏', urlPrefix: 'https://x.com/' },
+  { id: 'instagram', name: 'Instagram', icon: '📷', urlPrefix: 'https://instagram.com/' },
+  { id: 'line', name: 'LINE', icon: '💬', urlPrefix: '' },
+  { id: 'youtube', name: 'YouTube', icon: '▶️', urlPrefix: 'https://youtube.com/@' },
+] as const;
+
+export const NOTIFICATION_TEMPLATES = {
+  practice_reminder: { title: '練習の時間です！', message: '今日の練習まだだよ！ストリーク継続中🔥' },
+  streak_warning: { title: 'ストリーク危機！', message: 'あと数時間でストリークが途切れます！' },
+  slacking: { title: '最近練習してない？', message: '3日間練習していません。5分だけでもやろう！' },
+  milestone: { title: 'おめでとう！', message: 'マイルストーンを達成しました！' },
+} as const;
+
 export const SUBSCRIPTION_PLANS = {
   free: {
     name: 'Free',
@@ -105,6 +134,10 @@ export const SUBSCRIPTION_PLANS = {
     canCreateEvents: false,
     analyticsAccess: false,
     trialDays: 0,
+    maxFriends: 5,
+    ranking: 'friends',
+    notifications: 'basic',
+    maxSocialAccounts: 1,
   },
   pro: {
     name: 'Pro',
@@ -115,6 +148,10 @@ export const SUBSCRIPTION_PLANS = {
     canCreateEvents: true,
     analyticsAccess: true,
     trialDays: 14,
+    maxFriends: -1,
+    ranking: 'all',
+    notifications: 'full',
+    maxSocialAccounts: -1,
   },
 } as const;
 

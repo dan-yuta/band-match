@@ -7,12 +7,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button, Input, GlassCard } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { validateEmail, validatePassword, validateName, validateNickname } from '@/lib/validators';
-import { INSTRUMENTS, SKILL_LEVELS, GENRES, PREFECTURES, DAYS_OF_WEEK, POPULAR_ARTISTS, COPY_SONGS } from '@/lib/constants';
-import type { UserInstrument, SkillLevel, DayOfWeek, Schedule } from '@/lib/types';
+import { INSTRUMENTS, SKILL_LEVELS, GENRES, PREFECTURES, DAYS_OF_WEEK, POPULAR_ARTISTS, COPY_SONGS, SOCIAL_PROVIDERS } from '@/lib/constants';
+import type { UserInstrument, SkillLevel, DayOfWeek, Schedule, SocialAccount } from '@/lib/types';
 
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 5;
 
-const STEP_LABELS = ['基本情報', '音楽プロフィール', 'コピバン設定', '場所・スケジュール'];
+const STEP_LABELS = ['基本情報', '音楽プロフィール', 'コピバン設定', '場所・スケジュール', 'SNS連携'];
 
 interface FormData {
   name: string;
@@ -28,6 +28,7 @@ interface FormData {
   prefecture: string;
   city: string;
   schedule: Schedule[];
+  socialAccounts: SocialAccount[];
 }
 
 export default function RegisterPage() {
@@ -52,6 +53,7 @@ export default function RegisterPage() {
     prefecture: '',
     city: '',
     schedule: [],
+    socialAccounts: [],
   });
 
   const updateField = <K extends keyof FormData>(key: K, value: FormData[K]) => {
@@ -113,6 +115,11 @@ export default function RegisterPage() {
     return Object.keys(newErrors).length === 0;
   };
 
+  const validateStep5 = (): boolean => {
+    // SNS is optional
+    return true;
+  };
+
   // --- Navigation ---
 
   const handleNext = () => {
@@ -120,6 +127,7 @@ export default function RegisterPage() {
     if (step === 1) valid = validateStep1();
     if (step === 2) valid = validateStep2();
     if (step === 3) valid = validateStep3();
+    if (step === 4) valid = validateStep4();
     if (valid) {
       setStep((s) => s + 1);
       setErrors({});
@@ -234,9 +242,36 @@ export default function RegisterPage() {
 
   // --- Submit ---
 
+  // --- Social Accounts ---
+
+  const toggleSocialProvider = (providerId: SocialAccount['provider']) => {
+    setFormData((prev) => {
+      const exists = prev.socialAccounts.some(a => a.provider === providerId);
+      if (exists) {
+        return { ...prev, socialAccounts: prev.socialAccounts.filter(a => a.provider !== providerId) };
+      }
+      const provider = SOCIAL_PROVIDERS.find(p => p.id === providerId);
+      return {
+        ...prev,
+        socialAccounts: [...prev.socialAccounts, { provider: providerId, username: '', url: provider?.urlPrefix || '' }],
+      };
+    });
+  };
+
+  const updateSocialUsername = (providerId: string, username: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      socialAccounts: prev.socialAccounts.map(a => {
+        if (a.provider !== providerId) return a;
+        const provider = SOCIAL_PROVIDERS.find(p => p.id === providerId);
+        return { ...a, username, url: provider?.urlPrefix ? `${provider.urlPrefix}${username}` : username };
+      }),
+    }));
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!validateStep4()) return;
+    if (!validateStep5()) return;
 
     setLoading(true);
     setErrors({});
@@ -255,6 +290,7 @@ export default function RegisterPage() {
         prefecture: formData.prefecture,
         city: formData.city,
         schedule: formData.schedule,
+        socialAccounts: formData.socialAccounts.filter(a => a.username.trim()),
       });
 
       if (result.success) {
@@ -660,7 +696,7 @@ export default function RegisterPage() {
                 </motion.div>
               )}
 
-              {/* --- Step 4: Location & Schedule --- */}
+              {/* --- Step 4: Location & Schedule --- (now step 4, not final) */}
               {step === 4 && (
                 <motion.div
                   key="step4"
@@ -738,6 +774,65 @@ export default function RegisterPage() {
                     <p className="mt-1.5 text-xs text-text-muted">
                       選択した曜日はデフォルトで18:00〜22:00に設定されます
                     </p>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* --- Step 5: SNS --- */}
+              {step === 5 && (
+                <motion.div
+                  key="step5"
+                  custom={direction}
+                  variants={slideVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.3, ease: 'easeInOut' }}
+                  className="space-y-5"
+                >
+                  <div>
+                    <label className="block text-sm font-medium text-text-secondary mb-3">
+                      SNS連携（任意）
+                    </label>
+                    <p className="text-xs text-text-muted mb-4">
+                      SNSアカウントを連携すると、プロフィールに表示されます。スキップしてもOKです。
+                    </p>
+                    <div className="space-y-3">
+                      {SOCIAL_PROVIDERS.map((provider) => {
+                        const account = formData.socialAccounts.find(a => a.provider === provider.id);
+                        const isConnected = !!account;
+                        return (
+                          <div key={provider.id} className="rounded-xl bg-surface-light/30 border border-border-light p-3">
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="flex items-center gap-2">
+                                <span className="text-lg">{provider.icon}</span>
+                                <span className="text-sm font-medium text-foreground">{provider.name}</span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => toggleSocialProvider(provider.id as SocialAccount['provider'])}
+                                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all duration-200 ${
+                                  isConnected
+                                    ? 'bg-red-500/10 text-red-400 border border-red-500/30'
+                                    : 'bg-primary/10 text-primary-light border border-primary/30'
+                                }`}
+                              >
+                                {isConnected ? '解除' : '連携する'}
+                              </button>
+                            </div>
+                            {isConnected && (
+                              <input
+                                type="text"
+                                value={account?.username || ''}
+                                onChange={(e) => updateSocialUsername(provider.id, e.target.value)}
+                                placeholder={provider.id === 'line' ? 'LINE ID' : 'ユーザー名'}
+                                className="w-full rounded-lg bg-surface border border-border-light text-foreground text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 mt-1"
+                              />
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 </motion.div>
               )}

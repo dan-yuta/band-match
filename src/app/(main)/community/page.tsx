@@ -2,12 +2,15 @@
 
 import { useState, useMemo, useCallback } from 'react';
 import { mockPosts, mockUsers } from '@/data';
-import { MILESTONE_TYPES } from '@/lib/constants';
+import { mockPracticeLogs } from '@/data/mockPractice';
+import { MILESTONE_TYPES, COPY_SONGS } from '@/lib/constants';
 import { storage } from '@/lib/storage';
 import { useAuth } from '@/lib/auth';
 import { GlassCard, Card, Badge, Button, Avatar, Input } from '@/components/ui';
 import { useToast } from '@/components/ui/Toast';
 import { Post, PostType, Comment } from '@/lib/types';
+
+type CommunityTab = 'all' | 'friends';
 
 const POST_TYPE_LABELS: Record<PostType, string> = {
   general: '一般',
@@ -40,6 +43,8 @@ export default function CommunityPage() {
   const [expandedComments, setExpandedComments] = useState<Record<string, boolean>>({});
   const [commentInputs, setCommentInputs] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
+  const [communityTab, setCommunityTab] = useState<CommunityTab>('all');
+  const [encouragedLogs, setEncouragedLogs] = useState<Set<string>>(new Set());
 
   const sortedPosts = useMemo(() => {
     return [...posts].sort(
@@ -161,7 +166,88 @@ export default function CommunityPage() {
         </p>
       </div>
 
-      {user && (
+      {/* Tabs */}
+      <div className="flex gap-2">
+        <button
+          onClick={() => setCommunityTab('all')}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            communityTab === 'all' ? 'bg-primary text-white' : 'bg-surface-light text-text-muted hover:bg-surface-lighter'
+          }`}
+        >
+          すべて
+        </button>
+        <button
+          onClick={() => setCommunityTab('friends')}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            communityTab === 'friends' ? 'bg-primary text-white' : 'bg-surface-light text-text-muted hover:bg-surface-lighter'
+          }`}
+        >
+          フレンド
+        </button>
+      </div>
+
+      {/* Friend Practice Feed */}
+      {communityTab === 'friends' && (
+        <div className="space-y-3">
+          {(() => {
+            const friendIds = user?.friends || [];
+            const friendLogs = mockPracticeLogs
+              .filter(l => friendIds.includes(l.userId))
+              .sort((a, b) => b.date.localeCompare(a.date));
+            if (friendLogs.length === 0) {
+              return (
+                <GlassCard className="text-center py-8">
+                  <p className="text-text-muted">フレンドの練習記録はまだありません</p>
+                </GlassCard>
+              );
+            }
+            return friendLogs.map(log => {
+              const friendUser = mockUsers.find(u => u.id === log.userId);
+              const song = COPY_SONGS.find(s => s.id === log.songId);
+              const isEncouraged = encouragedLogs.has(log.id);
+              return (
+                <GlassCard key={log.id}>
+                  <div className="flex items-start gap-3">
+                    <Avatar name={friendUser?.name || ''} size="md" online={friendUser?.isOnline} />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-medium text-sm text-foreground">
+                          {friendUser?.nickname || friendUser?.name}
+                        </span>
+                        <Badge variant="secondary" size="sm">練習ログ</Badge>
+                        <span className="text-xs text-text-muted ml-auto">{log.date}</span>
+                      </div>
+                      <p className="text-sm text-text-secondary mt-1">
+                        <span className="text-primary-light font-medium">{song?.title || '自由練習'}</span>
+                        {song?.artist && <span className="text-text-muted"> / {song.artist}</span>}
+                        を<span className="font-bold">{log.minutes}分</span>練習
+                      </p>
+                      {log.note && <p className="text-xs text-text-muted mt-1">{log.note}</p>}
+                      <div className="mt-2">
+                        <button
+                          onClick={() => {
+                            setEncouragedLogs(prev => new Set(prev).add(log.id));
+                          }}
+                          disabled={isEncouraged}
+                          className={`text-sm px-3 py-1 rounded-lg transition-colors ${
+                            isEncouraged
+                              ? 'bg-accent/20 text-accent cursor-default'
+                              : 'bg-surface-light text-text-muted hover:bg-accent/10 hover:text-accent'
+                          }`}
+                        >
+                          {isEncouraged ? 'ナイス！ 👏' : 'ナイス！ 👏'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </GlassCard>
+              );
+            });
+          })()}
+        </div>
+      )}
+
+      {communityTab === 'all' && user && (
         <GlassCard gradientBorder>
           <div className="space-y-4">
             <div className="flex flex-wrap gap-2">
@@ -248,7 +334,7 @@ export default function CommunityPage() {
         </GlassCard>
       )}
 
-      <div className="space-y-4">
+      {communityTab === 'all' && <div className="space-y-4">
         {sortedPosts.map((post) => {
           const postUser = getUserById(post.userId);
           if (!postUser) return null;
@@ -388,9 +474,9 @@ export default function CommunityPage() {
             </GlassCard>
           );
         })}
-      </div>
+      </div>}
 
-      {sortedPosts.length === 0 && (
+      {communityTab === 'all' && sortedPosts.length === 0 && (
         <GlassCard className="text-center py-12">
           <p className="text-text-muted text-lg mb-2">まだ投稿がありません</p>
           <p className="text-text-muted text-sm">最初の投稿をしてみましょう</p>
