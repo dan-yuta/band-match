@@ -12,10 +12,10 @@ export default function AdminDashboard() {
   const users: User[] = useMemo(() => storage.get<User[]>('users') || mockUsers, []);
 
   const stats = useMemo(() => {
-    const subBreakdown = { free: 0, basic: 0, premium: 0 };
+    const subBreakdown = { free: 0, pro: 0 };
     users.forEach((u) => { subBreakdown[u.subscription]++; });
 
-    const revenue = subBreakdown.basic * SUBSCRIPTION_PLANS.basic.price + subBreakdown.premium * SUBSCRIPTION_PLANS.premium.price;
+    const revenue = subBreakdown.pro * SUBSCRIPTION_PLANS.pro.price;
     const activeUsers = users.filter((u) => {
       const last = new Date(u.lastLoginAt);
       const week = new Date();
@@ -96,11 +96,11 @@ export default function AdminDashboard() {
         <GlassCard>
           <h3 className="font-bold mb-4">プラン別内訳</h3>
           <div className="space-y-4">
-            {(['free', 'basic', 'premium'] as const).map((plan) => {
+            {(['free', 'pro'] as const).map((plan) => {
               const count = stats.subBreakdown[plan];
               const pct = Math.round((count / stats.totalUsers) * 100);
-              const colors = { free: 'bg-text-muted', basic: 'bg-primary', premium: 'bg-accent' };
-              const labels = { free: 'Free', basic: 'Basic (¥980)', premium: 'Premium (¥1,980)' };
+              const colors = { free: 'bg-text-muted', pro: 'bg-primary' };
+              const labels = { free: 'Free', pro: 'Pro (¥500)' };
               return (
                 <div key={plan}>
                   <div className="flex justify-between text-sm mb-1">
@@ -122,7 +122,7 @@ export default function AdminDashboard() {
           <div className="mt-4 pt-4 border-t border-border-light text-sm">
             <div className="flex justify-between">
               <span className="text-text-muted">有料ユーザー率</span>
-              <span className="font-medium">{Math.round(((stats.subBreakdown.basic + stats.subBreakdown.premium) / stats.totalUsers) * 100)}%</span>
+              <span className="font-medium">{Math.round((stats.subBreakdown.pro / stats.totalUsers) * 100)}%</span>
             </div>
           </div>
         </GlassCard>
@@ -147,7 +147,7 @@ export default function AdminDashboard() {
                   <td className="py-2.5">{u.name}</td>
                   <td className="py-2.5 text-text-muted">{u.email}</td>
                   <td className="py-2.5">
-                    <Badge variant={u.subscription === 'premium' ? 'accent' : u.subscription === 'basic' ? 'primary' : 'default'} size="sm">
+                    <Badge variant={u.subscription === 'pro' ? 'primary' : 'default'} size="sm">
                       {u.subscription}
                     </Badge>
                   </td>

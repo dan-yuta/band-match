@@ -141,8 +141,8 @@ export default function MatchingPage() {
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-bold">{match.user.name}</h3>
                       <span className="text-sm text-text-muted">@{match.user.nickname}</span>
-                      {match.user.subscription === 'premium' && (
-                        <Badge variant="accent" size="sm">Premium</Badge>
+                      {match.user.subscription === 'pro' && (
+                        <Badge variant="primary" size="sm">Pro</Badge>
                       )}
                     </div>
                     <p className="text-sm text-text-muted mt-1">{match.user.prefecture} {match.user.city}</p>

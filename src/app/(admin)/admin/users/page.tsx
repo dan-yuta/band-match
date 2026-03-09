@@ -63,8 +63,7 @@ export default function AdminUsersPage() {
         >
           <option value="">全プラン</option>
           <option value="free">Free</option>
-          <option value="basic">Basic</option>
-          <option value="premium">Premium</option>
+          <option value="pro">Pro</option>
         </select>
       </div>
 
@@ -107,7 +106,7 @@ export default function AdminUsersPage() {
                   </td>
                   <td className="p-4">
                     <Badge
-                      variant={user.subscription === 'premium' ? 'accent' : user.subscription === 'basic' ? 'primary' : 'default'}
+                      variant={user.subscription === 'pro' ? 'primary' : 'default'}
                       size="sm"
                     >
                       {user.subscription}
@@ -181,7 +180,7 @@ export default function AdminUsersPage() {
             <div>
               <span className="text-sm text-text-muted block mb-2">プラン変更:</span>
               <div className="flex gap-2">
-                {(['free', 'basic', 'premium'] as const).map((plan) => (
+                {(['free', 'pro'] as const).map((plan) => (
                   <Button
                     key={plan}
                     variant={selectedUser.subscription === plan ? 'primary' : 'secondary'}

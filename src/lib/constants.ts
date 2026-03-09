@@ -56,24 +56,17 @@ export const SUBSCRIPTION_PLANS = {
     maxMessages: 10,
     canCreateEvents: false,
     analyticsAccess: false,
+    trialDays: 0,
   },
-  basic: {
-    name: 'Basic',
-    price: 980,
-    features: ['マッチング無制限', 'バンド作成（3つまで）', 'メッセージ無制限', 'イベント作成', '練習ログ機能', 'マイルストーン機能'],
-    maxBands: 3,
-    maxMessages: -1,
-    canCreateEvents: true,
-    analyticsAccess: false,
-  },
-  premium: {
-    name: 'Premium',
-    price: 1980,
-    features: ['全Basic機能', 'バンド作成無制限', '優先マッチング', 'アナリティクス', 'プレミアムバッジ', 'イベント優先掲載'],
+  pro: {
+    name: 'Pro',
+    price: 500,
+    features: ['マッチング無制限', 'バンド作成無制限', 'メッセージ無制限', 'イベント作成', 'アナリティクス', '優先サポート'],
     maxBands: -1,
     maxMessages: -1,
     canCreateEvents: true,
     analyticsAccess: true,
+    trialDays: 14,
   },
 } as const;
 

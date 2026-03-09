@@ -23,9 +23,8 @@ export default function AdminSubscriptionsPage() {
 
   const stats = useMemo(() => {
     const free = users.filter((u) => u.subscription === 'free').length;
-    const basic = users.filter((u) => u.subscription === 'basic').length;
-    const premium = users.filter((u) => u.subscription === 'premium').length;
-    return { free, basic, premium, total: users.length };
+    const pro = users.filter((u) => u.subscription === 'pro').length;
+    return { free, pro, total: users.length };
   }, [users]);
 
   const changePlan = (userId: string, plan: SubscriptionPlan) => {
@@ -49,21 +48,16 @@ export default function AdminSubscriptionsPage() {
       <h1 className="text-2xl font-bold">サブスクリプション管理</h1>
 
       {/* Plan Overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <GlassCard className="text-center">
           <div className="text-3xl font-bold text-text-muted">{stats.free}</div>
           <div className="text-sm text-text-muted mt-1">Free</div>
           <div className="text-xs text-text-muted">¥0/月</div>
         </GlassCard>
         <GlassCard className="text-center border-primary/30">
-          <div className="text-3xl font-bold text-primary-light">{stats.basic}</div>
-          <div className="text-sm text-text-muted mt-1">Basic</div>
-          <div className="text-xs text-primary-light">¥{(stats.basic * 980).toLocaleString()}/月</div>
-        </GlassCard>
-        <GlassCard className="text-center border-accent/30">
-          <div className="text-3xl font-bold text-accent">{stats.premium}</div>
-          <div className="text-sm text-text-muted mt-1">Premium</div>
-          <div className="text-xs text-accent">¥{(stats.premium * 1980).toLocaleString()}/月</div>
+          <div className="text-3xl font-bold text-primary-light">{stats.pro}</div>
+          <div className="text-sm text-text-muted mt-1">Pro</div>
+          <div className="text-xs text-primary-light">¥{(stats.pro * 500).toLocaleString()}/月</div>
         </GlassCard>
       </div>
 
@@ -73,25 +67,13 @@ export default function AdminSubscriptionsPage() {
         <div className="flex items-center gap-4">
           <div className="flex-1">
             <div className="flex justify-between text-sm mb-1">
-              <span>Free → Basic</span>
-              <span className="text-text-muted">{Math.round((stats.basic / Math.max(stats.total, 1)) * 100)}%</span>
+              <span>Free → Pro</span>
+              <span className="text-text-muted">{Math.round((stats.pro / Math.max(stats.total, 1)) * 100)}%</span>
             </div>
             <div className="h-3 bg-surface-lighter rounded-full overflow-hidden">
               <div
                 className="h-full bg-primary rounded-full transition-all duration-500"
-                style={{ width: `${(stats.basic / Math.max(stats.total, 1)) * 100}%` }}
-              />
-            </div>
-          </div>
-          <div className="flex-1">
-            <div className="flex justify-between text-sm mb-1">
-              <span>Basic → Premium</span>
-              <span className="text-text-muted">{stats.basic > 0 ? Math.round((stats.premium / (stats.basic + stats.premium)) * 100) : 0}%</span>
-            </div>
-            <div className="h-3 bg-surface-lighter rounded-full overflow-hidden">
-              <div
-                className="h-full bg-accent rounded-full transition-all duration-500"
-                style={{ width: `${stats.basic > 0 ? (stats.premium / (stats.basic + stats.premium)) * 100 : 0}%` }}
+                style={{ width: `${(stats.pro / Math.max(stats.total, 1)) * 100}%` }}
               />
             </div>
           </div>
@@ -108,8 +90,7 @@ export default function AdminSubscriptionsPage() {
             className="rounded-lg bg-surface-light border border-border-light text-xs px-3 py-1.5 text-foreground"
           >
             <option value="">全プラン</option>
-            <option value="basic">Basic</option>
-            <option value="premium">Premium</option>
+            <option value="pro">Pro</option>
           </select>
         </div>
         <div className="overflow-x-auto">
@@ -135,18 +116,13 @@ export default function AdminSubscriptionsPage() {
                     </div>
                   </td>
                   <td className="py-2.5">
-                    <Badge variant={user.subscription === 'premium' ? 'accent' : 'primary'} size="sm">
+                    <Badge variant={user.subscription === 'pro' ? 'primary' : 'default'} size="sm">
                       {user.subscription}
                     </Badge>
                   </td>
                   <td className="py-2.5 text-right">¥{SUBSCRIPTION_PLANS[user.subscription].price.toLocaleString()}</td>
                   <td className="py-2.5">
                     <div className="flex gap-1">
-                      {user.subscription !== 'premium' && (
-                        <Button variant="ghost" size="sm" onClick={() => changePlan(user.id, 'premium')}>
-                          Premium化
-                        </Button>
-                      )}
                       <Button variant="ghost" size="sm" onClick={() => changePlan(user.id, 'free')}>
                         解約
                       </Button>
@@ -178,7 +154,7 @@ export default function AdminSubscriptionsPage() {
                 <tr key={record.id} className="border-b border-border-light/50">
                   <td className="py-2.5">{record.user.name}</td>
                   <td className="py-2.5">
-                    <Badge variant={record.user.subscription === 'premium' ? 'accent' : 'primary'} size="sm">
+                    <Badge variant={record.user.subscription === 'pro' ? 'primary' : 'default'} size="sm">
                       {record.user.subscription}
                     </Badge>
                   </td>

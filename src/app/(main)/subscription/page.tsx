@@ -7,27 +7,24 @@ import { GlassCard, Card, Badge, Button, Modal, Input } from '@/components/ui';
 import { useToast } from '@/components/ui/Toast';
 import { SubscriptionPlan } from '@/lib/types';
 
-const PLAN_ORDER: SubscriptionPlan[] = ['free', 'basic', 'premium'];
+const PLAN_ORDER: SubscriptionPlan[] = ['free', 'pro'];
 
 const PLAN_COLORS: Record<SubscriptionPlan, { gradient: string; badge: 'default' | 'primary' | 'secondary' | 'accent' | 'success' | 'warning' }> = {
   free: { gradient: 'from-gray-500 to-gray-600', badge: 'default' },
-  basic: { gradient: 'from-primary to-secondary', badge: 'primary' },
-  premium: { gradient: 'from-amber-500 to-orange-500', badge: 'warning' },
+  pro: { gradient: 'from-primary to-secondary', badge: 'primary' },
 };
 
 const FEATURE_COMPARISON = [
-  { label: 'プロフィール作成', free: true, basic: true, premium: true },
-  { label: 'マッチング検索', free: '1日3回', basic: '無制限', premium: '無制限 + 優先' },
-  { label: 'コミュニティ閲覧', free: true, basic: true, premium: true },
-  { label: 'イベント閲覧', free: true, basic: true, premium: true },
-  { label: 'バンド作成', free: '1つ', basic: '3つまで', premium: '無制限' },
-  { label: 'メッセージ', free: '10件/月', basic: '無制限', premium: '無制限' },
-  { label: 'イベント作成', free: false, basic: true, premium: true },
-  { label: '練習ログ機能', free: false, basic: true, premium: true },
-  { label: 'マイルストーン機能', free: false, basic: true, premium: true },
-  { label: 'アナリティクス', free: false, basic: false, premium: true },
-  { label: 'プレミアムバッジ', free: false, basic: false, premium: true },
-  { label: 'イベント優先掲載', free: false, basic: false, premium: true },
+  { label: 'プロフィール作成', free: true, pro: true },
+  { label: 'マッチング検索', free: '1日3回', pro: '無制限' },
+  { label: 'コミュニティ閲覧', free: true, pro: true },
+  { label: 'イベント閲覧', free: true, pro: true },
+  { label: 'バンド作成', free: '1つ', pro: '無制限' },
+  { label: 'メッセージ', free: '10件/月', pro: '無制限' },
+  { label: 'イベント作成', free: false, pro: true },
+  { label: 'アナリティクス', free: false, pro: true },
+  { label: '優先サポート', free: false, pro: true },
+  { label: '2週間無料トライアル', free: false, pro: true },
 ];
 
 export default function SubscriptionPage() {
@@ -116,7 +113,7 @@ export default function SubscriptionPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
         {PLAN_ORDER.map((planKey) => {
           const plan = SUBSCRIPTION_PLANS[planKey];
           const isCurrent = currentPlan === planKey;
@@ -127,8 +124,8 @@ export default function SubscriptionPage() {
               key={planKey}
               className={`relative flex flex-col ${
                 isCurrent ? 'ring-2 ring-primary/50' : ''
-              } ${planKey === 'basic' ? 'md:-mt-4 md:mb-[-16px]' : ''}`}
-              gradientBorder={planKey === 'basic'}
+              } ${planKey === 'pro' ? 'md:-mt-4 md:mb-[-16px]' : ''}`}
+              gradientBorder={planKey === 'pro'}
             >
               {isCurrent && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
@@ -138,10 +135,10 @@ export default function SubscriptionPage() {
                 </div>
               )}
 
-              {planKey === 'basic' && !isCurrent && (
+              {planKey === 'pro' && !isCurrent && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                   <Badge variant="primary" size="sm">
-                    おすすめ
+                    おすすめ / 2週間無料
                   </Badge>
                 </div>
               )}
@@ -166,7 +163,7 @@ export default function SubscriptionPage() {
                 {plan.features.map((feature) => (
                   <div key={feature} className="flex items-start gap-2">
                     <svg className={`w-4 h-4 mt-0.5 shrink-0 ${
-                      planKey === 'premium' ? 'text-amber-400' : planKey === 'basic' ? 'text-primary-light' : 'text-text-muted'
+                      planKey === 'pro' ? 'text-primary-light' : 'text-text-muted'
                     }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
@@ -177,7 +174,7 @@ export default function SubscriptionPage() {
 
               <Button
                 fullWidth
-                variant={isCurrent ? 'ghost' : planKey === 'basic' ? 'primary' : 'secondary'}
+                variant={isCurrent ? 'ghost' : planKey === 'pro' ? 'primary' : 'secondary'}
                 disabled={isCurrent}
                 onClick={() => handleSelectPlan(planKey)}
               >

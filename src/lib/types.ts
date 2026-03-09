@@ -1,6 +1,6 @@
 export type SkillLevel = 'beginner' | 'intermediate' | 'advanced' | 'expert';
 export type DayOfWeek = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
-export type SubscriptionPlan = 'free' | 'basic' | 'premium';
+export type SubscriptionPlan = 'free' | 'pro';
 export type PostType = 'general' | 'practice_log' | 'milestone' | 'question';
 
 export interface UserInstrument {
