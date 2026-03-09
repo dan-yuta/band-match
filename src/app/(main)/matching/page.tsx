@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/lib/auth';
 import { findMatches } from '@/lib/matching';
 import { storage } from '@/lib/storage';
-import { INSTRUMENTS, GENRES, PREFECTURES, SKILL_LEVELS } from '@/lib/constants';
+import { INSTRUMENTS, GENRES, PREFECTURES, SKILL_LEVELS, COPY_SONGS, POPULAR_ARTISTS } from '@/lib/constants';
 import { User, MatchResult } from '@/lib/types';
 import { GlassCard, Card, Badge, Button, Avatar, Input } from '@/components/ui';
 import { mockUsers } from '@/data';
@@ -57,13 +57,28 @@ export default function MatchingPage() {
   const getInstrumentLabel = (id: string) => INSTRUMENTS.find((i) => i.id === id)?.label || id;
   const getInstrumentIcon = (id: string) => INSTRUMENTS.find((i) => i.id === id)?.icon || '🎵';
   const getSkillLabel = (id: string) => SKILL_LEVELS.find((s) => s.id === id)?.label || id;
+  const getSongTitle = (songId: string) => COPY_SONGS.find((s) => s.id === songId)?.title || songId;
+  const getSongArtist = (songId: string) => COPY_SONGS.find((s) => s.id === songId)?.artist || '';
+
+  const getCommonSongs = (matchUser: User) => {
+    if (!user) return [];
+    const userSongs = new Set([...user.wantToPlaySongs, ...user.canPlaySongs]);
+    const matchSongs = [...matchUser.wantToPlaySongs, ...matchUser.canPlaySongs];
+    return matchSongs.filter((s) => userSongs.has(s));
+  };
+
+  const getCommonArtists = (matchUser: User) => {
+    if (!user) return [];
+    const userArtists = new Set(user.favoriteArtists);
+    return matchUser.favoriteArtists.filter((a) => userArtists.has(a));
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">マッチング</h1>
-          <p className="text-text-muted text-sm mt-1">あなたにぴったりのメンバーを見つけよう</p>
+          <p className="text-text-muted text-sm mt-1">同じ曲をやりたいコピバン仲間を見つけよう</p>
         </div>
         <Button variant="secondary" size="sm" onClick={() => setShowFilters(!showFilters)}>
           {showFilters ? 'フィルターを閉じる' : 'フィルター'}
@@ -159,6 +174,30 @@ export default function MatchingPage() {
                         <Badge key={g} variant="secondary" size="sm">{g}</Badge>
                       ))}
                     </div>
+                    {getCommonSongs(match.user).length > 0 && (
+                      <div className="mt-2">
+                        <p className="text-xs text-text-muted mb-1">共通の曲:</p>
+                        <div className="flex flex-wrap gap-1">
+                          {getCommonSongs(match.user).map((songId) => (
+                            <Badge key={songId} variant="accent" size="sm">
+                              {getSongTitle(songId)}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {getCommonArtists(match.user).length > 0 && (
+                      <div className="mt-1.5">
+                        <p className="text-xs text-text-muted mb-1">共通のアーティスト:</p>
+                        <div className="flex flex-wrap gap-1">
+                          {getCommonArtists(match.user).map((artist) => (
+                            <Badge key={artist} variant="warning" size="sm">
+                              {artist}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -173,6 +212,7 @@ export default function MatchingPage() {
                     <ScoreBar label="ジャンル" value={match.breakdown.genre} max={30} color="bg-secondary" />
                     <ScoreBar label="スキル" value={match.breakdown.skill} max={15} color="bg-amber-500" />
                     <ScoreBar label="スケジュール" value={match.breakdown.schedule} max={35} color="bg-accent" />
+                    <ScoreBar label="共通の曲" value={match.breakdown.songs} max={30} color="bg-pink-500" />
                   </div>
                 </div>
               </div>

@@ -51,10 +51,10 @@ export default function EventsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold bg-gradient-to-r from-primary-light to-secondary bg-clip-text text-transparent">
-          イベント一覧
+          コピバンイベント
         </h1>
         <p className="text-text-secondary text-sm mt-1">
-          {filteredEvents.length}件のイベントが見つかりました
+          {filteredEvents.length}件のコピバンイベントが見つかりました
         </p>
       </div>
 
@@ -173,7 +173,7 @@ export default function EventsPage() {
 
       {filteredEvents.length === 0 && (
         <GlassCard className="text-center py-12">
-          <p className="text-text-muted text-lg mb-2">該当するイベントが見つかりませんでした</p>
+          <p className="text-text-muted text-lg mb-2">該当するコピバンイベントが見つかりませんでした</p>
           <p className="text-text-muted text-sm">フィルターを変更してお試しください</p>
         </GlassCard>
       )}

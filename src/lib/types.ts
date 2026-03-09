@@ -1,7 +1,19 @@
 export type SkillLevel = 'beginner' | 'intermediate' | 'advanced' | 'expert';
 export type DayOfWeek = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
 export type SubscriptionPlan = 'free' | 'pro';
-export type PostType = 'general' | 'practice_log' | 'milestone' | 'question';
+export type PostType = 'general' | 'practice_log' | 'milestone' | 'question' | 'cover_video';
+
+export interface CopySong {
+  id: string;
+  title: string;
+  artist: string;
+  genre: string;
+}
+
+export interface SetlistItem {
+  songId: string;
+  status: 'want' | 'practicing' | 'ready' | 'performed';
+}
 
 export interface UserInstrument {
   instrument: string;
@@ -29,6 +41,9 @@ export interface User {
   genres: string[];
   schedule: Schedule[];
   influences: string[];
+  wantToPlaySongs: string[];   // CopySong IDs
+  canPlaySongs: string[];       // CopySong IDs
+  favoriteArtists: string[];    // コピーしたいアーティスト
   isAdmin: boolean;
   subscription: SubscriptionPlan;
   createdAt: string;
@@ -48,6 +63,8 @@ export interface Band {
   instrumentSlots: InstrumentSlot[];
   imageUrl: string;
   isRecruiting: boolean;
+  setlist: SetlistItem[];
+  targetArtists: string[];
   createdAt: string;
   createdBy: string;
 }
@@ -114,6 +131,7 @@ export interface MatchResult {
     genre: number;
     skill: number;
     schedule: number;
+    songs: number;
   };
 }
 

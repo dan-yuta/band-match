@@ -3,22 +3,24 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { mockBands, mockUsers } from '@/data';
-import { INSTRUMENTS, GENRES, PREFECTURES } from '@/lib/constants';
+import { INSTRUMENTS, GENRES, PREFECTURES, POPULAR_ARTISTS } from '@/lib/constants';
 import { GlassCard, Badge, Button, Avatar } from '@/components/ui';
 
 export default function BandsPage() {
   const [genreFilter, setGenreFilter] = useState('');
   const [prefectureFilter, setPrefectureFilter] = useState('');
+  const [artistFilter, setArtistFilter] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredBands = useMemo(() => {
     return mockBands.filter((band) => {
       if (genreFilter && !band.genre.includes(genreFilter)) return false;
       if (prefectureFilter && band.prefecture !== prefectureFilter) return false;
+      if (artistFilter && !(band.targetArtists || []).includes(artistFilter)) return false;
       if (searchQuery && !band.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
       return true;
     });
-  }, [genreFilter, prefectureFilter, searchQuery]);
+  }, [genreFilter, prefectureFilter, artistFilter, searchQuery]);
 
   const getInstrumentLabel = (instrumentId: string) => {
     return INSTRUMENTS.find((i) => i.id === instrumentId)?.label || instrumentId;
@@ -42,15 +44,20 @@ export default function BandsPage() {
     return GENRES.filter((g) => genreSet.has(g));
   }, []);
 
+  const uniqueArtists = useMemo(() => {
+    const artistSet = new Set(mockBands.flatMap((b) => b.targetArtists || []));
+    return POPULAR_ARTISTS.filter((a) => artistSet.has(a));
+  }, []);
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold bg-gradient-to-r from-primary-light to-secondary bg-clip-text text-transparent">
-            バンド一覧
+            コピバン一覧
           </h1>
           <p className="text-text-secondary text-sm mt-1">
-            {filteredBands.length}件のバンドが見つかりました
+            {filteredBands.length}件のコピバンが見つかりました
           </p>
         </div>
         <Link href="/bands/create">
@@ -94,13 +101,24 @@ export default function BandsPage() {
               <option key={pref} value={pref}>{pref}</option>
             ))}
           </select>
-          {(genreFilter || prefectureFilter || searchQuery) && (
+          <select
+            value={artistFilter}
+            onChange={(e) => setArtistFilter(e.target.value)}
+            className="rounded-xl bg-surface-light/50 border border-border-light text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 px-4 py-2.5 text-sm"
+          >
+            <option value="">全アーティスト</option>
+            {uniqueArtists.map((artist) => (
+              <option key={artist} value={artist}>{artist}</option>
+            ))}
+          </select>
+          {(genreFilter || prefectureFilter || artistFilter || searchQuery) && (
             <Button
               variant="ghost"
               size="sm"
               onClick={() => {
                 setGenreFilter('');
                 setPrefectureFilter('');
+                setArtistFilter('');
                 setSearchQuery('');
               }}
             >
@@ -137,6 +155,14 @@ export default function BandsPage() {
                   </div>
 
                   <p className="text-text-secondary text-sm line-clamp-2">{band.description}</p>
+
+                  {(band.targetArtists || []).length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                      {band.targetArtists.map((artist) => (
+                        <Badge key={artist} variant="accent" size="sm">{artist}</Badge>
+                      ))}
+                    </div>
+                  )}
 
                   <div className="flex flex-wrap gap-1.5">
                     {band.genre.map((g) => (

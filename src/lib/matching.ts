@@ -6,31 +6,32 @@ export function calculateMatchScore(currentUser: User, targetUser: User): MatchR
   let genre = 0;
   let skill = 0;
   let schedule = 0;
+  let songs = 0;
 
-  // Area score (max 50)
+  // Area score (max 40)
   if (currentUser.prefecture === targetUser.prefecture) {
-    area = 35;
+    area = 25;
     if (currentUser.city === targetUser.city) {
-      area = 50;
+      area = 40;
     }
   }
 
-  // Instrument score (max 25) - complementary instruments score higher
+  // Instrument score (max 20) - complementary instruments score higher
   const currentInstruments = currentUser.instruments.map((i) => i.instrument);
   const targetInstruments = targetUser.instruments.map((i) => i.instrument);
   const hasOverlap = currentInstruments.some((i) => targetInstruments.includes(i));
   const hasDifferent = currentInstruments.some((i) => !targetInstruments.includes(i));
   if (hasDifferent && !hasOverlap) {
-    instrument = 25; // Complementary - best for band formation
+    instrument = 20; // Complementary - best for band formation
   } else if (hasDifferent && hasOverlap) {
-    instrument = 15;
+    instrument = 12;
   } else {
-    instrument = 5; // Same instruments
+    instrument = 4; // Same instruments
   }
 
-  // Genre score (max 30)
+  // Genre score (max 20)
   const commonGenres = currentUser.genres.filter((g) => targetUser.genres.includes(g));
-  genre = Math.min(30, (commonGenres.length / Math.max(currentUser.genres.length, 1)) * 30);
+  genre = Math.min(20, (commonGenres.length / Math.max(currentUser.genres.length, 1)) * 20);
 
   // Skill score (max 15) - similar skill levels match better
   const skillMap = { beginner: 1, intermediate: 2, advanced: 3, expert: 4 };
@@ -41,12 +42,12 @@ export function calculateMatchScore(currentUser: User, targetUser: User): MatchR
     skill = Math.max(0, 15 - diff * 5);
   }
 
-  // Schedule score (max 35)
+  // Schedule score (max 30)
   const currentDays = currentUser.schedule.map((s) => s.day);
   const targetDays = targetUser.schedule.map((s) => s.day);
   const commonDays = currentDays.filter((d) => targetDays.includes(d));
   if (commonDays.length > 0) {
-    schedule = Math.min(35, (commonDays.length / Math.max(currentDays.length, 1)) * 35);
+    schedule = Math.min(30, (commonDays.length / Math.max(currentDays.length, 1)) * 30);
     // Bonus for overlapping time ranges
     commonDays.forEach((day) => {
       const cs = currentUser.schedule.find((s) => s.day === day);
@@ -57,13 +58,28 @@ export function calculateMatchScore(currentUser: User, targetUser: User): MatchR
         const tStart = parseInt(ts.startTime.replace(':', ''));
         const tEnd = parseInt(ts.endTime.replace(':', ''));
         if (cStart < tEnd && tStart < cEnd) {
-          schedule = Math.min(35, schedule + 5);
+          schedule = Math.min(30, schedule + 5);
         }
       }
     });
   }
 
-  const total = Math.round(area + instrument + genre + skill + schedule);
+  // Song score (max 35) - shared song interests
+  const allCurrentSongs = [...(currentUser.wantToPlaySongs || []), ...(currentUser.canPlaySongs || [])];
+  const allTargetSongs = [...(targetUser.wantToPlaySongs || []), ...(targetUser.canPlaySongs || [])];
+  const commonSongs = allCurrentSongs.filter(s => allTargetSongs.includes(s));
+  if (commonSongs.length > 0) {
+    songs = Math.min(35, commonSongs.length * 7);
+  }
+  // Bonus for same favorite artists
+  const commonArtists = (currentUser.favoriteArtists || []).filter(
+    a => (targetUser.favoriteArtists || []).includes(a)
+  );
+  if (commonArtists.length > 0) {
+    songs = Math.min(35, songs + commonArtists.length * 5);
+  }
+
+  const total = Math.round(area + instrument + genre + skill + schedule + songs);
 
   return {
     user: targetUser,
@@ -74,6 +90,7 @@ export function calculateMatchScore(currentUser: User, targetUser: User): MatchR
       genre: Math.round(genre),
       skill: Math.round(skill),
       schedule: Math.round(schedule),
+      songs: Math.round(songs),
     },
   };
 }

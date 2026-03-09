@@ -8,30 +8,30 @@ import { Header, Footer } from '@/components/layout';
 const features = [
   {
     icon: '🎯',
-    title: 'スマートマッチング',
-    description: '地域・楽器・ジャンル・スキルレベル・スケジュールから最適なバンドメンバーを見つけます。',
+    title: '曲ベースマッチング',
+    description: 'やりたい曲・弾ける曲から、同じ曲をやりたい仲間を見つけます。地域・楽器・スキルも考慮。',
   },
   {
-    icon: '🎤',
-    title: 'ライブイベント',
-    description: '初心者歓迎のライブイベントを探して、ステージデビューを目指しましょう。',
+    icon: '🎵',
+    title: 'セットリスト管理',
+    description: 'コピバンのセットリストを管理。練習状況をメンバーと共有できます。',
   },
   {
     icon: '🤝',
-    title: 'コミュニティ',
-    description: '練習ログの共有やマイルストーンの記録で、仲間と一緒に成長できます。',
+    title: 'コピバンコミュニティ',
+    description: 'カバー動画の共有や練習ログで、コピバン仲間と一緒に成長できます。',
   },
   {
     icon: '🎸',
-    title: 'バンド管理',
-    description: 'バンドの作成・メンバー募集・楽器スロット管理がかんたんに。',
+    title: 'コピバン結成',
+    description: 'コピーするアーティスト・曲を決めてバンド結成。メンバー募集もかんたん。',
   },
 ];
 
 const stats = [
   { value: '1,200+', label: '登録ユーザー' },
-  { value: '350+', label: 'バンド結成' },
-  { value: '80+', label: 'ライブイベント' },
+  { value: '350+', label: 'コピバン結成' },
+  { value: '80+', label: 'コピバンイベント' },
   { value: '95%', label: '満足度' },
 ];
 
@@ -53,13 +53,13 @@ export default function LandingPage() {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-4xl sm:text-6xl font-bold mb-6 leading-tight">
-              <span className="gradient-text">仲間を見つけて、</span>
+              <span className="gradient-text">やりたい曲で</span>
               <br />
-              ステージに立とう。
+              仲間を見つけよう。
             </h1>
             <p className="text-lg sm:text-xl text-text-secondary max-w-2xl mx-auto mb-10">
-              BandMatchは初心者バンドマンのためのコミュニティアプリ。
-              楽器を始めたばかりでも、あなたにぴったりのメンバーが見つかります。
+              BandMatchはコピバン仲間を見つけるためのアプリ。
+              同じ曲をやりたい仲間を見つけて、一緒にステージに立とう。
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/register">
@@ -93,7 +93,7 @@ export default function LandingPage() {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">BandMatchの特徴</h2>
             <p className="text-text-secondary max-w-xl mx-auto">
-              初心者だからこそ必要な機能を、すべて揃えました。
+              コピバン活動に必要な機能を、すべて揃えました。
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -124,9 +124,9 @@ export default function LandingPage() {
           </div>
           <div className="grid sm:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {[
-              { step: '01', title: 'プロフィール作成', desc: '楽器・ジャンル・スキルレベルを登録' },
-              { step: '02', title: 'メンバーを探す', desc: '相性スコアで最適な仲間を見つける' },
-              { step: '03', title: 'ライブに出る', desc: '初心者歓迎イベントでステージデビュー' },
+              { step: '01', title: 'プロフィール作成', desc: 'やりたい曲・弾ける曲・好きなアーティストを登録' },
+              { step: '02', title: 'コピバン仲間を探す', desc: '同じ曲をやりたい仲間を見つける' },
+              { step: '03', title: 'コピバンイベントに出る', desc: 'コピバンイベントでステージデビュー' },
             ].map((item) => (
               <div key={item.step} className="text-center">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold mx-auto mb-4">
@@ -146,7 +146,7 @@ export default function LandingPage() {
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <h2 className="text-3xl font-bold mb-4">今すぐ始めよう</h2>
           <p className="text-text-secondary mb-8">
-            無料プランで今すぐスタート。あなたの音楽仲間がここにいます。
+            無料プランで今すぐスタート。同じ曲をやりたいコピバン仲間がここにいます。
           </p>
           <Link href="/register">
             <Button size="lg">無料で登録する</Button>

@@ -1,3 +1,5 @@
+import { CopySong } from './types';
+
 export const INSTRUMENTS = [
   { id: 'vocal', label: 'ボーカル', icon: '🎤' },
   { id: 'electric_guitar', label: 'エレキギター', icon: '🎸' },
@@ -45,6 +47,52 @@ export const DAYS_OF_WEEK = [
   { id: 'friday' as const, label: '金曜日', short: '金' },
   { id: 'saturday' as const, label: '土曜日', short: '土' },
   { id: 'sunday' as const, label: '日曜日', short: '日' },
+];
+
+export const POPULAR_ARTISTS = [
+  'ASIAN KUNG-FU GENERATION',
+  'BUMP OF CHICKEN',
+  'back number',
+  'ONE OK ROCK',
+  'RADWIMPS',
+  'Official髭男dism',
+  'Mrs. GREEN APPLE',
+  'King Gnu',
+  'ELLEGARDEN',
+  'the pillows',
+  '10-FEET',
+  'WANIMA',
+  'マキシマム ザ ホルモン',
+  'MONGOL800',
+  'HY',
+  'GO!GO!7188',
+  'チャットモンチー',
+  'SHISHAMO',
+  'SCANDAL',
+  'SILENT SIREN',
+];
+
+export const COPY_SONGS: CopySong[] = [
+  { id: 'song-01', title: 'リライト', artist: 'ASIAN KUNG-FU GENERATION', genre: 'ロック' },
+  { id: 'song-02', title: '天体観測', artist: 'BUMP OF CHICKEN', genre: 'ロック' },
+  { id: 'song-03', title: '高嶺の花子さん', artist: 'back number', genre: 'ポップス' },
+  { id: 'song-04', title: 'Wherever you are', artist: 'ONE OK ROCK', genre: 'ロック' },
+  { id: 'song-05', title: '前前前世', artist: 'RADWIMPS', genre: 'ロック' },
+  { id: 'song-06', title: 'Pretender', artist: 'Official髭男dism', genre: 'ポップス' },
+  { id: 'song-07', title: '青と夏', artist: 'Mrs. GREEN APPLE', genre: 'ポップス' },
+  { id: 'song-08', title: '白日', artist: 'King Gnu', genre: 'ロック' },
+  { id: 'song-09', title: 'Missing', artist: 'ELLEGARDEN', genre: 'パンク' },
+  { id: 'song-10', title: 'Ride on Shooting Star', artist: 'the pillows', genre: 'オルタナティブ' },
+  { id: 'song-11', title: 'RIVER', artist: '10-FEET', genre: 'パンク' },
+  { id: 'song-12', title: 'ともに', artist: 'WANIMA', genre: 'パンク' },
+  { id: 'song-13', title: '恋しくて', artist: 'MONGOL800', genre: 'パンク' },
+  { id: 'song-14', title: 'AM11:00', artist: 'HY', genre: 'ポップス' },
+  { id: 'song-15', title: '小さな恋のうた', artist: 'MONGOL800', genre: 'パンク' },
+  { id: 'song-16', title: 'ないものねだり', artist: 'KANA-BOON', genre: 'ロック' },
+  { id: 'song-17', title: '丸の内サディスティック', artist: '椎名林檎', genre: 'ロック' },
+  { id: 'song-18', title: 'そばかす', artist: 'JUDY AND MARY', genre: 'ポップス' },
+  { id: 'song-19', title: 'Don\'t say "lazy"', artist: '桜高軽音部', genre: 'アニソン' },
+  { id: 'song-20', title: '残酷な天使のテーゼ', artist: '高橋洋子', genre: 'アニソン' },
 ];
 
 export const SUBSCRIPTION_PLANS = {

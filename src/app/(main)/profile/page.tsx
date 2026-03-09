@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/lib/auth';
 import { GlassCard, Card, Badge, Button, Input, Avatar } from '@/components/ui';
 import { useToast } from '@/components/ui/Toast';
-import { INSTRUMENTS, SKILL_LEVELS, GENRES, PREFECTURES, DAYS_OF_WEEK } from '@/lib/constants';
+import { INSTRUMENTS, SKILL_LEVELS, GENRES, PREFECTURES, DAYS_OF_WEEK, POPULAR_ARTISTS, COPY_SONGS } from '@/lib/constants';
 import type { UserInstrument, Schedule, SkillLevel, DayOfWeek } from '@/lib/types';
 
 const container = {
@@ -66,6 +66,9 @@ export default function ProfilePage() {
   const [formGenres, setFormGenres] = useState<string[]>([]);
   const [formSchedule, setFormSchedule] = useState<Schedule[]>([]);
   const [formInfluences, setFormInfluences] = useState('');
+  const [formFavoriteArtists, setFormFavoriteArtists] = useState<string[]>([]);
+  const [formWantToPlaySongs, setFormWantToPlaySongs] = useState<string[]>([]);
+  const [formCanPlaySongs, setFormCanPlaySongs] = useState<string[]>([]);
 
   const enterEditMode = useCallback(() => {
     if (!user) return;
@@ -78,6 +81,9 @@ export default function ProfilePage() {
     setFormGenres([...user.genres]);
     setFormSchedule([...user.schedule]);
     setFormInfluences(user.influences.join(', '));
+    setFormFavoriteArtists([...(user.favoriteArtists || [])]);
+    setFormWantToPlaySongs([...(user.wantToPlaySongs || [])]);
+    setFormCanPlaySongs([...(user.canPlaySongs || [])]);
     setIsEditing(true);
   }, [user]);
 
@@ -108,6 +114,9 @@ export default function ProfilePage() {
         .split(',')
         .map((s) => s.trim())
         .filter(Boolean),
+      favoriteArtists: formFavoriteArtists,
+      wantToPlaySongs: formWantToPlaySongs,
+      canPlaySongs: formCanPlaySongs,
     });
 
     setIsEditing(false);
@@ -122,6 +131,9 @@ export default function ProfilePage() {
     formGenres,
     formSchedule,
     formInfluences,
+    formFavoriteArtists,
+    formWantToPlaySongs,
+    formCanPlaySongs,
     updateUser,
     showToast,
   ]);
@@ -146,6 +158,29 @@ export default function ProfilePage() {
     setFormGenres((prev) =>
       prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
     );
+  }, []);
+
+  const toggleFavoriteArtist = useCallback((artist: string) => {
+    setFormFavoriteArtists((prev) =>
+      prev.includes(artist) ? prev.filter((a) => a !== artist) : [...prev, artist]
+    );
+  }, []);
+
+  const toggleWantToPlaySong = useCallback((songId: string) => {
+    setFormWantToPlaySongs((prev) =>
+      prev.includes(songId) ? prev.filter((s) => s !== songId) : [...prev, songId]
+    );
+  }, []);
+
+  const toggleCanPlaySong = useCallback((songId: string) => {
+    setFormCanPlaySongs((prev) =>
+      prev.includes(songId) ? prev.filter((s) => s !== songId) : [...prev, songId]
+    );
+  }, []);
+
+  const getSongTitle = useCallback((songId: string) => {
+    const song = COPY_SONGS.find((s) => s.id === songId);
+    return song ? `${song.title} / ${song.artist}` : songId;
   }, []);
 
   const addScheduleSlot = useCallback(() => {
@@ -492,6 +527,126 @@ export default function ProfilePage() {
                 </div>
               ) : (
                 <p className="text-sm text-text-muted">スケジュールが登録されていません</p>
+              )}
+            </div>
+          )}
+        </Card>
+      </motion.div>
+
+      {/* Favorite Artists (Copy Band) */}
+      <motion.div variants={item}>
+        <Card padding="lg">
+          <h2 className="text-lg font-semibold text-foreground mb-4">コピーしたいアーティスト</h2>
+          {isEditing ? (
+            <div className="flex flex-wrap gap-2">
+              {POPULAR_ARTISTS.map((artist) => {
+                const selected = formFavoriteArtists.includes(artist);
+                return (
+                  <button
+                    key={artist}
+                    type="button"
+                    onClick={() => toggleFavoriteArtist(artist)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 border ${
+                      selected
+                        ? 'border-primary/50 bg-primary/20 text-primary-light'
+                        : 'border-border-light bg-surface-light/30 text-text-secondary hover:border-primary/30'
+                    }`}
+                  >
+                    {artist}
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {(user.favoriteArtists || []).length > 0 ? (
+                user.favoriteArtists.map((artist) => (
+                  <Badge key={artist} variant="primary" size="md">
+                    {artist}
+                  </Badge>
+                ))
+              ) : (
+                <p className="text-sm text-text-muted">アーティストが登録されていません</p>
+              )}
+            </div>
+          )}
+        </Card>
+      </motion.div>
+
+      {/* Want to Play Songs */}
+      <motion.div variants={item}>
+        <Card padding="lg">
+          <h2 className="text-lg font-semibold text-foreground mb-4">やりたい曲</h2>
+          {isEditing ? (
+            <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto">
+              {COPY_SONGS.map((song) => {
+                const selected = formWantToPlaySongs.includes(song.id);
+                return (
+                  <button
+                    key={song.id}
+                    type="button"
+                    onClick={() => toggleWantToPlaySong(song.id)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 border ${
+                      selected
+                        ? 'border-secondary/50 bg-secondary/20 text-secondary-light'
+                        : 'border-border-light bg-surface-light/30 text-text-secondary hover:border-secondary/30'
+                    }`}
+                  >
+                    {song.title} / {song.artist}
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {(user.wantToPlaySongs || []).length > 0 ? (
+                user.wantToPlaySongs.map((songId) => (
+                  <Badge key={songId} variant="secondary" size="md">
+                    {getSongTitle(songId)}
+                  </Badge>
+                ))
+              ) : (
+                <p className="text-sm text-text-muted">曲が登録されていません</p>
+              )}
+            </div>
+          )}
+        </Card>
+      </motion.div>
+
+      {/* Can Play Songs */}
+      <motion.div variants={item}>
+        <Card padding="lg">
+          <h2 className="text-lg font-semibold text-foreground mb-4">弾ける曲</h2>
+          {isEditing ? (
+            <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto">
+              {COPY_SONGS.map((song) => {
+                const selected = formCanPlaySongs.includes(song.id);
+                return (
+                  <button
+                    key={song.id}
+                    type="button"
+                    onClick={() => toggleCanPlaySong(song.id)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 border ${
+                      selected
+                        ? 'border-accent/50 bg-accent/20 text-accent'
+                        : 'border-border-light bg-surface-light/30 text-text-secondary hover:border-accent/30'
+                    }`}
+                  >
+                    {song.title} / {song.artist}
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {(user.canPlaySongs || []).length > 0 ? (
+                user.canPlaySongs.map((songId) => (
+                  <Badge key={songId} variant="accent" size="md">
+                    {getSongTitle(songId)}
+                  </Badge>
+                ))
+              ) : (
+                <p className="text-sm text-text-muted">曲が登録されていません</p>
               )}
             </div>
           )}

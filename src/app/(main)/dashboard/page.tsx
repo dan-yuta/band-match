@@ -120,7 +120,7 @@ export default function DashboardPage() {
                 おかえりなさい、{user.nickname || user.name}さん!
               </h1>
               <p className="text-text-secondary mt-1">
-                今日も音楽を楽しみましょう
+                今日もコピバン活動を楽しみましょう
               </p>
             </div>
           </div>
@@ -143,7 +143,7 @@ export default function DashboardPage() {
               color: 'from-primary/20 to-primary/5 text-primary-light',
             },
             {
-              label: '参加バンド',
+              label: '参加コピバン',
               value: stats.bands,
               unit: '組',
               icon: (
@@ -202,7 +202,7 @@ export default function DashboardPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
             {
-              label: 'メンバー検索',
+              label: 'コピバン仲間検索',
               href: '/matching',
               icon: (
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -212,7 +212,7 @@ export default function DashboardPage() {
               variant: 'primary' as const,
             },
             {
-              label: 'バンド作成',
+              label: 'コピバン作成',
               href: '/bands',
               icon: (
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -374,7 +374,7 @@ export default function DashboardPage() {
           {/* My Bands */}
           <motion.div variants={item}>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-foreground">マイバンド</h2>
+              <h2 className="text-lg font-semibold text-foreground">マイコピバン</h2>
               <Link href="/bands">
                 <Button variant="ghost" size="sm">管理</Button>
               </Link>
@@ -430,9 +430,9 @@ export default function DashboardPage() {
             ) : (
               <Card padding="md">
                 <div className="text-center py-4">
-                  <p className="text-sm text-text-muted mb-3">まだバンドに参加していません</p>
+                  <p className="text-sm text-text-muted mb-3">まだコピバンに参加していません</p>
                   <Link href="/bands">
-                    <Button variant="secondary" size="sm">バンドを探す</Button>
+                    <Button variant="secondary" size="sm">コピバンを探す</Button>
                   </Link>
                 </div>
               </Card>

@@ -14,6 +14,7 @@ const POST_TYPE_LABELS: Record<PostType, string> = {
   practice_log: '練習ログ',
   milestone: 'マイルストーン',
   question: '質問',
+  cover_video: 'カバー動画',
 };
 
 const POST_TYPE_VARIANTS: Record<PostType, 'default' | 'primary' | 'secondary' | 'accent' | 'success' | 'warning'> = {
@@ -21,6 +22,7 @@ const POST_TYPE_VARIANTS: Record<PostType, 'default' | 'primary' | 'secondary' |
   practice_log: 'secondary',
   milestone: 'accent',
   question: 'warning',
+  cover_video: 'primary',
 };
 
 export default function CommunityPage() {
@@ -155,7 +157,7 @@ export default function CommunityPage() {
           コミュニティ
         </h1>
         <p className="text-text-secondary text-sm mt-1">
-          練習ログやマイルストーンを共有しましょう
+          カバー動画や練習ログをコピバン仲間と共有しましょう
         </p>
       </div>
 
@@ -185,6 +187,8 @@ export default function CommunityPage() {
                   ? '今日の練習内容を記録...'
                   : newPostType === 'milestone'
                   ? '達成したことを共有...'
+                  : newPostType === 'cover_video'
+                  ? 'カバー動画のURLや感想を共有...'
                   : '何を投稿しますか？'
               }
               value={newPostContent}

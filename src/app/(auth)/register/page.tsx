@@ -7,12 +7,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button, Input, GlassCard } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { validateEmail, validatePassword, validateName, validateNickname } from '@/lib/validators';
-import { INSTRUMENTS, SKILL_LEVELS, GENRES, PREFECTURES, DAYS_OF_WEEK } from '@/lib/constants';
+import { INSTRUMENTS, SKILL_LEVELS, GENRES, PREFECTURES, DAYS_OF_WEEK, POPULAR_ARTISTS, COPY_SONGS } from '@/lib/constants';
 import type { UserInstrument, SkillLevel, DayOfWeek, Schedule } from '@/lib/types';
 
-const TOTAL_STEPS = 3;
+const TOTAL_STEPS = 4;
 
-const STEP_LABELS = ['基本情報', '音楽プロフィール', '場所・スケジュール'];
+const STEP_LABELS = ['基本情報', '音楽プロフィール', 'コピバン設定', '場所・スケジュール'];
 
 interface FormData {
   name: string;
@@ -22,6 +22,9 @@ interface FormData {
   nickname: string;
   instruments: UserInstrument[];
   genres: string[];
+  favoriteArtists: string[];
+  wantToPlaySongs: string[];
+  canPlaySongs: string[];
   prefecture: string;
   city: string;
   schedule: Schedule[];
@@ -43,6 +46,9 @@ export default function RegisterPage() {
     nickname: '',
     instruments: [],
     genres: [],
+    favoriteArtists: [],
+    wantToPlaySongs: [],
+    canPlaySongs: [],
     prefecture: '',
     city: '',
     schedule: [],
@@ -94,6 +100,11 @@ export default function RegisterPage() {
   };
 
   const validateStep3 = (): boolean => {
+    // Copy band step - optional, no required fields
+    return true;
+  };
+
+  const validateStep4 = (): boolean => {
     const newErrors: Record<string, string> = {};
     if (!formData.prefecture) {
       newErrors.prefecture = '都道府県を選択してください';
@@ -108,6 +119,7 @@ export default function RegisterPage() {
     let valid = false;
     if (step === 1) valid = validateStep1();
     if (step === 2) valid = validateStep2();
+    if (step === 3) valid = validateStep3();
     if (valid) {
       setStep((s) => s + 1);
       setErrors({});
@@ -148,6 +160,46 @@ export default function RegisterPage() {
     }));
   };
 
+  // --- Favorite Artists ---
+
+  const toggleFavoriteArtist = (artist: string) => {
+    setFormData((prev) => {
+      const exists = prev.favoriteArtists.includes(artist);
+      return {
+        ...prev,
+        favoriteArtists: exists
+          ? prev.favoriteArtists.filter((a) => a !== artist)
+          : [...prev.favoriteArtists, artist],
+      };
+    });
+  };
+
+  // --- Songs ---
+
+  const toggleWantToPlaySong = (songId: string) => {
+    setFormData((prev) => {
+      const exists = prev.wantToPlaySongs.includes(songId);
+      return {
+        ...prev,
+        wantToPlaySongs: exists
+          ? prev.wantToPlaySongs.filter((s) => s !== songId)
+          : [...prev.wantToPlaySongs, songId],
+      };
+    });
+  };
+
+  const toggleCanPlaySong = (songId: string) => {
+    setFormData((prev) => {
+      const exists = prev.canPlaySongs.includes(songId);
+      return {
+        ...prev,
+        canPlaySongs: exists
+          ? prev.canPlaySongs.filter((s) => s !== songId)
+          : [...prev.canPlaySongs, songId],
+      };
+    });
+  };
+
   // --- Genres ---
 
   const toggleGenre = (genre: string) => {
@@ -184,7 +236,7 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!validateStep3()) return;
+    if (!validateStep4()) return;
 
     setLoading(true);
     setErrors({});
@@ -197,6 +249,9 @@ export default function RegisterPage() {
         nickname: formData.nickname,
         instruments: formData.instruments,
         genres: formData.genres,
+        favoriteArtists: formData.favoriteArtists,
+        wantToPlaySongs: formData.wantToPlaySongs,
+        canPlaySongs: formData.canPlaySongs,
         prefecture: formData.prefecture,
         city: formData.city,
         schedule: formData.schedule,
@@ -258,7 +313,7 @@ export default function RegisterPage() {
         >
           <h1 className="text-3xl font-bold gradient-text mb-2">新規登録</h1>
           <p className="text-text-secondary text-sm">
-            BandMatchに参加して、理想の音楽仲間を見つけよう
+            BandMatchに参加して、同じ曲をやりたいコピバン仲間を見つけよう
           </p>
         </motion.div>
 
@@ -513,10 +568,102 @@ export default function RegisterPage() {
                 </motion.div>
               )}
 
-              {/* --- Step 3: Location & Schedule --- */}
+              {/* --- Step 3: Copy Band Settings --- */}
               {step === 3 && (
                 <motion.div
                   key="step3"
+                  custom={direction}
+                  variants={slideVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.3, ease: 'easeInOut' }}
+                  className="space-y-6"
+                >
+                  {/* Favorite Artists */}
+                  <div>
+                    <label className="block text-sm font-medium text-text-secondary mb-3">
+                      コピーしたいアーティスト
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {POPULAR_ARTISTS.map((artist) => {
+                        const selected = formData.favoriteArtists.includes(artist);
+                        return (
+                          <button
+                            key={artist}
+                            type="button"
+                            onClick={() => toggleFavoriteArtist(artist)}
+                            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
+                              selected
+                                ? 'bg-primary/20 text-primary-light border border-primary/40'
+                                : 'bg-surface-light/50 text-text-muted border border-border-light hover:border-primary/30 hover:text-text-secondary'
+                            }`}
+                          >
+                            {artist}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Want to play songs */}
+                  <div>
+                    <label className="block text-sm font-medium text-text-secondary mb-3">
+                      やりたい曲
+                    </label>
+                    <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto">
+                      {COPY_SONGS.map((song) => {
+                        const selected = formData.wantToPlaySongs.includes(song.id);
+                        return (
+                          <button
+                            key={song.id}
+                            type="button"
+                            onClick={() => toggleWantToPlaySong(song.id)}
+                            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
+                              selected
+                                ? 'bg-secondary/20 text-secondary-light border border-secondary/40'
+                                : 'bg-surface-light/50 text-text-muted border border-border-light hover:border-secondary/30 hover:text-text-secondary'
+                            }`}
+                          >
+                            {song.title} / {song.artist}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Can play songs */}
+                  <div>
+                    <label className="block text-sm font-medium text-text-secondary mb-3">
+                      弾ける曲
+                    </label>
+                    <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto">
+                      {COPY_SONGS.map((song) => {
+                        const selected = formData.canPlaySongs.includes(song.id);
+                        return (
+                          <button
+                            key={song.id}
+                            type="button"
+                            onClick={() => toggleCanPlaySong(song.id)}
+                            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
+                              selected
+                                ? 'bg-accent/20 text-accent border border-accent/40'
+                                : 'bg-surface-light/50 text-text-muted border border-border-light hover:border-accent/30 hover:text-text-secondary'
+                            }`}
+                          >
+                            {song.title} / {song.artist}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* --- Step 4: Location & Schedule --- */}
+              {step === 4 && (
+                <motion.div
+                  key="step4"
                   custom={direction}
                   variants={slideVariants}
                   initial="enter"

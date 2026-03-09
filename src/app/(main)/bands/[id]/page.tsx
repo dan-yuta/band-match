@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { mockBands, mockUsers } from '@/data';
-import { INSTRUMENTS } from '@/lib/constants';
+import { INSTRUMENTS, COPY_SONGS } from '@/lib/constants';
 import { useAuth } from '@/lib/auth';
 import { storage } from '@/lib/storage';
 import { useToast } from '@/components/ui/Toast';
@@ -45,6 +45,15 @@ export default function BandDetailPage() {
 
   const getInstrumentIcon = (instrumentId: string) => {
     return INSTRUMENTS.find((i) => i.id === instrumentId)?.icon || '🎵';
+  };
+
+  const getSongById = (songId: string) => COPY_SONGS.find((s) => s.id === songId);
+
+  const setlistStatusLabels: Record<string, { label: string; color: string }> = {
+    want: { label: 'やりたい', color: 'bg-blue-500/15 text-blue-400 border-blue-500/30' },
+    practicing: { label: '練習中', color: 'bg-amber-500/15 text-amber-400 border-amber-500/30' },
+    ready: { label: '演奏可能', color: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' },
+    performed: { label: '演奏済み', color: 'bg-purple-500/15 text-purple-400 border-purple-500/30' },
   };
 
   const getUserById = (userId: string) => {
@@ -170,6 +179,34 @@ export default function BandDetailPage() {
             </div>
           </GlassCard>
 
+          {/* Setlist */}
+          {band.setlist && band.setlist.length > 0 && (
+            <GlassCard>
+              <h2 className="font-semibold text-lg mb-4">セットリスト</h2>
+              <div className="space-y-2">
+                {band.setlist.map((item) => {
+                  const song = getSongById(item.songId);
+                  if (!song) return null;
+                  const statusInfo = setlistStatusLabels[item.status] || setlistStatusLabels.want;
+                  return (
+                    <div
+                      key={item.songId}
+                      className="flex items-center gap-3 rounded-xl bg-surface-light/30 px-4 py-3"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground truncate">{song.title}</p>
+                        <p className="text-xs text-text-muted">{song.artist}</p>
+                      </div>
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${statusInfo.color}`}>
+                        {statusInfo.label}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </GlassCard>
+          )}
+
           <GlassCard>
             <h2 className="font-semibold text-lg mb-4">楽器スロット</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -231,6 +268,18 @@ export default function BandDetailPage() {
         </div>
 
         <div className="space-y-6">
+          {/* Target Artists */}
+          {band.targetArtists && band.targetArtists.length > 0 && (
+            <GlassCard>
+              <h2 className="font-semibold text-lg mb-4">コピーするアーティスト</h2>
+              <div className="flex flex-wrap gap-2">
+                {band.targetArtists.map((artist) => (
+                  <Badge key={artist} variant="primary">{artist}</Badge>
+                ))}
+              </div>
+            </GlassCard>
+          )}
+
           <GlassCard>
             <h2 className="font-semibold text-lg mb-4">バンド情報</h2>
             <div className="space-y-3">

@@ -2,13 +2,13 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { INSTRUMENTS, GENRES, PREFECTURES } from '@/lib/constants';
+import { INSTRUMENTS, GENRES, PREFECTURES, POPULAR_ARTISTS, COPY_SONGS } from '@/lib/constants';
 import { useAuth } from '@/lib/auth';
 import { storage } from '@/lib/storage';
 import { mockBands } from '@/data/mockBands';
 import { Input, Button, GlassCard, Badge } from '@/components/ui';
 import { useToast } from '@/components/ui/Toast';
-import { Band, InstrumentSlot } from '@/lib/types';
+import { Band, InstrumentSlot, SetlistItem } from '@/lib/types';
 
 export default function CreateBandPage() {
   const router = useRouter();
@@ -23,6 +23,8 @@ export default function CreateBandPage() {
   const [maxMembers, setMaxMembers] = useState(5);
   const [instrumentSlots, setInstrumentSlots] = useState<InstrumentSlot[]>([]);
   const [newInstrument, setNewInstrument] = useState('');
+  const [targetArtists, setTargetArtists] = useState<string[]>([]);
+  const [setlist, setSetlist] = useState<SetlistItem[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -50,6 +52,28 @@ export default function CreateBandPage() {
   const removeInstrumentSlot = (index: number) => {
     setInstrumentSlots((prev) => prev.filter((_, i) => i !== index));
   };
+
+  const toggleTargetArtist = (artist: string) => {
+    setTargetArtists((prev) =>
+      prev.includes(artist) ? prev.filter((a) => a !== artist) : [...prev, artist]
+    );
+  };
+
+  const toggleSetlistSong = (songId: string) => {
+    setSetlist((prev) => {
+      const exists = prev.find((s) => s.songId === songId);
+      if (exists) return prev.filter((s) => s.songId !== songId);
+      return [...prev, { songId, status: 'want' as const }];
+    });
+  };
+
+  const updateSetlistStatus = (songId: string, status: SetlistItem['status']) => {
+    setSetlist((prev) =>
+      prev.map((s) => (s.songId === songId ? { ...s, status } : s))
+    );
+  };
+
+  const getSongById = (songId: string) => COPY_SONGS.find((s) => s.id === songId);
 
   const getInstrumentLabel = (instrumentId: string) => {
     return INSTRUMENTS.find((i) => i.id === instrumentId)?.label || instrumentId;
@@ -116,6 +140,8 @@ export default function CreateBandPage() {
       instrumentSlots: updatedSlots,
       imageUrl: '',
       isRecruiting: true,
+      setlist,
+      targetArtists,
       createdAt: new Date().toISOString(),
       createdBy: user.id,
     };
@@ -123,7 +149,7 @@ export default function CreateBandPage() {
     const updatedBands = [...existingBands, newBand];
     storage.set('bands', updatedBands);
 
-    showToast('バンドを作成しました！', 'success');
+    showToast('コピバンを作成しました！', 'success');
     setSubmitting(false);
     router.push('/bands');
   };
@@ -132,10 +158,10 @@ export default function CreateBandPage() {
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
         <h1 className="text-2xl font-bold bg-gradient-to-r from-primary-light to-secondary bg-clip-text text-transparent">
-          バンドを作成
+          コピバンを作成
         </h1>
         <p className="text-text-secondary text-sm mt-1">
-          新しいバンドを作成してメンバーを募集しましょう
+          コピーするアーティスト・曲を決めてコピバンを作成しましょう
         </p>
       </div>
 
@@ -225,6 +251,86 @@ export default function CreateBandPage() {
               onChange={(e) => setCity(e.target.value)}
               error={errors.city}
             />
+          </div>
+        </GlassCard>
+
+        <GlassCard>
+          <h2 className="font-semibold text-lg mb-4">コピーするアーティスト</h2>
+          <div className="flex flex-wrap gap-2">
+            {POPULAR_ARTISTS.map((artist) => (
+              <button
+                key={artist}
+                type="button"
+                onClick={() => toggleTargetArtist(artist)}
+              >
+                <Badge
+                  variant={targetArtists.includes(artist) ? 'primary' : 'default'}
+                  size="md"
+                  className={`cursor-pointer transition-all duration-200 ${
+                    targetArtists.includes(artist)
+                      ? 'ring-1 ring-primary/50'
+                      : 'hover:bg-surface-lighter'
+                  }`}
+                >
+                  {artist}
+                </Badge>
+              </button>
+            ))}
+          </div>
+        </GlassCard>
+
+        <GlassCard>
+          <h2 className="font-semibold text-lg mb-4">セットリスト</h2>
+          <div className="space-y-4">
+            <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto">
+              {COPY_SONGS.map((song) => {
+                const inSetlist = setlist.some((s) => s.songId === song.id);
+                return (
+                  <button
+                    key={song.id}
+                    type="button"
+                    onClick={() => toggleSetlistSong(song.id)}
+                  >
+                    <Badge
+                      variant={inSetlist ? 'secondary' : 'default'}
+                      size="md"
+                      className={`cursor-pointer transition-all duration-200 ${
+                        inSetlist ? 'ring-1 ring-secondary/50' : 'hover:bg-surface-lighter'
+                      }`}
+                    >
+                      {song.title} / {song.artist}
+                    </Badge>
+                  </button>
+                );
+              })}
+            </div>
+
+            {setlist.length > 0 && (
+              <div className="space-y-2 pt-3 border-t border-border-light">
+                <p className="text-sm text-text-secondary font-medium">選択した曲のステータス:</p>
+                {setlist.map((item) => {
+                  const song = getSongById(item.songId);
+                  if (!song) return null;
+                  return (
+                    <div key={item.songId} className="flex items-center gap-3 rounded-xl bg-surface-light/30 px-4 py-2">
+                      <span className="text-sm text-foreground flex-1 truncate">
+                        {song.title} / {song.artist}
+                      </span>
+                      <select
+                        value={item.status}
+                        onChange={(e) => updateSetlistStatus(item.songId, e.target.value as SetlistItem['status'])}
+                        className="rounded-lg bg-surface border border-border-light text-foreground text-xs px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      >
+                        <option value="want">やりたい</option>
+                        <option value="practicing">練習中</option>
+                        <option value="ready">演奏可能</option>
+                        <option value="performed">演奏済み</option>
+                      </select>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </GlassCard>
 
@@ -331,7 +437,7 @@ export default function CreateBandPage() {
             loading={submitting}
             className="flex-1"
           >
-            バンドを作成
+            コピバンを作成
           </Button>
         </div>
       </form>

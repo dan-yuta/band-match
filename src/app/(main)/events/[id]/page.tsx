@@ -33,9 +33,9 @@ export default function EventDetailPage() {
   if (!event) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
-        <p className="text-text-muted text-lg">イベントが見つかりませんでした</p>
+        <p className="text-text-muted text-lg">コピバンイベントが見つかりませんでした</p>
         <Link href="/events">
-          <Button variant="secondary">イベント一覧に戻る</Button>
+          <Button variant="secondary">コピバンイベント一覧に戻る</Button>
         </Link>
       </div>
     );
@@ -93,7 +93,7 @@ export default function EventDetailPage() {
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
-        イベント一覧に戻る
+        コピバンイベント一覧に戻る
       </Link>
 
       <GlassCard gradientBorder>
@@ -125,7 +125,7 @@ export default function EventDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <GlassCard>
-            <h2 className="font-semibold text-lg mb-4">イベント詳細</h2>
+            <h2 className="font-semibold text-lg mb-4">コピバンイベント詳細</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex items-start gap-3">
                 <div className="p-2 rounded-lg bg-primary/10">
@@ -248,22 +248,22 @@ export default function EventDetailPage() {
 
         <div className="space-y-6">
           <GlassCard>
-            <h2 className="font-semibold text-lg mb-4">バンドを登録</h2>
+            <h2 className="font-semibold text-lg mb-4">コピバンを登録</h2>
             {!user ? (
-              <p className="text-text-muted text-sm">ログインしてバンドを登録しましょう</p>
+              <p className="text-text-muted text-sm">ログインしてコピバンを登録しましょう</p>
             ) : isEventFull ? (
               <p className="text-text-muted text-sm">このイベントは定員に達しています</p>
             ) : availableUserBands.length === 0 ? (
               <div className="space-y-3">
                 <p className="text-text-muted text-sm">
                   {userBands.length > 0
-                    ? 'あなたの全バンドは既に登録済みです'
-                    : '登録可能なバンドがありません'}
+                    ? 'あなたの全コピバンは既に登録済みです'
+                    : '登録可能なコピバンがありません'}
                 </p>
                 {userBands.length === 0 && (
                   <Link href="/bands/create">
                     <Button variant="secondary" size="sm" fullWidth>
-                      バンドを作成する
+                      コピバンを作成する
                     </Button>
                   </Link>
                 )}
@@ -276,7 +276,7 @@ export default function EventDetailPage() {
                     variant="secondary"
                     onClick={() => setShowBandDropdown(!showBandDropdown)}
                   >
-                    バンドを選択して登録
+                    コピバンを選択して登録
                     <svg className={`w-4 h-4 ml-1 transition-transform ${showBandDropdown ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
