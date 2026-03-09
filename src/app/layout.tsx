@@ -7,11 +7,11 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const notoSansJP = Noto_Sans_JP({ subsets: ['latin'], variable: '--font-noto' });
 
 export const metadata: Metadata = {
-  title: 'BandMatch - 初心者バンドマンのためのコミュニティ',
-  description: 'バンドメンバーを見つけて、一緒にライブを目指そう！初心者歓迎のバンドマッチングアプリ。',
+  title: 'BandMatch - やりたい曲で仲間を見つけよう',
+  description: '同じ曲をコピーしたい仲間が見つかる！初心者コピバン向けマッチング＆コミュニティアプリ。',
   openGraph: {
-    title: 'BandMatch - 初心者バンドマンのためのコミュニティ',
-    description: 'バンドメンバーを見つけて、一緒にライブを目指そう！',
+    title: 'BandMatch - やりたい曲で仲間を見つけよう',
+    description: '同じ曲をコピーしたい仲間が見つかる！初心者コピバン向けアプリ。',
     type: 'website',
   },
   appleWebApp: {

@@ -12,7 +12,7 @@ export default function Footer() {
               </div>
               <span className="font-bold gradient-text">BandMatch</span>
             </div>
-            <p className="text-sm text-text-muted">初心者バンドマンのための コミュニティアプリ</p>
+            <p className="text-sm text-text-muted">初心者コピバン向けコミュニティアプリ</p>
           </div>
           <div>
             <h4 className="font-semibold text-sm mb-3">サービス</h4>

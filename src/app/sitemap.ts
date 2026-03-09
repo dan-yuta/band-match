@@ -9,5 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: 'https://bandmatch.jp/events', lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
     { url: 'https://bandmatch.jp/bands', lastModified: new Date(), changeFrequency: 'daily', priority: 0.8 },
     { url: 'https://bandmatch.jp/community', lastModified: new Date(), changeFrequency: 'daily', priority: 0.7 },
+    { url: 'https://bandmatch.jp/practice', lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
+    { url: 'https://bandmatch.jp/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.7 },
   ];
 }
