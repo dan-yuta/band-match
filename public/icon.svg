@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f0f2e"/>
+      <stop offset="100%" stop-color="#0a0a1a"/>
+    </linearGradient>
+    <linearGradient id="pick" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background rounded square -->
+  <rect width="512" height="512" rx="96" ry="96" fill="url(#bg)"/>
+
+  <!-- Outer glow ring -->
+  <circle cx="256" cy="248" r="170" fill="none" stroke="#7c3aed" stroke-width="2" opacity="0.15"/>
+
+  <!-- Guitar pick shape -->
+  <path d="
+    M 256 90
+    C 320 90, 380 130, 390 195
+    C 400 260, 340 350, 256 420
+    C 172 350, 112 260, 122 195
+    C 132 130, 192 90, 256 90
+    Z
+  " fill="url(#pick)"/>
+
+  <!-- Pick highlight -->
+  <path d="
+    M 256 90
+    C 320 90, 380 130, 390 195
+    C 400 260, 340 350, 256 420
+    C 172 350, 112 260, 122 195
+    C 132 130, 192 90, 256 90
+    Z
+  " fill="url(#shine)"/>
+
+  <!-- Inner pick border -->
+  <path d="
+    M 256 120
+    C 308 120, 355 152, 362 202
+    C 370 255, 320 328, 256 385
+    C 192 328, 142 255, 150 202
+    C 157 152, 204 120, 256 120
+    Z
+  " fill="none" stroke="#a78bfa" stroke-width="1.5" opacity="0.3"/>
+
+  <!-- BM text -->
+  <text x="256" y="270" text-anchor="middle" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="120" font-weight="700" fill="#ffffff" letter-spacing="-4">BM</text>
+
+  <!-- Small music note accent -->
+  <g transform="translate(340, 140)" opacity="0.6">
+    <ellipse cx="0" cy="12" rx="10" ry="7" fill="#c4b5fd" transform="rotate(-20)"/>
+    <rect x="8" y="-28" width="3" height="40" fill="#c4b5fd" rx="1.5"/>
+    <path d="M 11 -28 Q 24 -35, 22 -18" stroke="#c4b5fd" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>
