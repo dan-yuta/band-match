@@ -1201,8 +1201,8 @@
         <span class="info-icon">&#9432;</span>
         <div>
           <strong>セキュリティグループ構成:</strong>
-          ALB → ECS（ポート3000のみ）、ECS → RDS Proxy（ポート5432のみ）、ECS → Redis（ポート6379のみ）。
-          各層は必要最小限の通信のみ許可。DBサブネットはインターネットアクセス不可。
+          ALB → ECS（ポート3000のみ）、ECS → RDS Proxy（ポート5432のみ）、ECS → Redis（ポート6379のみ）。<br>
+          各層は必要最小限の通信のみ許可。<br>DBサブネットはインターネットアクセス不可。
         </div>
       </div>
     </div>
@@ -1230,7 +1230,7 @@
         </div>
       </div>
       <div class="card-body">
-        Next.js (SSR) アプリケーションを Docker コンテナで実行。サーバーの管理・パッチ適用が一切不要。
+        Next.js (SSR) アプリケーションを Docker コンテナで実行。<br>サーバーの管理・パッチ適用が一切不要。
       </div>
       <div class="card-specs">
         <span class="spec-tag highlight">サーバー管理不要</span>
@@ -1241,7 +1241,7 @@
       </div>
       <div class="card-reason">
         <span class="reason-icon">&#10003;</span>
-        <span>EC2のOS管理が不要。Dockerfileだけで環境統一。CPUベースのオートスケーリングで負荷に自動対応。</span>
+        <span>EC2のOS管理が不要。<br>Dockerfileだけで環境統一。<br>CPUベースのオートスケーリングで負荷に自動対応。</span>
       </div>
     </div>
 
@@ -1255,7 +1255,7 @@
         </div>
       </div>
       <div class="card-body">
-        トラフィックに応じて 0.5〜32 ACU で自動スケーリング。深夜帯は最小構成に縮小してコスト節約。Multi-AZ 標準。
+        トラフィックに応じて 0.5〜32 ACU で自動スケーリング。<br>深夜帯は最小構成に縮小してコスト節約。<br>Multi-AZ 標準。
       </div>
       <div class="card-specs">
         <span class="spec-tag highlight">自動スケーリング</span>
@@ -1266,7 +1266,7 @@
       </div>
       <div class="card-reason">
         <span class="reason-icon">&#10003;</span>
-        <span>手動でのインスタンスサイズ変更が不要。マッチングのような複雑なクエリにリレーショナルDBが最適。</span>
+        <span>手動でのインスタンスサイズ変更が不要。<br>マッチングのような複雑なクエリにリレーショナルDBが最適。</span>
       </div>
     </div>
 
@@ -1280,7 +1280,7 @@
         </div>
       </div>
       <div class="card-body">
-        セッション管理とマッチング結果のキャッシュ。ノードタイプの選定やフェイルオーバー設定が不要。
+        セッション管理とマッチング結果のキャッシュ。<br>ノードタイプの選定やフェイルオーバー設定が不要。
       </div>
       <div class="card-specs">
         <span class="spec-tag highlight">ノード管理不要</span>
@@ -1290,7 +1290,7 @@
       </div>
       <div class="card-reason">
         <span class="reason-icon">&#10003;</span>
-        <span>プロビジョンド版のようなノードサイズ選定・監視が不要。使った分だけ課金で初期コストも最小。</span>
+        <span>プロビジョンド版のようなノードサイズ選定・監視が不要。<br>使った分だけ課金で初期コストも最小。</span>
       </div>
     </div>
 
@@ -1304,7 +1304,7 @@
         </div>
       </div>
       <div class="card-body">
-        世界中のエッジロケーションから静的アセットを高速配信。ACM証明書でHTTPS対応。WAFと統合。
+        世界中のエッジロケーションから静的アセットを高速配信。<br>ACM証明書でHTTPS対応。<br>WAFと統合。
       </div>
       <div class="card-specs">
         <span class="spec-tag">グローバルCDN</span>
@@ -1315,7 +1315,7 @@
       </div>
       <div class="card-reason">
         <span class="reason-icon">&#10003;</span>
-        <span>SSL証明書が無料で自動更新。画像・CSS・JSを高速配信してページ表示を高速化。</span>
+        <span>SSL証明書が無料で自動更新。<br>画像・CSS・JSを高速配信してページ表示を高速化。</span>
       </div>
     </div>
 
@@ -1329,7 +1329,7 @@
         </div>
       </div>
       <div class="card-body">
-        ECS Fargateタスクへのリクエスト振り分け。ヘルスチェックで異常なタスクを自動除外。
+        ECS Fargateタスクへのリクエスト振り分け。<br>ヘルスチェックで異常なタスクを自動除外。
       </div>
       <div class="card-specs">
         <span class="spec-tag">L7ルーティング</span>
@@ -1339,7 +1339,7 @@
       </div>
       <div class="card-reason">
         <span class="reason-icon">&#10003;</span>
-        <span>パスベースルーティングでAPIとSSRを柔軟に振り分け。ECSサービスディスカバリと自動連携。</span>
+        <span>パスベースルーティングでAPIとSSRを柔軟に振り分け。<br>ECSサービスディスカバリと自動連携。</span>
       </div>
     </div>
 
@@ -1353,7 +1353,7 @@
         </div>
       </div>
       <div class="card-body">
-        静的アセット（JS/CSS/画像）とユーザーアップロード画像の保存。ライフサイクルポリシーで自動管理。
+        静的アセット（JS/CSS/画像）とユーザーアップロード画像の保存。<br>ライフサイクルポリシーで自動管理。
       </div>
       <div class="card-specs">
         <span class="spec-tag">99.999999999% 耐久性</span>
@@ -1363,7 +1363,7 @@
       </div>
       <div class="card-reason">
         <span class="reason-icon">&#10003;</span>
-        <span>業界標準のストレージ。容量無制限で従量課金。VPCエンドポイントでNAT費用も削減可能。</span>
+        <span>業界標準のストレージ。<br>容量無制限で従量課金。<br>VPCエンドポイントでNAT費用も削減可能。</span>
       </div>
     </div>
 
@@ -1377,7 +1377,7 @@
         </div>
       </div>
       <div class="card-body">
-        ユーザー登録・ログイン・パスワードリセットをマネージドで提供。Google/Apple IDのソーシャルログインも標準対応。
+        ユーザー登録・ログイン・パスワードリセットをマネージドで提供。<br>Google/Apple IDのソーシャルログインも標準対応。
       </div>
       <div class="card-specs">
         <span class="spec-tag highlight">5万MAUまで無料</span>
@@ -1387,7 +1387,7 @@
       </div>
       <div class="card-reason">
         <span class="reason-icon">&#10003;</span>
-        <span>認証を自前実装するリスクを排除。5万MAUまで完全無料なので、BandMatchの規模では十分。</span>
+        <span>認証を自前実装するリスクを排除。<br>5万MAUまで完全無料なので、BandMatchの規模では十分。</span>
       </div>
     </div>
 
@@ -1401,7 +1401,7 @@
         </div>
       </div>
       <div class="card-body">
-        パスワードリセット・イベントリマインダー・通知メールを送信。Cognitoと統合して認証メールも自動化。
+        パスワードリセット・イベントリマインダー・通知メールを送信。<br>Cognitoと統合して認証メールも自動化。
       </div>
       <div class="card-specs">
         <span class="spec-tag">$0.10/1,000通</span>
@@ -1411,7 +1411,7 @@
       </div>
       <div class="card-reason">
         <span class="reason-icon">&#10003;</span>
-        <span>月1万通なら月額$1。外部メールサービス不要でAWS内で完結。</span>
+        <span>月1万通なら月額$1。<br>外部メールサービス不要でAWS内で完結。</span>
       </div>
     </div>
 
@@ -1425,7 +1425,7 @@
         </div>
       </div>
       <div class="card-body">
-        DB接続情報・Stripe APIキー・JWT秘密鍵等を安全に管理。自動ローテーション対応。
+        DB接続情報・Stripe APIキー・JWT秘密鍵等を安全に管理。<br>自動ローテーション対応。
       </div>
       <div class="card-specs">
         <span class="spec-tag">暗号化保存</span>
@@ -1435,7 +1435,7 @@
       </div>
       <div class="card-reason">
         <span class="reason-icon">&#10003;</span>
-        <span>環境変数や設定ファイルにシークレットを書かずに済む。ECSタスクから安全に参照可能。</span>
+        <span>環境変数や設定ファイルにシークレットを書かずに済む。<br>ECSタスクから安全に参照可能。</span>
       </div>
     </div>
 
@@ -1449,7 +1449,7 @@
         </div>
       </div>
       <div class="card-body">
-        インフラをTypeScriptで定義・管理。アプリと同じ言語で書けるため学習コスト最小。環境別スタック対応。
+        インフラをTypeScriptで定義・管理。<br>アプリと同じ言語で書けるため学習コスト最小。<br>環境別スタック対応。
       </div>
       <div class="card-specs">
         <span class="spec-tag highlight">TypeScript</span>
@@ -1459,7 +1459,7 @@
       </div>
       <div class="card-reason">
         <span class="reason-icon">&#10003;</span>
-        <span>Next.jsプロジェクトと同じTypeScriptで統一。YAMLの数百行がTypeScriptの数十行に。</span>
+        <span>Next.jsプロジェクトと同じTypeScriptで統一。<br>YAMLの数百行がTypeScriptの数十行に。</span>
       </div>
     </div>
 
@@ -1473,7 +1473,7 @@
         </div>
       </div>
       <div class="card-body">
-        ECS/Aurora/ALBのメトリクスを一元管理。閾値超過時にSNS経由でSlack/メール通知。
+        ECS/Aurora/ALBのメトリクスを一元管理。<br>閾値超過時にSNS経由でSlack/メール通知。
       </div>
       <div class="card-specs">
         <span class="spec-tag">メトリクス監視</span>
@@ -1483,7 +1483,7 @@
       </div>
       <div class="card-reason">
         <span class="reason-icon">&#10003;</span>
-        <span>AWS標準の監視ツール。追加の監視SaaSなしで全サービスのメトリクスを横断的に把握。</span>
+        <span>AWS標準の監視ツール。<br>追加の監視SaaSなしで全サービスのメトリクスを横断的に把握。</span>
       </div>
     </div>
 
@@ -1497,7 +1497,7 @@
         </div>
       </div>
       <div class="card-body">
-        CloudFrontに適用してDDoS・ボット・SQLインジェクション・XSSを防御。レートリミットで不正リクエストを制限。
+        CloudFrontに適用してDDoS・ボット・SQLインジェクション・XSSを防御。<br>レートリミットで不正リクエストを制限。
       </div>
       <div class="card-specs">
         <span class="spec-tag">レートリミット</span>
@@ -1507,7 +1507,7 @@
       </div>
       <div class="card-reason">
         <span class="reason-icon">&#10003;</span>
-        <span>AWSマネージドルールで主要な攻撃を自動防御。カスタムルールで日本国外からのアクセス制限も可能。</span>
+        <span>AWSマネージドルールで主要な攻撃を自動防御。<br>カスタムルールで日本国外からのアクセス制限も可能。</span>
       </div>
     </div>
 
@@ -1538,7 +1538,7 @@
       <div class="flow-number" style="background: var(--accent); color: #fff;">2</div>
       <div class="flow-card">
         <h4 style="color: var(--accent);">WAFフィルタリング</h4>
-        <p>AWS WAF がリクエストを検査。ボット・SQLi・XSS・レートリミット超過をブロック</p>
+        <p>AWS WAF がリクエストを検査。<br>ボット・SQLi・XSS・レートリミット超過をブロック</p>
       </div>
     </div>
     <div class="flow-connector"></div>
@@ -1547,7 +1547,7 @@
       <div class="flow-number" style="background: var(--blue); color: #fff;">3</div>
       <div class="flow-card">
         <h4 style="color: var(--blue);">CDN判定</h4>
-        <p>CloudFront がキャッシュヒットなら即返却。ミスなら静的 → S3、動的 → ALB にルーティング</p>
+        <p>CloudFront がキャッシュヒットなら即返却。<br>ミスなら静的 → S3、動的 → ALB にルーティング</p>
       </div>
     </div>
     <div class="flow-connector"></div>
@@ -1574,7 +1574,7 @@
       <div class="flow-number" style="background: var(--primary-light); color: #fff;">6</div>
       <div class="flow-card">
         <h4 style="color: var(--primary-light);">データ取得</h4>
-        <p>RDS Proxy 経由で Aurora にアクセス。読み取りはリードレプリカに自動ルーティング</p>
+        <p>RDS Proxy 経由で Aurora にアクセス。<br>読み取りはリードレプリカに自動ルーティング</p>
       </div>
     </div>
     <div class="flow-connector"></div>
@@ -1583,7 +1583,7 @@
       <div class="flow-number" style="background: var(--green); color: #000;">7</div>
       <div class="flow-card">
         <h4 style="color: var(--green);">レスポンス返却</h4>
-        <p>SSR レンダリング結果を ALB → CloudFront → ユーザーに返却。CloudFront がキャッシュ保存</p>
+        <p>SSR レンダリング結果を ALB → CloudFront → ユーザーに返却。<br>CloudFront がキャッシュ保存</p>
       </div>
     </div>
 
@@ -1717,7 +1717,7 @@
   <div class="info-box">
     <span class="info-icon">&#128161;</span>
     <div>
-      <strong>デプロイ戦略:</strong> ECS ローリングアップデートにより、新しいタスクが正常起動してからヘルスチェック通過後に古いタスクを停止。ダウンタイムゼロでデプロイ可能。ロールバックはECSの前回タスク定義に戻すだけ。
+      <strong>デプロイ戦略:</strong> ECS ローリングアップデートにより、新しいタスクが正常起動してからヘルスチェック通過後に古いタスクを停止。<br>ダウンタイムゼロでデプロイ可能。<br>ロールバックはECSの前回タスク定義に戻すだけ。
     </div>
   </div>
 </div>
@@ -1891,11 +1891,11 @@
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px;">
       <div style="background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.15); border-radius: 8px; padding: 14px;">
         <div style="font-size: 0.82rem; font-weight: 700; color: var(--green); margin-bottom: 4px;">Savings Plans</div>
-        <div style="font-size: 0.73rem; color: var(--text-dim);">Fargate 1年コミットで最大52%割引。成長期以降に適用推奨。</div>
+        <div style="font-size: 0.73rem; color: var(--text-dim);">Fargate 1年コミットで最大52%割引。<br>成長期以降に適用推奨。</div>
       </div>
       <div style="background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.15); border-radius: 8px; padding: 14px;">
         <div style="font-size: 0.82rem; font-weight: 700; color: var(--green); margin-bottom: 4px;">Graviton (ARM)</div>
-        <div style="font-size: 0.73rem; color: var(--text-dim);">Fargate ARM対応で約20%安価。拡大期にコスト削減効果大。</div>
+        <div style="font-size: 0.73rem; color: var(--text-dim);">Fargate ARM対応で約20%安価。<br>拡大期にコスト削減効果大。</div>
       </div>
       <div style="background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.15); border-radius: 8px; padding: 14px;">
         <div style="font-size: 0.82rem; font-weight: 700; color: var(--green); margin-bottom: 4px;">VPCエンドポイント</div>
@@ -1903,7 +1903,7 @@
       </div>
       <div style="background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.15); border-radius: 8px; padding: 14px;">
         <div style="font-size: 0.82rem; font-weight: 700; color: var(--green); margin-bottom: 4px;">Aurora自動縮小</div>
-        <div style="font-size: 0.73rem; color: var(--text-dim);">Serverless v2は深夜帯に0.5 ACUまで自動縮小。常に最適コスト。</div>
+        <div style="font-size: 0.73rem; color: var(--text-dim);">Serverless v2は深夜帯に0.5 ACUまで自動縮小。<br>常に最適コスト。</div>
       </div>
     </div>
   </div>
