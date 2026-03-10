@@ -330,6 +330,7 @@
     font-size: 0.78rem;
     line-height: 1.8;
     overflow-x: auto;
+    white-space: pre;
   }
   .file-tree .dir { color: #79c0ff; font-weight: 700; }
   .file-tree .file { color: #c9d1d9; }
@@ -1100,53 +1101,75 @@
 
   <div class="file-tree">
 <span class="dir">band-match/</span>
-&#9500;&#9472; <span class="file">README.md</span>                     <span class="comment">&#8592; まずこれを読む</span>
-&#9500;&#9472; <span class="file">package.json</span>                   <span class="comment">&#8592; 依存パッケージ・スクリプト定義</span>
-&#9500;&#9472; <span class="file">tsconfig.json</span>                  <span class="comment">&#8592; TypeScript 設定</span>
-&#9500;&#9472; <span class="file">next.config.ts</span>                 <span class="comment">&#8592; Next.js 設定（セキュリティヘッダー等）</span>
+&#9500;&#9472; <span class="file">README.md</span>                        <span class="comment">&#8592; まずこれを読む</span>
+&#9500;&#9472; <span class="file">package.json</span>                     <span class="comment">&#8592; 依存パッケージ・スクリプト定義</span>
+&#9500;&#9472; <span class="file">tsconfig.json</span>                    <span class="comment">&#8592; TypeScript 設定</span>
+&#9500;&#9472; <span class="file">next.config.ts</span>                   <span class="comment">&#8592; Next.js 設定（Capacitor用export対応）</span>
+&#9500;&#9472; <span class="file">capacitor.config.ts</span>              <span class="comment">&#8592; Capacitor 設定（iOS/Android）</span>
+&#9500;&#9472; <span class="file">eslint.config.mjs</span>                <span class="comment">&#8592; ESLint 設定</span>
+&#9500;&#9472; <span class="file">postcss.config.mjs</span>               <span class="comment">&#8592; PostCSS 設定</span>
 &#9474;
-&#9500;&#9472; <span class="dir">docs/</span>                           <span class="comment">&#8592; 設計ドキュメント一式</span>
-&#9474;   &#9500;&#9472; <span class="file">00-00_ドキュメント一覧.md</span>    <span class="comment">&#8592; 目次</span>
-&#9474;   &#9500;&#9472; <span class="file">01-01 ～ 04-02</span>              <span class="comment">&#8592; 仕様書・設計書・手順書</span>
+&#9500;&#9472; <span class="dir">docs/</span>                            <span class="comment">&#8592; 設計ドキュメント（番号はジャンル別・読み順）</span>
+&#9474;   &#9500;&#9472; <span class="file">index.html</span>                   <span class="comment">&#8592; ドキュメントポータル</span>
+&#9474;   &#9500;&#9472; <span class="file">00-00_ドキュメント一覧.md</span>     <span class="comment">&#8592; 目次</span>
+&#9474;   &#9500;&#9472; <span class="file">01-01 ～ 01-03</span>               <span class="comment">&#8592; 導入・はじめに</span>
+&#9474;   &#9500;&#9472; <span class="file">02-01 ～ 02-04</span>               <span class="comment">&#8592; アプリ仕様・設計</span>
+&#9474;   &#9500;&#9472; <span class="file">03-01 ～ 03-03</span>               <span class="comment">&#8592; AWS・インフラ</span>
+&#9474;   &#9492;&#9472; <span class="file">04-01 ～ 04-02</span>               <span class="comment">&#8592; ビジネス・戦略</span>
 &#9474;
-&#9500;&#9472; <span class="dir">src/</span>                            <span class="comment">&#8592; ソースコード</span>
-&#9474;   &#9500;&#9472; <span class="dir">app/</span>                        <span class="comment">&#8592; ページ定義（Next.js App Router）</span>
-&#9474;   &#9474;   &#9500;&#9472; <span class="file">layout.tsx</span>              <span class="comment">&#8592; ルートレイアウト（HTML/head）</span>
-&#9474;   &#9474;   &#9500;&#9472; <span class="file">page.tsx</span>                <span class="comment">&#8592; ランディングページ</span>
-&#9474;   &#9474;   &#9500;&#9472; <span class="file">globals.css</span>             <span class="comment">&#8592; テーマ・グローバルスタイル</span>
-&#9474;   &#9474;   &#9500;&#9472; <span class="file">providers.tsx</span>           <span class="comment">&#8592; Auth/Toast プロバイダー</span>
-&#9474;   &#9474;   &#9500;&#9472; <span class="dir">(auth)/</span>                 <span class="comment">&#8592; 認証ページ群</span>
-&#9474;   &#9474;   &#9474;   &#9500;&#9472; <span class="dir">login/</span> <span class="file">page.tsx</span>
-&#9474;   &#9474;   &#9474;   &#9492;&#9472; <span class="dir">register/</span> <span class="file">page.tsx</span>
-&#9474;   &#9474;   &#9500;&#9472; <span class="dir">(main)/</span>                 <span class="comment">&#8592; メイン機能（要ログイン）</span>
-&#9474;   &#9474;   &#9474;   &#9500;&#9472; <span class="file">layout.tsx</span>          <span class="comment">&#8592; 認証チェック + ヘッダー/フッター</span>
-&#9474;   &#9474;   &#9474;   &#9500;&#9472; <span class="dir">dashboard/</span>  <span class="dir">matching/</span>  <span class="dir">profile/</span>
-&#9474;   &#9474;   &#9474;   &#9500;&#9472; <span class="dir">bands/</span> <span class="comment">(一覧 / 作成 / [id]詳細)</span>
-&#9474;   &#9474;   &#9474;   &#9500;&#9472; <span class="dir">events/</span> <span class="comment">(一覧 / [id]詳細)</span>
-&#9474;   &#9474;   &#9474;   &#9500;&#9472; <span class="dir">community/</span>  <span class="dir">subscription/</span>
-&#9474;   &#9474;   &#9492;&#9472; <span class="dir">(admin)/</span>                <span class="comment">&#8592; 管理画面（要管理者権限）</span>
-&#9474;   &#9474;       &#9492;&#9472; <span class="dir">admin/</span> <span class="comment">(統計 / users / revenue / subscriptions)</span>
+&#9500;&#9472; <span class="dir">src/</span>                             <span class="comment">&#8592; ソースコード</span>
+&#9474;   &#9500;&#9472; <span class="dir">app/</span>                         <span class="comment">&#8592; ページ定義（Next.js App Router）</span>
+&#9474;   &#9474;   &#9500;&#9472; <span class="file">layout.tsx</span>               <span class="comment">&#8592; ルートレイアウト（メタデータ・フォント）</span>
+&#9474;   &#9474;   &#9500;&#9472; <span class="file">page.tsx</span>                 <span class="comment">&#8592; ランディングページ</span>
+&#9474;   &#9474;   &#9500;&#9472; <span class="file">globals.css</span>              <span class="comment">&#8592; テーマ・グローバルスタイル</span>
+&#9474;   &#9474;   &#9500;&#9472; <span class="file">providers.tsx</span>            <span class="comment">&#8592; 認証プロバイダー</span>
+&#9474;   &#9474;   &#9500;&#9472; <span class="file">sitemap.ts</span>               <span class="comment">&#8592; サイトマップ生成</span>
+&#9474;   &#9474;   &#9474;
+&#9474;   &#9474;   &#9500;&#9472; <span class="dir">(auth)/</span>                  <span class="comment">&#8592; 認証ページ</span>
+&#9474;   &#9474;   &#9474;   &#9500;&#9472; <span class="dir">login/</span> <span class="file">page.tsx</span>      <span class="comment">&#8592; ログイン</span>
+&#9474;   &#9474;   &#9474;   &#9492;&#9472; <span class="dir">register/</span> <span class="file">page.tsx</span>   <span class="comment">&#8592; 新規登録（5ステップ）</span>
+&#9474;   &#9474;   &#9474;
+&#9474;   &#9474;   &#9500;&#9472; <span class="dir">(main)/</span>                  <span class="comment">&#8592; メイン機能（要ログイン）</span>
+&#9474;   &#9474;   &#9474;   &#9500;&#9472; <span class="file">layout.tsx</span>           <span class="comment">&#8592; Header/Footer/MobileNav</span>
+&#9474;   &#9474;   &#9474;   &#9500;&#9472; <span class="dir">dashboard/</span>           <span class="comment">&#8592; ダッシュボード（ジャーニー進捗）</span>
+&#9474;   &#9474;   &#9474;   &#9500;&#9472; <span class="dir">matching/</span>            <span class="comment">&#8592; マッチング（6要素スコア）</span>
+&#9474;   &#9474;   &#9474;   &#9500;&#9472; <span class="dir">bands/</span>               <span class="comment">&#8592; バンド（一覧 / 作成 / [id]詳細）</span>
+&#9474;   &#9474;   &#9474;   &#9500;&#9472; <span class="dir">events/</span>              <span class="comment">&#8592; イベント（一覧 / [id]詳細）</span>
+&#9474;   &#9474;   &#9474;   &#9500;&#9472; <span class="dir">community/</span>           <span class="comment">&#8592; コミュニティ（タイムライン・フレンド）</span>
+&#9474;   &#9474;   &#9474;   &#9500;&#9472; <span class="dir">profile/</span>             <span class="comment">&#8592; プロフィール（バッジ・SNS）</span>
+&#9474;   &#9474;   &#9474;   &#9500;&#9472; <span class="dir">practice/</span>            <span class="comment">&#8592; 練習トラッカー（挫折防止サポート）</span>
+&#9474;   &#9474;   &#9474;   &#9500;&#9472; <span class="dir">ranking/</span>             <span class="comment">&#8592; ランキング（フレンド/全体/楽器別）</span>
+&#9474;   &#9474;   &#9474;   &#9492;&#9472; <span class="dir">subscription/</span>        <span class="comment">&#8592; 料金プラン（Free/Pro）</span>
+&#9474;   &#9474;   &#9474;
+&#9474;   &#9474;   &#9492;&#9472; <span class="dir">(admin)/</span>                 <span class="comment">&#8592; 管理画面（要管理者権限）</span>
+&#9474;   &#9474;       &#9492;&#9472; <span class="dir">admin/</span>               <span class="comment">&#8592; 統計 / users / revenue / subscriptions</span>
 &#9474;   &#9474;
-&#9474;   &#9500;&#9472; <span class="dir">components/</span>                 <span class="comment">&#8592; UIコンポーネント</span>
-&#9474;   &#9474;   &#9500;&#9472; <span class="dir">ui/</span>                     <span class="comment">&#8592; Button, Input, Card, Modal 等</span>
-&#9474;   &#9474;   &#9492;&#9472; <span class="dir">layout/</span>                 <span class="comment">&#8592; Header, Footer, MobileNav 等</span>
+&#9474;   &#9500;&#9472; <span class="dir">components/</span>                  <span class="comment">&#8592; UIコンポーネント</span>
+&#9474;   &#9474;   &#9500;&#9472; <span class="dir">ui/</span>                      <span class="comment">&#8592; Button, Input, Card, Modal, Avatar 等</span>
+&#9474;   &#9474;   &#9500;&#9472; <span class="dir">layout/</span>                  <span class="comment">&#8592; Header, Footer, MobileNav, ProtectedRoute</span>
+&#9474;   &#9474;   &#9492;&#9472; <span class="dir">features/</span>                <span class="comment">&#8592; 機能コンポーネント</span>
 &#9474;   &#9474;
-&#9474;   &#9500;&#9472; <span class="dir">lib/</span>                        <span class="comment">&#8592; ユーティリティ</span>
-&#9474;   &#9474;   &#9500;&#9472; <span class="file">types.ts</span>                <span class="comment">&#8592; 全データモデルの型定義</span>
-&#9474;   &#9474;   &#9500;&#9472; <span class="file">constants.ts</span>            <span class="comment">&#8592; 楽器・ジャンル・都道府県リスト</span>
-&#9474;   &#9474;   &#9500;&#9472; <span class="file">auth.tsx</span>                <span class="comment">&#8592; 認証コンテキスト（AuthProvider）</span>
-&#9474;   &#9474;   &#9500;&#9472; <span class="file">storage.ts</span>              <span class="comment">&#8592; localStorage ラッパー</span>
-&#9474;   &#9474;   &#9500;&#9472; <span class="file">matching.ts</span>             <span class="comment">&#8592; マッチングアルゴリズム</span>
-&#9474;   &#9474;   &#9500;&#9472; <span class="file">validators.ts</span>           <span class="comment">&#8592; 入力バリデーション</span>
-&#9474;   &#9474;   &#9492;&#9472; <span class="file">security.ts</span>             <span class="comment">&#8592; XSS/CSRF対策</span>
+&#9474;   &#9500;&#9472; <span class="dir">lib/</span>                         <span class="comment">&#8592; ユーティリティ・ロジック</span>
+&#9474;   &#9474;   &#9500;&#9472; <span class="file">types.ts</span>                 <span class="comment">&#8592; 全型定義（User, Band, CopySong等）</span>
+&#9474;   &#9474;   &#9500;&#9472; <span class="file">constants.ts</span>             <span class="comment">&#8592; 定数（アーティスト20組, 曲20曲, バッジ12種）</span>
+&#9474;   &#9474;   &#9500;&#9472; <span class="file">matching.ts</span>              <span class="comment">&#8592; 6要素マッチングアルゴリズム（160pt満点）</span>
+&#9474;   &#9474;   &#9500;&#9472; <span class="file">auth.tsx</span>                 <span class="comment">&#8592; 認証コンテキスト（AuthProvider）</span>
+&#9474;   &#9474;   &#9500;&#9472; <span class="file">platform.ts</span>              <span class="comment">&#8592; プラットフォーム判定（Web/iOS/Android）</span>
+&#9474;   &#9474;   &#9500;&#9472; <span class="file">storage.ts</span>               <span class="comment">&#8592; localStorage ラッパー</span>
+&#9474;   &#9474;   &#9500;&#9472; <span class="file">validators.ts</span>            <span class="comment">&#8592; 入力バリデーション</span>
+&#9474;   &#9474;   &#9492;&#9472; <span class="file">security.ts</span>              <span class="comment">&#8592; XSS対策・サニタイズ</span>
 &#9474;   &#9474;
-&#9474;   &#9492;&#9472; <span class="dir">data/</span>                       <span class="comment">&#8592; モックデータ</span>
-&#9474;       &#9500;&#9472; <span class="file">mockUsers.ts</span>            <span class="comment">&#8592; ユーザー 18名</span>
-&#9474;       &#9500;&#9472; <span class="file">mockBands.ts</span>            <span class="comment">&#8592; バンド 7組</span>
-&#9474;       &#9500;&#9472; <span class="file">mockEvents.ts</span>           <span class="comment">&#8592; イベント 9件</span>
-&#9474;       &#9492;&#9472; <span class="file">mockPosts.ts</span>            <span class="comment">&#8592; 投稿 18件</span>
+&#9474;   &#9500;&#9472; <span class="dir">data/</span>                        <span class="comment">&#8592; モックデータ</span>
+&#9474;   &#9474;   &#9500;&#9472; <span class="file">mockUsers.ts</span>             <span class="comment">&#8592; ユーザー18名（プロフィール・曲・SNS・バッジ）</span>
+&#9474;   &#9474;   &#9500;&#9472; <span class="file">mockBands.ts</span>             <span class="comment">&#8592; バンド7組（セットリスト・メンバー）</span>
+&#9474;   &#9474;   &#9500;&#9472; <span class="file">mockEvents.ts</span>            <span class="comment">&#8592; イベント9件（コピバンライブ）</span>
+&#9474;   &#9474;   &#9500;&#9472; <span class="file">mockPosts.ts</span>             <span class="comment">&#8592; 投稿18件（練習ログ・カバー動画等）</span>
+&#9474;   &#9474;   &#9492;&#9472; <span class="file">mockPractice.ts</span>          <span class="comment">&#8592; 練習ログ85件 + 通知16件</span>
+&#9474;   &#9474;
+&#9474;   &#9492;&#9472; <span class="dir">hooks/</span>                       <span class="comment">&#8592; カスタムフック</span>
+&#9474;       &#9492;&#9472; <span class="file">useLocalStorage.ts</span>       <span class="comment">&#8592; localStorage 読み書き</span>
 &#9474;
-&#9492;&#9472; <span class="dir">public/</span>                         <span class="comment">&#8592; 静的ファイル（manifest, robots.txt）</span>
+&#9492;&#9472; <span class="dir">public/</span>                          <span class="comment">&#8592; 静的ファイル（manifest.json, robots.txt, SVG）</span>
   </div>
 </div>
 </section>
