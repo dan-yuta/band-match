@@ -1054,25 +1054,23 @@
 │   │   ├── <span class="component">GlassCard.tsx</span>
 │   │   ├── <span class="component">Badge.tsx</span>
 │   │   ├── <span class="component">Avatar.tsx</span>
-│   │   └── <span class="component">Modal.tsx</span>
+│   │   ├── <span class="component">Modal.tsx</span>
+│   │   ├── <span class="component">Toast.tsx</span>
+│   │   └── <span class="config">index.ts</span>
 │   └── <span class="dir">layout/</span>                  <span class="comment">← レイアウトコンポーネント</span>
 │       ├── <span class="layout">Header.tsx</span>
 │       ├── <span class="layout">Footer.tsx</span>
 │       ├── <span class="layout">MobileNav.tsx</span>
-│       └── <span class="layout">ProtectedRoute.tsx</span>
+│       ├── <span class="layout">ProtectedRoute.tsx</span>
+│       └── <span class="config">index.ts</span>
 │
-├── <span class="dir">contexts/</span>                    <span class="comment">← React Context</span>
-│   ├── <span class="lib">AuthContext.tsx</span>
-│   └── <span class="lib">ToastContext.tsx</span>
-│
-├── <span class="dir">lib/</span>                         <span class="comment">← ユーティリティ・ロジック</span>
-│   ├── <span class="lib">storage.ts</span>               <span class="comment">← localStorage 操作</span>
-│   ├── <span class="lib">mockData.ts</span>              <span class="comment">← 初期モックデータ</span>
-│   ├── <span class="lib">matching.ts</span>              <span class="comment">← マッチングアルゴリズム</span>
-│   └── <span class="lib">validators.ts</span>            <span class="comment">← バリデーション</span>
-│
-└── <span class="dir">types/</span>                       <span class="comment">← TypeScript 型定義</span>
-    └── <span class="config">index.ts</span></pre>
+└── <span class="dir">lib/</span>                         <span class="comment">← ユーティリティ・ロジック</span>
+    ├── <span class="lib">auth.tsx</span>                 <span class="comment">← 認証コンテキスト・プロバイダー</span>
+    ├── <span class="lib">constants.ts</span>             <span class="comment">← 定数定義</span>
+    ├── <span class="lib">matching.ts</span>              <span class="comment">← マッチングアルゴリズム</span>
+    ├── <span class="lib">storage.ts</span>               <span class="comment">← localStorage 操作</span>
+    ├── <span class="lib">types.ts</span>                 <span class="comment">← TypeScript 型定義</span>
+    └── <span class="lib">validators.ts</span>            <span class="comment">← バリデーション</span></pre>
     </div>
   </section>
 
@@ -1153,6 +1151,18 @@
         <span class="route-path" style="color:var(--secondary);">/profile</span>
         <span class="route-arrow">→</span>
         <span class="route-desc">プロフィール</span>
+        <span class="route-badge rb-main">main</span>
+      </div>
+      <div class="route-item nested">
+        <span class="route-path" style="color:var(--secondary);">/practice</span>
+        <span class="route-arrow">→</span>
+        <span class="route-desc">練習記録</span>
+        <span class="route-badge rb-main">main</span>
+      </div>
+      <div class="route-item nested">
+        <span class="route-path" style="color:var(--secondary);">/ranking</span>
+        <span class="route-arrow">→</span>
+        <span class="route-desc">ランキング</span>
         <span class="route-badge rb-main">main</span>
       </div>
       <div class="route-item nested">

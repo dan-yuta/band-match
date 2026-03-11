@@ -1037,14 +1037,14 @@
     <div class="glass" style="padding: 20px;">
       <h3 style="font-size: 1rem; margin-bottom: 16px;">評価ロジック</h3>
       <div style="font-size: 0.8rem; color: var(--text-secondary); line-height: 2;">
-        <div><strong style="color: #34d399;">地域 (40pt)</strong>: 同市40pt / 同県28pt</div>
+        <div><strong style="color: #34d399;">地域 (40pt)</strong>: 同市40pt / 同県25pt</div>
         <div><strong style="color: var(--primary-light);">楽器 (20pt)</strong>: 補完的=20 / 一部重複=12 / 全重複=4</div>
         <div><strong style="color: var(--secondary-light);">ジャンル (20pt)</strong>: 共通率 × 20</div>
         <div><strong style="color: #fbbf24;">スキル (15pt)</strong>: 15 - (レベル差 × 5)</div>
         <div><strong style="color: var(--accent);">スケジュール (30pt)</strong>: 共通曜日率 × 30 + 時間重複ボーナス</div>
         <div><strong style="color: #ec4899;">曲マッチング (35pt)</strong>: 共通曲 × 7 + 共通アーティスト × 5</div>
         <div style="margin-top: 12px; border-top: 1px solid var(--border-light); padding-top: 12px;">
-          <strong>合計</strong>: 最大160pt → 100点に正規化
+          <strong>合計</strong>: Math.min(100, 合計) でクランプ
         </div>
       </div>
     </div>
