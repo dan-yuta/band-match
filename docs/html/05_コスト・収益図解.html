@@ -105,7 +105,7 @@
 <!-- 総コスト -->
 <section class="section" id="summary">
   <h2 class="section-title">月額総コスト（初期フェーズ）</h2>
-  <p class="section-desc">詳細は <a href="https://github.com/dan-yuta/groove-match/blob/main/docs/md/04-02_%E3%82%B3%E3%82%B9%E3%83%88%E8%A8%88%E7%AE%97.md" target="_blank" style="color:var(--primary-light);">04-02_コスト計算.md</a> を参照。</p>
+  <p class="section-desc">詳細は <a href="https://github.com/dan-yuta/groove-match/blob/main/docs/md/04-02_%E3%82%B3%E3%82%B9%E3%83%88%E8%A8%88%E7%AE%97.md" target="_blank" style="color:var(--primary-light);">04-02_コスト計算.md</a> を参照。<br>※ MAU = 月間ユーザー数（1ヶ月間に1回以上アプリを利用した人の数）</p>
 
   <div class="cost-summary">
     <div class="cost-box"><div class="label">dev環境</div><div class="amount" style="color:var(--green);">&#165;7,500</div><div class="sub">月10日稼働（停止運用）</div></div>
@@ -137,7 +137,7 @@
       <tr><td>RDS バックアップストレージ</td><td>自動バックアップ + 手動スナップショット</td><td>&#165;1,200</td></tr>
       <tr><td>API Gateway WebSocket</td><td>チャット用WebSocket接続</td><td>&#165;150〜450</td></tr>
       <tr><td>Lambda（チャット）</td><td>WebSocketハンドラー</td><td>&#165;0〜150</td></tr>
-      <tr><td>Cognito</td><td>1万MAUまで</td><td style="color:var(--green);">&#165;0（無料）</td></tr>
+      <tr><td>Cognito</td><td>月間ユーザー数（MAU）1万人まで</td><td style="color:var(--green);">&#165;0（無料）</td></tr>
     </tbody>
     <tr class="total"><td colspan="2">prod合計</td><td style="color:var(--accent);">&#165;32,400 + 共通費 = 約&#165;46,000</td></tr>
   </table>
