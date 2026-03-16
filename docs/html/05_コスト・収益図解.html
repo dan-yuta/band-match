@@ -110,8 +110,8 @@
   <div class="cost-summary">
     <div class="cost-box"><div class="label">dev環境</div><div class="amount" style="color:var(--green);">&#165;7,500</div><div class="sub">月10日稼働（停止運用）</div></div>
     <div class="cost-box"><div class="label">staging環境</div><div class="amount" style="color:var(--yellow);">&#165;6,600</div><div class="sub">月5日稼働（停止運用）</div></div>
-    <div class="cost-box"><div class="label">prod環境</div><div class="amount" style="color:var(--accent);">&#165;45,000</div><div class="sub">本番運用（常時稼働）</div></div>
-    <div class="cost-box" style="border-color:rgba(245,158,11,0.3);"><div class="label">月額総コスト</div><div class="amount" style="color:var(--orange);">&#165;63,000</div><div class="sub">推奨運用 + AWS以外</div></div>
+    <div class="cost-box"><div class="label">prod環境</div><div class="amount" style="color:var(--accent);">&#165;46,000</div><div class="sub">本番運用（常時稼働）</div></div>
+    <div class="cost-box" style="border-color:rgba(245,158,11,0.3);"><div class="label">月額総コスト</div><div class="amount" style="color:var(--orange);">&#165;64,000</div><div class="sub">推奨運用 + AWS以外</div></div>
   </div>
 </section>
 
@@ -121,24 +121,25 @@
 <section class="section" id="aws">
   <h2 class="section-title">AWS 3環境コスト内訳</h2>
 
-  <h3 style="font-size:1rem; font-weight:700; margin-bottom:16px; color:var(--accent);">prod環境（本番）: 約&#165;45,000/月</h3>
+  <h3 style="font-size:1rem; font-weight:700; margin-bottom:16px; color:var(--accent);">prod環境（本番）: 約&#165;46,000/月</h3>
   <table class="cost-table">
     <thead><tr><th>サービス</th><th>構成</th><th>月額（円）</th></tr></thead>
     <tbody>
       <tr><td>ECS Fargate</td><td>0.5 vCPU / 1GB x 2タスク</td><td>&#165;6,750</td></tr>
-      <tr><td>RDS PostgreSQL</td><td>db.t4g.micro + gp3 20GB</td><td>&#165;2,300</td></tr>
-      <tr><td>RDS Proxy</td><td>1エンドポイント</td><td>&#165;3,300</td></tr>
-      <tr><td>ElastiCache</td><td>cache.t4g.micro x 1</td><td>&#165;2,850</td></tr>
+      <tr><td>RDS PostgreSQL</td><td>db.t4g.micro + gp3 20GB</td><td>&#165;3,150</td></tr>
+      <tr><td>RDS Proxy</td><td>1エンドポイント</td><td>&#165;3,950</td></tr>
+      <tr><td>ElastiCache</td><td>cache.t4g.micro x 1</td><td>&#165;2,740</td></tr>
       <tr><td>ALB</td><td>1台</td><td>&#165;3,750</td></tr>
       <tr><td>NAT Gateway</td><td>1台 + 10GBデータ</td><td>&#165;6,900</td></tr>
-      <tr><td>CloudFront</td><td>100GB転送/月</td><td>&#165;1,890</td></tr>
+      <tr><td>CloudFront</td><td>100GB転送/月</td><td>&#165;0（恒久無料枠内）</td></tr>
       <tr><td>WAF</td><td>1 Web ACL + 3ルール</td><td>&#165;1,350</td></tr>
       <tr><td>その他</td><td>S3, Route 53, SES, CloudWatch, Secrets Manager</td><td>&#165;2,515</td></tr>
+      <tr><td>RDS バックアップストレージ</td><td>自動バックアップ + 手動スナップショット</td><td>&#165;1,200</td></tr>
       <tr><td>API Gateway WebSocket</td><td>チャット用WebSocket接続</td><td>&#165;150〜450</td></tr>
       <tr><td>Lambda（チャット）</td><td>WebSocketハンドラー</td><td>&#165;0〜150</td></tr>
       <tr><td>Cognito</td><td>1万MAUまで</td><td style="color:var(--green);">&#165;0（無料）</td></tr>
     </tbody>
-    <tr class="total"><td colspan="2">prod合計</td><td style="color:var(--accent);">&#165;32,000 + 共通費 = 約&#165;45,000</td></tr>
+    <tr class="total"><td colspan="2">prod合計</td><td style="color:var(--accent);">&#165;32,400 + 共通費 = 約&#165;46,000</td></tr>
   </table>
 
   <div style="background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; margin-bottom:30px;">
@@ -155,10 +156,10 @@
       </div>
       <div class="bar-row">
         <div class="bar-label">prod</div>
-        <div class="bar-track"><div class="bar-fill" style="width:76%; background:var(--accent);">&#165;45,000</div></div>
+        <div class="bar-track"><div class="bar-fill" style="width:77%; background:var(--accent);">&#165;46,000</div></div>
       </div>
     </div>
-    <p style="font-size:0.9rem; font-weight:700; text-align:right;">AWS合計（推奨運用）: <span style="color:var(--orange);">約&#165;59,000/月</span></p>
+    <p style="font-size:0.9rem; font-weight:700; text-align:right;">AWS合計（推奨運用）: <span style="color:var(--orange);">約&#165;60,000/月</span></p>
   </div>
 </section>
 
@@ -194,9 +195,9 @@
       <div class="phase-range">MAU 1,000 / Pro 100名</div>
       <table>
         <tr><td>月間手取り</td><td>&#165;43,600</td></tr>
-        <tr><td>月額総コスト</td><td>&#165;63,000</td></tr>
+        <tr><td>月額総コスト</td><td>&#165;64,000</td></tr>
       </table>
-      <div class="result" style="color:var(--cost-red);">-&#165;19,400</div>
+      <div class="result" style="color:var(--cost-red);">-&#165;20,400</div>
     </div>
     <div class="phase-card" style="border-top-color: transparent;">
       <div style="position:absolute; top:0; left:0; right:0; height:3px; background:var(--revenue-green);"></div>
@@ -214,9 +215,9 @@
       <div class="phase-range">MAU 20,000 / Pro 2,500名</div>
       <table>
         <tr><td>月間手取り</td><td>&#165;1,090,000</td></tr>
-        <tr><td>月額総コスト</td><td>&#165;195,000</td></tr>
+        <tr><td>月額総コスト</td><td>&#165;201,000</td></tr>
       </table>
-      <div class="result" style="color:var(--green);">+&#165;895,000</div>
+      <div class="result" style="color:var(--green);">+&#165;889,000</div>
     </div>
   </div>
 </section>
@@ -226,14 +227,14 @@
 <!-- 損益分岐点 -->
 <section class="section" id="bep">
   <h2 class="section-title">損益分岐点</h2>
-  <p class="section-desc">初期は赤字。MAU 約1,450（Pro 145名程度）で黒字転換見込み。dev/staging停止運用でコスト抑制。</p>
+  <p class="section-desc">初期は赤字。MAU 約1,470（Pro 147名程度）で黒字転換見込み。dev/staging停止運用でコスト抑制。</p>
 
   <div class="bep-card">
     <h3>各フェーズの損益分岐点（Pro有料ユーザー数）</h3>
     <div class="bep-grid">
       <div class="bep-item">
-        <div class="bep-phase">初期（コスト &#165;63,000）</div>
-        <div class="bep-num">145</div>
+        <div class="bep-phase">初期（コスト &#165;64,000）</div>
+        <div class="bep-num">147</div>
         <div class="bep-label">名で黒字化</div>
       </div>
       <div class="bep-item">
@@ -242,8 +243,8 @@
         <div class="bep-label">名で黒字化</div>
       </div>
       <div class="bep-item">
-        <div class="bep-phase">拡大期（コスト &#165;195,000）</div>
-        <div class="bep-num">448</div>
+        <div class="bep-phase">拡大期（コスト &#165;201,000）</div>
+        <div class="bep-num">461</div>
         <div class="bep-label">名で黒字化</div>
       </div>
     </div>
