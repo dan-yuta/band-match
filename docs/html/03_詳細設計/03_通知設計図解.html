@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Groove Match - 通知設計図解</title>
+<style>
+  :root{--bg:#0a0a1a;--surface:#1a1a2e;--surface-light:#25253d;--primary:#7c3aed;--primary-light:#8b5cf6;--secondary:#06b6d4;--accent:#f97066;--green:#22c55e;--yellow:#eab308;--orange:#f59e0b;--pink:#ec4899;--blue:#3b82f6;--red:#ef4444;--text:#e2e8f0;--text-dim:#94a3b8;--text-muted:#64748b;--border:#334155}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+  .hero{background:linear-gradient(135deg,#1a1a2e 0%,#0a0a1a 50%,#1a1a2e 100%);border-bottom:1px solid var(--border);padding:70px 40px 50px;text-align:center;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 50%,rgba(124,58,237,0.08) 0%,transparent 50%),radial-gradient(circle at 70% 50%,rgba(6,182,212,0.06) 0%,transparent 50%);animation:hf 20s ease-in-out infinite}
+  @keyframes hf{0%,100%{transform:translate(0,0)}50%{transform:translate(-2%,2%)}}
+  .hero h1{font-size:2.8rem;font-weight:800;background:linear-gradient(135deg,var(--primary-light),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;margin-bottom:12px}
+  .hero .subtitle{font-size:1.15rem;color:var(--text-dim);position:relative;max-width:700px;margin:0 auto}
+  .nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 40px;display:flex;gap:0;overflow-x:auto;position:sticky;top:0;z-index:100}
+  .nav a{color:var(--text-dim);text-decoration:none;padding:14px 20px;font-size:.85rem;font-weight:500;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s}
+  .nav a:hover{color:var(--text);border-bottom-color:var(--primary);background:rgba(124,58,237,0.05)}
+  .container{max-width:1200px;margin:0 auto;padding:40px}
+  section{margin-bottom:60px}
+  .section-title{font-size:1.6rem;font-weight:700;margin-bottom:8px;padding-left:16px;border-left:4px solid var(--primary)}
+  .section-desc{color:var(--text-dim);margin-bottom:30px;padding-left:16px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:20px;transition:all .3s}
+  .card:hover{border-color:rgba(124,58,237,0.3);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+  .card h3{font-size:1.15rem;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+  .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(480px,1fr));gap:20px}
+  .grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px}
+
+  /* Channel Pillars */
+  .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:30px}
+  .pillar{text-align:center;padding:30px 20px;border-radius:16px;border:1px solid;transition:all .3s}
+  .pillar:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.3)}
+  .pillar .icon{font-size:2.5rem;margin-bottom:12px}
+  .pillar .p-title{font-size:1.1rem;font-weight:700;margin-bottom:8px}
+  .pillar .p-tech{font-size:.78rem;color:var(--text-muted);margin-bottom:12px}
+  .p-push{background:rgba(124,58,237,0.08);border-color:rgba(124,58,237,0.25)}
+  .p-email{background:rgba(6,182,212,0.08);border-color:rgba(6,182,212,0.25)}
+  .p-inapp{background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.25)}
+
+  /* Notification Grid */
+  .notif-cat{margin-bottom:24px}
+  .notif-cat-title{font-size:.95rem;font-weight:700;margin-bottom:10px;padding:6px 14px;border-radius:8px;display:inline-block}
+  .notif-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:8px}
+  .notif-item{display:flex;align-items:center;gap:10px;padding:8px 14px;border-radius:8px;background:var(--surface-light);font-size:.82rem;transition:background .2s}
+  .notif-item:hover{background:var(--surface)}
+  .notif-name{flex:1;font-weight:500}
+  .ch-badge{padding:2px 8px;border-radius:4px;font-size:.68rem;font-weight:600}
+  .ch-push{background:rgba(124,58,237,0.15);color:var(--primary-light)}
+  .ch-email{background:rgba(6,182,212,0.15);color:var(--secondary)}
+  .ch-app{background:rgba(34,197,94,0.15);color:var(--green)}
+  .pri-high{color:var(--accent)}
+  .pri-must{color:var(--red);font-weight:700}
+
+  /* Flow */
+  .flow{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center;padding:20px 0}
+  .flow-step{padding:14px 22px;border-radius:12px;text-align:center;font-size:.85rem;font-weight:600;min-width:130px;transition:all .3s}
+  .flow-step:hover{transform:translateY(-3px)}
+  .flow-arrow{color:var(--text-muted);font-size:1.3rem;padding:0 10px}
+  .fs-purple{background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);color:var(--primary-light)}
+  .fs-cyan{background:rgba(6,182,212,0.15);border:1px solid rgba(6,182,212,0.3);color:var(--secondary)}
+  .fs-green{background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.3);color:var(--green)}
+  .fs-yellow{background:rgba(234,179,8,0.15);border:1px solid rgba(234,179,8,0.3);color:var(--yellow)}
+  .fs-pink{background:rgba(236,72,153,0.15);border:1px solid rgba(236,72,153,0.3);color:var(--pink)}
+  .fs-orange{background:rgba(249,115,22,0.15);border:1px solid rgba(249,115,22,0.3);color:var(--orange)}
+
+  /* Limits */
+  .limit-bar{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .limit-label{width:160px;font-size:.85rem;font-weight:500}
+  .limit-viz{flex:1;height:28px;border-radius:6px;background:var(--surface-light);position:relative;overflow:hidden}
+  .limit-fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;transition:width .5s}
+
+  @media(max-width:768px){.hero h1{font-size:1.8rem}.container{padding:20px}.grid-2,.grid-3{grid-template-columns:1fr}.pillars{grid-template-columns:1fr}.flow{flex-direction:column}.flow-arrow{transform:rotate(90deg)}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>🔔 通知設計図解</h1>
+  <p class="subtitle">プッシュ通知・メール・アプリ内通知の全38種 — チャネル設計・頻度制限・技術実装</p>
+</div>
+
+<div class="nav">
+  <a href="#channels">3チャネル</a>
+  <a href="#notifications">通知一覧(38種)</a>
+  <a href="#architecture">技術実装</a>
+  <a href="#limits">頻度制限</a>
+  <a href="#customize">カスタマイズ</a>
+</div>
+
+<div class="container">
+
+<!-- 3チャネル -->
+<section id="channels">
+  <h2 class="section-title">通知チャネル</h2>
+  <p class="section-desc">3つのチャネルを用途に応じて使い分け</p>
+  <div class="pillars">
+    <div class="pillar p-push">
+      <div class="icon">📱</div>
+      <div class="p-title">プッシュ通知</div>
+      <div class="p-tech">APNs (iOS) / FCM (Android) / Web Push</div>
+      <div style="font-size:.85rem;color:var(--text-dim)">リアルタイム性が高い通知。<br>アプリを開いていなくても届く。</div>
+      <div style="margin-top:12px;padding:6px 12px;border-radius:6px;background:rgba(124,58,237,0.1);font-size:.78rem;">Pro: 全種類 / Free: 基本のみ</div>
+    </div>
+    <div class="pillar p-email">
+      <div class="icon">📧</div>
+      <div class="p-title">メール通知</div>
+      <div class="p-tech">Amazon SES</div>
+      <div style="font-size:.85rem;color:var(--text-dim)">重要な通知、トライアル終了、<br>アカウント・課金関連。</div>
+      <div style="margin-top:12px;padding:6px 12px;border-radius:6px;background:rgba(6,182,212,0.1);font-size:.78rem;">Free / Pro 共通</div>
+    </div>
+    <div class="pillar p-inapp">
+      <div class="icon">🔔</div>
+      <div class="p-title">アプリ内通知</div>
+      <div class="p-tech">RDS + WebSocket</div>
+      <div style="font-size:.85rem;color:var(--text-dim)">アプリ起動中に確認する通知。<br>通知ベルに件数表示。</div>
+      <div style="margin-top:12px;padding:6px 12px;border-radius:6px;background:rgba(34,197,94,0.1);font-size:.78rem;">Free / Pro 共通</div>
+    </div>
+  </div>
+</section>
+
+<!-- 通知一覧 -->
+<section id="notifications">
+  <h2 class="section-title">全通知一覧（38種）</h2>
+  <p class="section-desc">7カテゴリに分類。各通知のチャネル・優先度を表示</p>
+
+  <div class="notif-cat">
+    <div class="notif-cat-title" style="background:rgba(124,58,237,0.15);color:var(--primary-light);">💕 マッチング関連</div>
+    <div class="notif-list">
+      <div class="notif-item"><span class="notif-name">マッチング成立</span><span class="ch-badge ch-push">Push</span><span class="ch-badge ch-app">App</span><span class="pri-high">高</span></div>
+      <div class="notif-item"><span class="notif-name">いいね受信（Pro）</span><span class="ch-badge ch-app">App</span><span>中</span></div>
+      <div class="notif-item"><span class="notif-name">新しいおすすめ（週1）</span><span class="ch-badge ch-push">Push</span><span class="ch-badge ch-app">App</span><span>低</span></div>
+    </div>
+  </div>
+
+  <div class="notif-cat">
+    <div class="notif-cat-title" style="background:rgba(6,182,212,0.15);color:var(--secondary);">💬 チャット関連（Pro限定）</div>
+    <div class="notif-list">
+      <div class="notif-item"><span class="notif-name">新着メッセージ</span><span class="ch-badge ch-push">Push</span><span class="ch-badge ch-app">App</span><span class="pri-high">高</span></div>
+      <div class="notif-item"><span class="notif-name">練習日程提案</span><span class="ch-badge ch-push">Push</span><span class="ch-badge ch-app">App</span><span class="pri-high">高</span></div>
+      <div class="notif-item"><span class="notif-name">練習日程確定</span><span class="ch-badge ch-push">Push</span><span class="ch-badge ch-app">App</span><span class="pri-high">高</span></div>
+      <div class="notif-item"><span class="notif-name">練習リマインド（前日18時）</span><span class="ch-badge ch-push">Push</span><span class="pri-high">高</span></div>
+    </div>
+  </div>
+
+  <div class="notif-cat">
+    <div class="notif-cat-title" style="background:rgba(249,115,22,0.15);color:var(--orange);">🎸 バンド関連</div>
+    <div class="notif-list">
+      <div class="notif-item"><span class="notif-name">バンド招待</span><span class="ch-badge ch-push">Push</span><span class="ch-badge ch-app">App</span><span class="pri-high">高</span></div>
+      <div class="notif-item"><span class="notif-name">メンバー参加</span><span class="ch-badge ch-app">App</span><span>中</span></div>
+      <div class="notif-item"><span class="notif-name">メンバー脱退</span><span class="ch-badge ch-app">App</span><span>中</span></div>
+    </div>
+  </div>
+
+  <div class="notif-cat">
+    <div class="notif-cat-title" style="background:rgba(236,72,153,0.15);color:var(--pink);">🎤 イベント関連</div>
+    <div class="notif-list">
+      <div class="notif-item"><span class="notif-name">地域のイベント</span><span class="ch-badge ch-push">Push</span><span class="ch-badge ch-app">App</span><span>中</span></div>
+      <div class="notif-item"><span class="notif-name">イベントリマインド（3日前）</span><span class="ch-badge ch-push">Push</span><span class="pri-high">高</span></div>
+      <div class="notif-item"><span class="notif-name">出演バンド確定</span><span class="ch-badge ch-push">Push</span><span class="ch-badge ch-app">App</span><span class="pri-high">高</span></div>
+    </div>
+  </div>
+
+  <div class="notif-cat">
+    <div class="notif-cat-title" style="background:rgba(34,197,94,0.15);color:var(--green);">🔥 練習トラッカー関連</div>
+    <div class="notif-list">
+      <div class="notif-item"><span class="notif-name">ストリーク危機（21時）</span><span class="ch-badge ch-push">Push</span><span>中</span></div>
+      <div class="notif-item"><span class="notif-name">バッジ獲得</span><span class="ch-badge ch-app">App</span><span>低</span></div>
+      <div class="notif-item"><span class="notif-name">フレンド練習報告（日次サマリー）</span><span class="ch-badge ch-app">App</span><span>低</span></div>
+      <div class="notif-item"><span class="notif-name">ランキング変動（月曜朝）</span><span class="ch-badge ch-app">App</span><span>低</span></div>
+    </div>
+  </div>
+
+  <div class="notif-cat">
+    <div class="notif-cat-title" style="background:rgba(234,179,8,0.15);color:var(--yellow);">💳 アカウント・課金関連</div>
+    <div class="notif-list">
+      <div class="notif-item"><span class="notif-name">アカウント登録完了</span><span class="ch-badge ch-email">Email</span><span class="pri-must">必須</span></div>
+      <div class="notif-item"><span class="notif-name">メール認証</span><span class="ch-badge ch-email">Email</span><span class="pri-must">必須</span></div>
+      <div class="notif-item"><span class="notif-name">パスワードリセット</span><span class="ch-badge ch-email">Email</span><span class="pri-must">必須</span></div>
+      <div class="notif-item"><span class="notif-name">トライアル終了3日前</span><span class="ch-badge ch-email">Email</span><span class="ch-badge ch-push">Push</span><span class="pri-must">必須</span></div>
+      <div class="notif-item"><span class="notif-name">トライアル終了（課金開始）</span><span class="ch-badge ch-email">Email</span><span class="pri-must">必須</span></div>
+      <div class="notif-item"><span class="notif-name">決済失敗</span><span class="ch-badge ch-email">Email</span><span class="ch-badge ch-push">Push</span><span class="pri-must">必須</span></div>
+      <div class="notif-item"><span class="notif-name">プラン変更完了</span><span class="ch-badge ch-email">Email</span><span class="ch-badge ch-app">App</span><span class="pri-high">高</span></div>
+      <div class="notif-item"><span class="notif-name">休眠アカウント警告</span><span class="ch-badge ch-email">Email</span><span>中</span></div>
+    </div>
+  </div>
+
+  <div class="notif-cat">
+    <div class="notif-cat-title" style="background:rgba(239,68,68,0.15);color:var(--red);">🛡️ 安全関連</div>
+    <div class="notif-list">
+      <div class="notif-item"><span class="notif-name">通報受理</span><span class="ch-badge ch-email">Email</span><span class="ch-badge ch-app">App</span><span class="pri-high">高</span></div>
+      <div class="notif-item"><span class="notif-name">警告通知</span><span class="ch-badge ch-email">Email</span><span class="ch-badge ch-app">App</span><span class="pri-must">必須</span></div>
+      <div class="notif-item"><span class="notif-name">機能制限通知</span><span class="ch-badge ch-email">Email</span><span class="ch-badge ch-app">App</span><span class="pri-must">必須</span></div>
+      <div class="notif-item"><span class="notif-name">アカウント停止通知</span><span class="ch-badge ch-email">Email</span><span class="pri-must">必須</span></div>
+      <div class="notif-item"><span class="notif-name">安全アドバイス（初回対面時）</span><span class="ch-badge ch-app">App</span><span class="pri-high">高</span></div>
+      <div class="notif-item"><span class="notif-name">チェックイン確認（2h後）</span><span class="ch-badge ch-push">Push</span><span>中</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 技術実装 -->
+<section id="architecture">
+  <h2 class="section-title">通知アーキテクチャ</h2>
+  <p class="section-desc">トリガーから配信までの技術フロー</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>📱 プッシュ通知フロー</h3>
+      <div class="flow" style="flex-direction:column;align-items:stretch;">
+        <div class="flow-step fs-purple" style="width:100%;">トリガー（API / WebSocket / バッチ）</div>
+        <div style="text-align:center;color:var(--text-muted);padding:6px;">↓</div>
+        <div class="flow-step fs-cyan" style="width:100%;">Lambda（通知ハンドラー）</div>
+        <div style="text-align:center;color:var(--text-muted);padding:6px;">↓</div>
+        <div class="flow-step fs-yellow" style="width:100%;">Amazon SNS（プラットフォーム振り分け）</div>
+        <div style="text-align:center;color:var(--text-muted);padding:6px;">↓</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+          <div class="flow-step fs-green" style="min-width:auto;font-size:.8rem;">APNs<br>(iOS)</div>
+          <div class="flow-step fs-orange" style="min-width:auto;font-size:.8rem;">FCM<br>(Android)</div>
+          <div class="flow-step fs-pink" style="min-width:auto;font-size:.8rem;">Web Push<br>(ブラウザ)</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>📧 メール通知フロー</h3>
+      <div class="flow" style="flex-direction:column;align-items:stretch;">
+        <div class="flow-step fs-purple" style="width:100%;">トリガー</div>
+        <div style="text-align:center;color:var(--text-muted);padding:6px;">↓</div>
+        <div class="flow-step fs-orange" style="width:100%;">SQS（メールキュー）<div style="font-size:.72rem;font-weight:400;margin-top:4px;">レート制限・リトライ管理</div></div>
+        <div style="text-align:center;color:var(--text-muted);padding:6px;">↓</div>
+        <div class="flow-step fs-cyan" style="width:100%;">Lambda（メール送信ワーカー）</div>
+        <div style="text-align:center;color:var(--text-muted);padding:6px;">↓</div>
+        <div class="flow-step fs-green" style="width:100%;">Amazon SES → ユーザーのメールボックス</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 頻度制限 -->
+<section id="limits">
+  <h2 class="section-title">通知頻度の制限</h2>
+  <p class="section-desc">ユーザーが通知過多にならないための制限</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>📊 制限ルール</h3>
+      <div class="limit-bar">
+        <div class="limit-label">プッシュ1日上限</div>
+        <div class="limit-viz"><div class="limit-fill" style="width:100%;background:linear-gradient(90deg,rgba(124,58,237,0.3),rgba(124,58,237,0.6));">最大10件/日</div></div>
+      </div>
+      <div class="limit-bar">
+        <div class="limit-label">同一種別の再送</div>
+        <div class="limit-viz"><div class="limit-fill" style="width:60%;background:linear-gradient(90deg,rgba(6,182,212,0.3),rgba(6,182,212,0.6));">最低1時間間隔</div></div>
+      </div>
+      <div class="limit-bar">
+        <div class="limit-label">夜間制限</div>
+        <div class="limit-viz"><div class="limit-fill" style="width:42%;background:linear-gradient(90deg,rgba(234,179,8,0.3),rgba(234,179,8,0.6));">22時〜8時は停止</div></div>
+      </div>
+      <div class="limit-bar">
+        <div class="limit-label">フレンド活動</div>
+        <div class="limit-viz"><div class="limit-fill" style="width:80%;background:linear-gradient(90deg,rgba(34,197,94,0.3),rgba(34,197,94,0.6));">個別通知せず日次サマリー</div></div>
+      </div>
+      <div style="margin-top:12px;padding:10px 14px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:8px;font-size:.82rem;">
+        ⚠️ <strong>例外:</strong> アカウント・課金・安全関連は上限・夜間制限の対象外
+      </div>
+    </div>
+    <div class="card">
+      <h3>⏰ 夜間制限の可視化</h3>
+      <div style="display:flex;height:40px;border-radius:8px;overflow:hidden;margin-bottom:12px;">
+        <div style="width:33%;background:rgba(34,197,94,0.2);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:600;color:var(--green);">8:00</div>
+        <div style="width:58%;background:rgba(124,58,237,0.15);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:600;">通知配信OK ✅</div>
+        <div style="width:9%;background:rgba(239,68,68,0.2);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:600;color:var(--red);">22:00</div>
+      </div>
+      <div style="display:flex;height:40px;border-radius:8px;overflow:hidden;">
+        <div style="width:33%;background:rgba(239,68,68,0.15);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:600;color:var(--red);">🌙 停止中（翌朝サマリー）</div>
+        <div style="width:67%;background:rgba(34,197,94,0.15);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:600;color:var(--green);">☀️ 通知配信OK</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- カスタマイズ -->
+<section id="customize">
+  <h2 class="section-title">通知カスタマイズ（Pro限定）</h2>
+  <p class="section-desc">Pro会員はカテゴリ別にON/OFF切り替え可能</p>
+
+  <div class="card">
+    <div style="display:grid;grid-template-columns:1fr auto auto;gap:0;font-size:.85rem;">
+      <div style="padding:10px 14px;font-weight:700;border-bottom:1px solid var(--border);">カテゴリ</div>
+      <div style="padding:10px 14px;font-weight:700;border-bottom:1px solid var(--border);text-align:center;">デフォルト</div>
+      <div style="padding:10px 14px;font-weight:700;border-bottom:1px solid var(--border);text-align:center;">変更可否</div>
+
+      <div style="padding:8px 14px;border-bottom:1px solid rgba(51,65,85,0.3);">💕 マッチング成立</div>
+      <div style="padding:8px 14px;border-bottom:1px solid rgba(51,65,85,0.3);text-align:center;color:var(--green);">ON</div>
+      <div style="padding:8px 14px;border-bottom:1px solid rgba(51,65,85,0.3);text-align:center;">✅ 変更可</div>
+
+      <div style="padding:8px 14px;border-bottom:1px solid rgba(51,65,85,0.3);">💬 チャット新着</div>
+      <div style="padding:8px 14px;border-bottom:1px solid rgba(51,65,85,0.3);text-align:center;color:var(--green);">ON</div>
+      <div style="padding:8px 14px;border-bottom:1px solid rgba(51,65,85,0.3);text-align:center;">✅ 変更可</div>
+
+      <div style="padding:8px 14px;border-bottom:1px solid rgba(51,65,85,0.3);">📅 練習リマインド</div>
+      <div style="padding:8px 14px;border-bottom:1px solid rgba(51,65,85,0.3);text-align:center;color:var(--green);">ON</div>
+      <div style="padding:8px 14px;border-bottom:1px solid rgba(51,65,85,0.3);text-align:center;">✅ 変更可</div>
+
+      <div style="padding:8px 14px;border-bottom:1px solid rgba(51,65,85,0.3);">🔥 ストリーク危機</div>
+      <div style="padding:8px 14px;border-bottom:1px solid rgba(51,65,85,0.3);text-align:center;color:var(--green);">ON</div>
+      <div style="padding:8px 14px;border-bottom:1px solid rgba(51,65,85,0.3);text-align:center;">✅ 変更可</div>
+
+      <div style="padding:8px 14px;border-bottom:1px solid rgba(51,65,85,0.3);">🎤 イベント情報</div>
+      <div style="padding:8px 14px;border-bottom:1px solid rgba(51,65,85,0.3);text-align:center;color:var(--green);">ON</div>
+      <div style="padding:8px 14px;border-bottom:1px solid rgba(51,65,85,0.3);text-align:center;">✅ 変更可</div>
+
+      <div style="padding:8px 14px;border-bottom:1px solid rgba(51,65,85,0.3);">📊 ランキング変動</div>
+      <div style="padding:8px 14px;border-bottom:1px solid rgba(51,65,85,0.3);text-align:center;color:var(--text-muted);">OFF</div>
+      <div style="padding:8px 14px;border-bottom:1px solid rgba(51,65,85,0.3);text-align:center;">✅ 変更可</div>
+
+      <div style="padding:8px 14px;border-bottom:1px solid rgba(51,65,85,0.3);color:var(--yellow);">💳 アカウント・課金</div>
+      <div style="padding:8px 14px;border-bottom:1px solid rgba(51,65,85,0.3);text-align:center;color:var(--green);">ON</div>
+      <div style="padding:8px 14px;border-bottom:1px solid rgba(51,65,85,0.3);text-align:center;color:var(--red);">🔒 変更不可</div>
+
+      <div style="padding:8px 14px;color:var(--red);">🛡️ 安全・警告</div>
+      <div style="padding:8px 14px;text-align:center;color:var(--green);">ON</div>
+      <div style="padding:8px 14px;text-align:center;color:var(--red);">🔒 変更不可</div>
+    </div>
+  </div>
+</section>
+
+</div>
+</body>
+</html>

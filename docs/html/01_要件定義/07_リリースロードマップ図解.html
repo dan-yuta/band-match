@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Groove Match - リリースロードマップ図解</title>
+<style>
+  :root{--bg:#0a0a1a;--surface:#1a1a2e;--surface-light:#25253d;--primary:#7c3aed;--primary-light:#8b5cf6;--secondary:#06b6d4;--accent:#f97066;--green:#22c55e;--yellow:#eab308;--orange:#f59e0b;--pink:#ec4899;--blue:#3b82f6;--red:#ef4444;--indigo:#6366f1;--text:#e2e8f0;--text-dim:#94a3b8;--text-muted:#64748b;--border:#334155}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+  .hero{background:linear-gradient(135deg,#1a1a2e 0%,#0a0a1a 50%,#1a1a2e 100%);border-bottom:1px solid var(--border);padding:70px 40px 50px;text-align:center;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 50%,rgba(34,197,94,0.08) 0%,transparent 50%),radial-gradient(circle at 70% 50%,rgba(234,179,8,0.06) 0%,transparent 50%);animation:hf 20s ease-in-out infinite}
+  @keyframes hf{0%,100%{transform:translate(0,0)}50%{transform:translate(-2%,2%)}}
+  .hero h1{font-size:2.8rem;font-weight:800;background:linear-gradient(135deg,var(--green),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;margin-bottom:12px}
+  .hero .subtitle{font-size:1.15rem;color:var(--text-dim);position:relative;max-width:700px;margin:0 auto}
+  .container{max-width:1200px;margin:0 auto;padding:40px}
+  section{margin-bottom:60px}
+  .section-title{font-size:1.6rem;font-weight:700;margin-bottom:8px;padding-left:16px;border-left:4px solid var(--green)}
+  .section-desc{color:var(--text-dim);margin-bottom:30px;padding-left:16px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:20px;transition:all .3s}
+  .card:hover{border-color:rgba(34,197,94,0.3);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+  .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(480px,1fr));gap:20px}
+
+  /* Gantt Chart */
+  .gantt{overflow-x:auto;margin-bottom:30px}
+  .gantt-header{display:grid;grid-template-columns:140px repeat(12,1fr);gap:1px;margin-bottom:2px}
+  .gantt-header div{padding:8px 4px;text-align:center;font-size:.72rem;font-weight:700;background:var(--surface-light);border-radius:4px;color:var(--text-muted)}
+  .gantt-row{display:grid;grid-template-columns:140px repeat(12,1fr);gap:1px;margin-bottom:3px;align-items:center}
+  .gantt-label{padding:8px 10px;font-size:.78rem;font-weight:600;background:var(--surface-light);border-radius:4px}
+  .gantt-bar{border-radius:4px;height:28px;position:relative;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;color:white;transition:all .3s}
+  .gantt-bar:hover{transform:scaleY(1.2);box-shadow:0 4px 12px rgba(0,0,0,.4)}
+
+  /* Timeline */
+  .phase-timeline{position:relative;padding-left:30px}
+  .phase-timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--blue),var(--green),var(--yellow),var(--orange),var(--pink),var(--primary),var(--accent))}
+  .phase-item{position:relative;margin-bottom:20px;padding:20px 24px;background:var(--surface);border:1px solid var(--border);border-radius:12px;transition:all .3s}
+  .phase-item:hover{border-color:rgba(34,197,94,0.3);transform:translateX(4px)}
+  .phase-item::before{content:'';position:absolute;left:-26px;top:24px;width:14px;height:14px;border-radius:50%;border:3px solid;background:var(--bg)}
+  .phase-header{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+  .phase-num{padding:4px 12px;border-radius:6px;font-size:.78rem;font-weight:700}
+  .phase-title{font-size:1.05rem;font-weight:700}
+  .phase-period{font-size:.8rem;color:var(--text-muted)}
+  .phase-tasks{font-size:.82rem;color:var(--text-dim);margin-top:8px}
+
+  /* Milestones */
+  .milestones{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+  .milestone{text-align:center;padding:16px 10px;background:var(--surface-light);border-radius:10px;border:1px solid var(--border);transition:all .3s}
+  .milestone:hover{transform:translateY(-3px);border-color:rgba(234,179,8,0.4)}
+  .ms-num{font-size:1.3rem;font-weight:800;margin-bottom:4px}
+  .ms-name{font-size:.8rem;font-weight:600;margin-bottom:4px}
+  .ms-time{font-size:.72rem;color:var(--text-muted)}
+
+  /* Risk */
+  .risk-item{display:flex;gap:12px;padding:12px 16px;background:var(--surface-light);border-radius:8px;margin-bottom:8px;font-size:.85rem;transition:all .3s}
+  .risk-item:hover{background:var(--surface)}
+  .risk-icon{font-size:1.2rem;min-width:30px;text-align:center}
+
+  @media(max-width:768px){.hero h1{font-size:1.8rem}.container{padding:20px}.grid-2{grid-template-columns:1fr}.gantt-header,.gantt-row{grid-template-columns:100px repeat(12,1fr)}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>🗓️ リリースロードマップ図解</h1>
+  <p class="subtitle">Phase 1〜7 — 基盤構築からクローズドベータ、一般公開、成長期まで<br>約10ヶ月で一般公開（GA）を目指す</p>
+</div>
+
+<div class="container">
+
+<!-- ガントチャート -->
+<section>
+  <h2 class="section-title">ガントチャート（全体スケジュール）</h2>
+  <p class="section-desc">Month 1〜12 のフェーズ別スケジュール</p>
+
+  <div class="card">
+    <div class="gantt">
+      <div class="gantt-header">
+        <div>フェーズ</div>
+        <div>M1</div><div>M2</div><div>M3</div><div>M4</div><div>M5</div><div>M6</div><div>M7</div><div>M8</div><div>M9</div><div>M10</div><div>M11</div><div>M12</div>
+      </div>
+      <div class="gantt-row">
+        <div class="gantt-label" style="color:var(--blue);">P1 基盤構築</div>
+        <div class="gantt-bar" style="grid-column:2/4;background:linear-gradient(90deg,rgba(59,130,246,0.7),rgba(59,130,246,0.4));">2ヶ月</div>
+      </div>
+      <div class="gantt-row">
+        <div class="gantt-label" style="color:var(--green);">P2 コア機能</div>
+        <div style="grid-column:2/3;"></div>
+        <div class="gantt-bar" style="grid-column:3/6;background:linear-gradient(90deg,rgba(34,197,94,0.7),rgba(34,197,94,0.4));">3ヶ月</div>
+      </div>
+      <div class="gantt-row">
+        <div class="gantt-label" style="color:var(--secondary);">P3 拡張機能</div>
+        <div style="grid-column:2/5;"></div>
+        <div class="gantt-bar" style="grid-column:5/8;background:linear-gradient(90deg,rgba(6,182,212,0.7),rgba(6,182,212,0.4));">2.5ヶ月</div>
+      </div>
+      <div class="gantt-row">
+        <div class="gantt-label" style="color:var(--yellow);">P4 テスト改善</div>
+        <div style="grid-column:2/7;"></div>
+        <div class="gantt-bar" style="grid-column:7/9;background:linear-gradient(90deg,rgba(234,179,8,0.7),rgba(234,179,8,0.4));">1.5ヶ月</div>
+      </div>
+      <div class="gantt-row">
+        <div class="gantt-label" style="color:var(--pink);">P5 ベータ</div>
+        <div style="grid-column:2/9;"></div>
+        <div class="gantt-bar" style="grid-column:9/10;background:linear-gradient(90deg,rgba(236,72,153,0.7),rgba(236,72,153,0.4));">1ヶ月</div>
+      </div>
+      <div class="gantt-row">
+        <div class="gantt-label" style="color:var(--primary-light);">P6 一般公開</div>
+        <div style="grid-column:2/10;"></div>
+        <div class="gantt-bar" style="grid-column:10/11;background:linear-gradient(90deg,rgba(124,58,237,0.7),rgba(124,58,237,0.4));">1ヶ月</div>
+      </div>
+      <div class="gantt-row">
+        <div class="gantt-label" style="color:var(--accent);">P7 成長期</div>
+        <div style="grid-column:2/11;"></div>
+        <div class="gantt-bar" style="grid-column:11/14;background:linear-gradient(90deg,rgba(249,112,102,0.7),rgba(249,112,102,0.4));">継続→</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- フェーズ詳細 -->
+<section>
+  <h2 class="section-title">フェーズ詳細</h2>
+
+  <div class="phase-timeline">
+    <div class="phase-item" style="--c:var(--blue);">
+      <div style="position:absolute;left:-26px;top:24px;width:14px;height:14px;border-radius:50%;border:3px solid var(--blue);background:var(--bg);"></div>
+      <div class="phase-header">
+        <span class="phase-num" style="background:rgba(59,130,246,0.15);color:var(--blue);">Phase 1</span>
+        <span class="phase-title">基盤構築</span>
+        <span class="phase-period">2ヶ月（Week 1-8）</span>
+      </div>
+      <div class="phase-tasks">AWS環境構築（CloudFormation）→ CI/CD → DB設計（Prisma）→ 認証（Cognito）→ API基盤</div>
+    </div>
+    <div class="phase-item">
+      <div style="position:absolute;left:-26px;top:24px;width:14px;height:14px;border-radius:50%;border:3px solid var(--green);background:var(--bg);"></div>
+      <div class="phase-header">
+        <span class="phase-num" style="background:rgba(34,197,94,0.15);color:var(--green);">Phase 2</span>
+        <span class="phase-title">コア機能</span>
+        <span class="phase-period">3ヶ月（Week 9-20）</span>
+      </div>
+      <div class="phase-tasks">プロフィール → マッチング → チャット（WebSocket）→ バンド管理 → Spotify連携 → Stripe決済</div>
+    </div>
+    <div class="phase-item">
+      <div style="position:absolute;left:-26px;top:24px;width:14px;height:14px;border-radius:50%;border:3px solid var(--secondary);background:var(--bg);"></div>
+      <div class="phase-header">
+        <span class="phase-num" style="background:rgba(6,182,212,0.15);color:var(--secondary);">Phase 3</span>
+        <span class="phase-title">拡張機能</span>
+        <span class="phase-period">2.5ヶ月（Week 21-30）</span>
+      </div>
+      <div class="phase-tasks">イベントボード → コミュニティ → 練習トラッカー → フレンド・ランキング → 練習カレンダー → 通知</div>
+    </div>
+    <div class="phase-item">
+      <div style="position:absolute;left:-26px;top:24px;width:14px;height:14px;border-radius:50%;border:3px solid var(--yellow);background:var(--bg);"></div>
+      <div class="phase-header">
+        <span class="phase-num" style="background:rgba(234,179,8,0.15);color:var(--yellow);">Phase 4</span>
+        <span class="phase-title">テスト・改善</span>
+        <span class="phase-period">1.5ヶ月（Week 31-36）</span>
+      </div>
+      <div class="phase-tasks">E2Eテスト → パフォーマンスチューニング → セキュリティ監査 → 管理ダッシュボード → モバイルビルド</div>
+    </div>
+    <div class="phase-item">
+      <div style="position:absolute;left:-26px;top:24px;width:14px;height:14px;border-radius:50%;border:3px solid var(--pink);background:var(--bg);"></div>
+      <div class="phase-header">
+        <span class="phase-num" style="background:rgba(236,72,153,0.15);color:var(--pink);">Phase 5</span>
+        <span class="phase-title">クローズドベータ</span>
+        <span class="phase-period">1ヶ月（Week 37-40）</span>
+      </div>
+      <div class="phase-tasks"><strong>招待制100名限定</strong> → テストユーザー募集 → バグ報告対応 → アンケート・インタビュー → 優先修正</div>
+    </div>
+    <div class="phase-item">
+      <div style="position:absolute;left:-26px;top:24px;width:14px;height:14px;border-radius:50%;border:3px solid var(--primary-light);background:var(--bg);"></div>
+      <div class="phase-header">
+        <span class="phase-num" style="background:rgba(124,58,237,0.15);color:var(--primary-light);">Phase 6</span>
+        <span class="phase-title">一般公開 🎉</span>
+        <span class="phase-period">1ヶ月（Week 41-44）</span>
+      </div>
+      <div class="phase-tasks">招待制解除 → App Store / Google Play 公開 → SNS告知 → 初月KPIレビュー</div>
+    </div>
+    <div class="phase-item">
+      <div style="position:absolute;left:-26px;top:24px;width:14px;height:14px;border-radius:50%;border:3px solid var(--accent);background:var(--bg);"></div>
+      <div class="phase-header">
+        <span class="phase-num" style="background:rgba(249,112,102,0.15);color:var(--accent);">Phase 7</span>
+        <span class="phase-title">成長期</span>
+        <span class="phase-period">継続</span>
+      </div>
+      <div class="phase-tasks">LLM推薦テキスト追加 → 損益分岐点到達（Pro 147名）→ Aurora移行判断 → MAU 20,000目標</div>
+    </div>
+  </div>
+</section>
+
+<!-- マイルストーン -->
+<section>
+  <h2 class="section-title">マイルストーン</h2>
+  <p class="section-desc">7つの主要マイルストーン</p>
+
+  <div class="milestones">
+    <div class="milestone">
+      <div class="ms-num" style="color:var(--blue);">M1</div>
+      <div class="ms-name">基盤完成</div>
+      <div class="ms-time">Month 2</div>
+    </div>
+    <div class="milestone">
+      <div class="ms-num" style="color:var(--green);">M2</div>
+      <div class="ms-name">コア機能完成</div>
+      <div class="ms-time">Month 5</div>
+    </div>
+    <div class="milestone">
+      <div class="ms-num" style="color:var(--secondary);">M3</div>
+      <div class="ms-name">全機能完成</div>
+      <div class="ms-time">Month 7.5</div>
+    </div>
+    <div class="milestone">
+      <div class="ms-num" style="color:var(--yellow);">M4</div>
+      <div class="ms-name">リリース候補</div>
+      <div class="ms-time">Month 9</div>
+    </div>
+    <div class="milestone">
+      <div class="ms-num" style="color:var(--pink);">M5</div>
+      <div class="ms-name">ベータ開始</div>
+      <div class="ms-time">Month 9</div>
+    </div>
+    <div class="milestone">
+      <div class="ms-num" style="color:var(--primary-light);">M6</div>
+      <div class="ms-name">一般公開</div>
+      <div class="ms-time">Month 10</div>
+    </div>
+    <div class="milestone">
+      <div class="ms-num" style="color:var(--accent);">M7</div>
+      <div class="ms-name">損益分岐点</div>
+      <div class="ms-time">Month 12-14</div>
+    </div>
+  </div>
+</section>
+
+<!-- リスク -->
+<section>
+  <h2 class="section-title">リスクと対策</h2>
+
+  <div class="card">
+    <div class="risk-item"><div class="risk-icon">🎵</div><div><strong>Spotify API商用審査に時間がかかる</strong><br><span style="color:var(--text-dim);font-size:.82rem;">対策: MusicBrainz APIをフォールバックとして並行実装</span></div></div>
+    <div class="risk-item"><div class="risk-icon">🍎</div><div><strong>App Store審査でリジェクト</strong><br><span style="color:var(--text-dim);font-size:.82rem;">対策: Web版を先行公開。審査ガイドラインを事前確認</span></div></div>
+    <div class="risk-item"><div class="risk-icon">🎯</div><div><strong>マッチング精度が低い（ユーザー少）</strong><br><span style="color:var(--text-dim);font-size:.82rem;">対策: ベータで集中フィードバック。地域を絞って密度確保</span></div></div>
+    <div class="risk-item"><div class="risk-icon">🔒</div><div><strong>セキュリティインシデント</strong><br><span style="color:var(--text-dim);font-size:.82rem;">対策: Phase 4でセキュリティ監査を必須実施。WAF設定の事前検証</span></div></div>
+    <div class="risk-item"><div class="risk-icon">👤</div><div><strong>開発リソース不足（シングル開発者）</strong><br><span style="color:var(--text-dim);font-size:.82rem;">対策: MVP機能に集中。Nice-to-haveはPhase 7以降に後回し</span></div></div>
+  </div>
+</section>
+
+</div>
+</body>
+</html>

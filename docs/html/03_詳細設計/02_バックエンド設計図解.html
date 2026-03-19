@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Groove Match - バックエンド設計図解</title>
+<style>
+  :root {
+    --bg: #0a0a1a;
+    --surface: #1a1a2e;
+    --surface-light: #25253d;
+    --surface-hover: #2f2f4a;
+    --primary: #7c3aed;
+    --primary-light: #8b5cf6;
+    --secondary: #06b6d4;
+    --accent: #f97066;
+    --green: #22c55e;
+    --yellow: #eab308;
+    --orange: #f59e0b;
+    --pink: #ec4899;
+    --blue: #3b82f6;
+    --indigo: #6366f1;
+    --red: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --border: #334155;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.7; }
+  .hero {
+    background: linear-gradient(135deg, #1a1a2e 0%, #0a0a1a 50%, #1a1a2e 100%);
+    border-bottom: 1px solid var(--border); padding: 70px 40px 50px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(circle at 30% 50%, rgba(124,58,237,0.08) 0%, transparent 50%),
+                radial-gradient(circle at 70% 50%, rgba(6,182,212,0.06) 0%, transparent 50%);
+    animation: heroFloat 20s ease-in-out infinite;
+  }
+  @keyframes heroFloat { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-2%,2%)} }
+  .hero h1 {
+    font-size: 2.8rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    position: relative; margin-bottom: 12px;
+  }
+  .hero .subtitle { font-size: 1.15rem; color: var(--text-dim); position: relative; max-width: 700px; margin: 0 auto; }
+  .hero .badge-row { margin-top: 20px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; position: relative; }
+  .hero .badge { padding: 6px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid; }
+  .badge-purple { background: rgba(124,58,237,0.12); border-color: rgba(124,58,237,0.3) !important; color: var(--primary-light); }
+  .badge-cyan { background: rgba(6,182,212,0.12); border-color: rgba(6,182,212,0.3) !important; color: var(--secondary); }
+  .badge-green { background: rgba(34,197,94,0.12); border-color: rgba(34,197,94,0.3) !important; color: var(--green); }
+  .badge-coral { background: rgba(249,112,102,0.12); border-color: rgba(249,112,102,0.3) !important; color: var(--accent); }
+  .nav {
+    background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 40px;
+    display: flex; gap: 0; overflow-x: auto; position: sticky; top: 0; z-index: 100;
+  }
+  .nav a {
+    color: var(--text-dim); text-decoration: none; padding: 14px 20px;
+    font-size: 0.85rem; font-weight: 500; white-space: nowrap;
+    border-bottom: 2px solid transparent; transition: all 0.2s;
+  }
+  .nav a:hover { color: var(--text); border-bottom-color: var(--primary); background: rgba(124,58,237,0.05); }
+  .container { max-width: 1200px; margin: 0 auto; padding: 40px 40px; }
+  section { margin-bottom: 60px; }
+  .section-title {
+    font-size: 1.6rem; font-weight: 700; margin-bottom: 8px;
+    padding-left: 16px; border-left: 4px solid var(--primary);
+  }
+  .section-desc { color: var(--text-dim); margin-bottom: 30px; padding-left: 16px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 28px; margin-bottom: 20px; transition: all 0.3s;
+  }
+  .card:hover { border-color: rgba(124,58,237,0.3); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+  .card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(480px, 1fr)); gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+
+  /* Tech Stack */
+  .stack-diagram { display: flex; flex-direction: column; gap: 0; align-items: center; }
+  .stack-layer {
+    width: 100%; padding: 18px 24px; border-radius: 12px; text-align: center;
+    font-weight: 600; position: relative; transition: all 0.3s;
+  }
+  .stack-layer:hover { transform: scale(1.02); }
+  .stack-layer .label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; }
+  .stack-layer .name { font-size: 1.05rem; }
+  .stack-arrow { font-size: 1.5rem; color: var(--text-muted); padding: 4px 0; }
+  .layer-frontend { background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(99,102,241,0.05)); border: 1px solid rgba(99,102,241,0.3); }
+  .layer-api { background: linear-gradient(135deg, rgba(124,58,237,0.2), rgba(124,58,237,0.05)); border: 1px solid rgba(124,58,237,0.3); }
+  .layer-orm { background: linear-gradient(135deg, rgba(6,182,212,0.2), rgba(6,182,212,0.05)); border: 1px solid rgba(6,182,212,0.3); }
+  .layer-db { background: linear-gradient(135deg, rgba(34,197,94,0.2), rgba(34,197,94,0.05)); border: 1px solid rgba(34,197,94,0.3); }
+  .layer-cache { background: linear-gradient(135deg, rgba(249,115,22,0.2), rgba(249,115,22,0.05)); border: 1px solid rgba(249,115,22,0.3); }
+  .layer-auth { background: linear-gradient(135deg, rgba(236,72,153,0.2), rgba(236,72,153,0.05)); border: 1px solid rgba(236,72,153,0.3); }
+  .layer-ws { background: linear-gradient(135deg, rgba(234,179,8,0.2), rgba(234,179,8,0.05)); border: 1px solid rgba(234,179,8,0.3); }
+
+  /* Side branches */
+  .stack-with-branches { display: grid; grid-template-columns: 1fr 3fr 1fr; gap: 16px; align-items: start; }
+  .branch-col { display: flex; flex-direction: column; gap: 12px; padding-top: 40px; }
+  .branch-item {
+    padding: 14px 18px; border-radius: 10px; font-size: 0.85rem; position: relative;
+    border: 1px solid var(--border); background: var(--surface-light); transition: all 0.3s;
+  }
+  .branch-item:hover { border-color: rgba(124,58,237,0.4); }
+  .branch-item .b-label { font-size: 0.7rem; color: var(--text-muted); }
+  .branch-item .b-name { font-weight: 600; }
+
+  /* ER Diagram */
+  .er-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+  .er-table {
+    background: var(--surface-light); border: 1px solid var(--border); border-radius: 10px;
+    overflow: hidden; transition: all 0.3s; font-size: 0.8rem;
+  }
+  .er-table:hover { border-color: rgba(6,182,212,0.5); transform: translateY(-2px); }
+  .er-table-name {
+    padding: 8px 12px; font-weight: 700; font-size: 0.85rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .er-table-name.t-core { background: linear-gradient(135deg, rgba(124,58,237,0.2), rgba(124,58,237,0.05)); color: var(--primary-light); }
+  .er-table-name.t-music { background: linear-gradient(135deg, rgba(6,182,212,0.2), rgba(6,182,212,0.05)); color: var(--secondary); }
+  .er-table-name.t-social { background: linear-gradient(135deg, rgba(34,197,94,0.2), rgba(34,197,94,0.05)); color: var(--green); }
+  .er-table-name.t-payment { background: linear-gradient(135deg, rgba(234,179,8,0.2), rgba(234,179,8,0.05)); color: var(--yellow); }
+  .er-table-name.t-chat { background: linear-gradient(135deg, rgba(236,72,153,0.2), rgba(236,72,153,0.05)); color: var(--pink); }
+  .er-table-name.t-safety { background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(239,68,68,0.05)); color: var(--red); }
+  .er-cols { padding: 8px 12px; }
+  .er-cols div { padding: 2px 0; color: var(--text-dim); }
+  .er-cols .pk { color: var(--yellow); }
+  .er-cols .fk { color: var(--secondary); }
+
+  /* API Endpoints */
+  .api-group { margin-bottom: 16px; }
+  .api-group-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .api-row {
+    display: flex; gap: 10px; align-items: center; padding: 6px 12px; border-radius: 6px;
+    font-size: 0.82rem; font-family: 'Consolas', 'Monaco', monospace; transition: background 0.2s;
+  }
+  .api-row:hover { background: var(--surface-light); }
+  .method {
+    padding: 2px 8px; border-radius: 4px; font-size: 0.72rem; font-weight: 700;
+    min-width: 50px; text-align: center;
+  }
+  .method-get { background: rgba(34,197,94,0.15); color: var(--green); }
+  .method-post { background: rgba(59,130,246,0.15); color: var(--blue); }
+  .method-put { background: rgba(234,179,8,0.15); color: var(--yellow); }
+  .method-patch { background: rgba(249,115,22,0.15); color: var(--orange); }
+  .method-delete { background: rgba(239,68,68,0.15); color: var(--red); }
+  .api-path { color: var(--text); }
+  .api-desc { color: var(--text-muted); margin-left: auto; }
+
+  /* Flow Diagrams */
+  .flow { display: flex; align-items: center; gap: 0; flex-wrap: wrap; justify-content: center; padding: 20px 0; }
+  .flow-step {
+    padding: 12px 20px; border-radius: 10px; text-align: center; font-size: 0.85rem;
+    font-weight: 600; min-width: 120px; transition: all 0.3s;
+  }
+  .flow-step:hover { transform: translateY(-3px); }
+  .flow-arrow { color: var(--text-muted); font-size: 1.3rem; padding: 0 8px; }
+  .flow-arrow-down { display: block; text-align: center; color: var(--text-muted); font-size: 1.3rem; padding: 8px 0; }
+
+  .fs-purple { background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.3); color: var(--primary-light); }
+  .fs-cyan { background: rgba(6,182,212,0.15); border: 1px solid rgba(6,182,212,0.3); color: var(--secondary); }
+  .fs-green { background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); color: var(--green); }
+  .fs-yellow { background: rgba(234,179,8,0.15); border: 1px solid rgba(234,179,8,0.3); color: var(--yellow); }
+  .fs-pink { background: rgba(236,72,153,0.15); border: 1px solid rgba(236,72,153,0.3); color: var(--pink); }
+  .fs-red { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: var(--red); }
+  .fs-orange { background: rgba(249,115,22,0.15); border: 1px solid rgba(249,115,22,0.3); color: var(--orange); }
+  .fs-blue { background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3); color: var(--blue); }
+
+  /* PCI DSS */
+  .pci-row { display: flex; align-items: center; gap: 16px; padding: 10px 0; border-bottom: 1px solid rgba(51,65,85,0.5); }
+  .pci-icon { font-size: 1.5rem; min-width: 40px; text-align: center; }
+  .pci-label { font-weight: 600; }
+  .pci-desc { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* Security Layer */
+  .security-layers { display: flex; flex-direction: column; gap: 0; }
+  .sec-layer {
+    padding: 16px 24px; text-align: center; font-weight: 600; font-size: 0.95rem;
+    position: relative; border: 1px solid;
+  }
+  .sec-layer:first-child { border-radius: 12px 12px 0 0; }
+  .sec-layer:last-child { border-radius: 0 0 12px 12px; }
+  .sec-layer .sec-detail { font-size: 0.78rem; font-weight: 400; color: var(--text-dim); margin-top: 4px; }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 1.8rem; }
+    .container { padding: 20px; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .stack-with-branches { grid-template-columns: 1fr; }
+    .flow { flex-direction: column; }
+    .flow-arrow { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>🔧 バックエンド設計図解</h1>
+  <p class="subtitle">Next.js API Routes + Prisma + RDS PostgreSQL + Amazon Cognito + Stripe</p>
+  <div class="badge-row">
+    <span class="badge badge-purple">Next.js API Routes</span>
+    <span class="badge badge-cyan">Prisma ORM</span>
+    <span class="badge badge-green">RDS PostgreSQL</span>
+    <span class="badge badge-coral">PCI DSS SAQ-A</span>
+  </div>
+</div>
+
+<div class="nav">
+  <a href="#tech-stack">技術スタック</a>
+  <a href="#er-diagram">DB設計</a>
+  <a href="#api-endpoints">API設計</a>
+  <a href="#auth-flow">認証フロー</a>
+  <a href="#spotify-flow">Spotify連携</a>
+  <a href="#pci-dss">決済セキュリティ</a>
+  <a href="#prefecture">都道府県データ</a>
+  <a href="#security">セキュリティ</a>
+</div>
+
+<div class="container">
+
+<!-- 技術スタック -->
+<section id="tech-stack">
+  <h2 class="section-title">技術スタック構成図</h2>
+  <p class="section-desc">フロントエンドからデータベースまでの全レイヤー構成</p>
+
+  <div class="stack-with-branches">
+    <div class="branch-col">
+      <div class="branch-item" style="border-color: rgba(236,72,153,0.3);">
+        <div class="b-label">認証</div>
+        <div class="b-name">Amazon Cognito</div>
+        <div style="font-size:0.75rem; color:var(--text-muted)">JWT + ソーシャルログイン</div>
+      </div>
+      <div class="branch-item" style="border-color: rgba(234,179,8,0.3);">
+        <div class="b-label">リアルタイム通信</div>
+        <div class="b-name">API Gateway WebSocket</div>
+        <div style="font-size:0.75rem; color:var(--text-muted)">+ Lambda ハンドラー</div>
+      </div>
+      <div class="branch-item" style="border-color: rgba(34,197,94,0.3);">
+        <div class="b-label">決済</div>
+        <div class="b-name">Stripe Checkout</div>
+        <div style="font-size:0.75rem; color:var(--text-muted)">カード情報は一切保持しない</div>
+      </div>
+    </div>
+
+    <div class="stack-diagram">
+      <div class="stack-layer layer-frontend">
+        <div class="label">フロントエンド</div>
+        <div class="name">Next.js App Router + React 19 + TypeScript</div>
+      </div>
+      <div class="stack-arrow">↓</div>
+      <div class="stack-layer layer-api">
+        <div class="label">APIレイヤー</div>
+        <div class="name">Next.js API Routes / Server Actions</div>
+      </div>
+      <div class="stack-arrow">↓</div>
+      <div class="stack-layer layer-orm">
+        <div class="label">ORM</div>
+        <div class="name">Prisma（型安全なDB操作）</div>
+      </div>
+      <div class="stack-arrow">↓</div>
+      <div class="stack-layer layer-db">
+        <div class="label">メインDB</div>
+        <div class="name">RDS PostgreSQL + pgvector</div>
+      </div>
+      <div class="stack-arrow" style="font-size:1rem;">↕ キャッシュ連携</div>
+      <div class="stack-layer layer-cache">
+        <div class="label">キャッシュ</div>
+        <div class="name">ElastiCache (Redis)</div>
+      </div>
+    </div>
+
+    <div class="branch-col">
+      <div class="branch-item" style="border-color: rgba(6,182,212,0.3);">
+        <div class="b-label">曲データ</div>
+        <div class="b-name">Spotify Web API</div>
+        <div style="font-size:0.75rem; color:var(--text-muted)">検索 + メタ情報取得</div>
+      </div>
+      <div class="branch-item" style="border-color: rgba(99,102,241,0.3);">
+        <div class="b-label">AIマッチング</div>
+        <div class="b-name">OpenAI Embedding API</div>
+        <div style="font-size:0.75rem; color:var(--text-muted)">text-embedding-3-small</div>
+      </div>
+      <div class="branch-item" style="border-color: rgba(59,130,246,0.3);">
+        <div class="b-label">地域データ</div>
+        <div class="b-name">RESAS API</div>
+        <div style="font-size:0.75rem; color:var(--text-muted)">都道府県・市区町村</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DB設計 -->
+<section id="er-diagram">
+  <h2 class="section-title">データベース設計（主要テーブル）</h2>
+  <p class="section-desc">20以上のテーブルをカテゴリ別に色分け表示</p>
+
+  <div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:20px;">
+    <span style="display:flex;align-items:center;gap:6px;font-size:0.8rem;"><span style="width:12px;height:12px;border-radius:3px;background:rgba(124,58,237,0.4);display:inline-block;"></span> コアテーブル</span>
+    <span style="display:flex;align-items:center;gap:6px;font-size:0.8rem;"><span style="width:12px;height:12px;border-radius:3px;background:rgba(6,182,212,0.4);display:inline-block;"></span> 音楽・バンド</span>
+    <span style="display:flex;align-items:center;gap:6px;font-size:0.8rem;"><span style="width:12px;height:12px;border-radius:3px;background:rgba(34,197,94,0.4);display:inline-block;"></span> ソーシャル</span>
+    <span style="display:flex;align-items:center;gap:6px;font-size:0.8rem;"><span style="width:12px;height:12px;border-radius:3px;background:rgba(234,179,8,0.4);display:inline-block;"></span> 課金</span>
+    <span style="display:flex;align-items:center;gap:6px;font-size:0.8rem;"><span style="width:12px;height:12px;border-radius:3px;background:rgba(236,72,153,0.4);display:inline-block;"></span> チャット</span>
+    <span style="display:flex;align-items:center;gap:6px;font-size:0.8rem;"><span style="width:12px;height:12px;border-radius:3px;background:rgba(239,68,68,0.4);display:inline-block;"></span> 安全</span>
+  </div>
+
+  <div class="er-grid">
+    <div class="er-table">
+      <div class="er-table-name t-core">users</div>
+      <div class="er-cols">
+        <div><span class="pk">🔑 id</span></div>
+        <div>email, name, nickname</div>
+        <div>avatar, bio, dateOfBirth</div>
+        <div>prefecture, city</div>
+        <div>subscription, isAdmin</div>
+      </div>
+    </div>
+    <div class="er-table">
+      <div class="er-table-name t-core">user_instruments</div>
+      <div class="er-cols">
+        <div><span class="pk">🔑 id</span></div>
+        <div><span class="fk">→ user_id</span></div>
+        <div>instrument, skill_level</div>
+      </div>
+    </div>
+    <div class="er-table">
+      <div class="er-table-name t-core">user_genres</div>
+      <div class="er-cols">
+        <div><span class="pk">🔑 id</span></div>
+        <div><span class="fk">→ user_id</span></div>
+        <div>genre</div>
+      </div>
+    </div>
+    <div class="er-table">
+      <div class="er-table-name t-core">user_schedules</div>
+      <div class="er-cols">
+        <div><span class="pk">🔑 id</span></div>
+        <div><span class="fk">→ user_id</span></div>
+        <div>day_of_week, time_slot</div>
+      </div>
+    </div>
+
+    <div class="er-table">
+      <div class="er-table-name t-music">bands</div>
+      <div class="er-cols">
+        <div><span class="pk">🔑 id</span></div>
+        <div>name, description</div>
+        <div>genre[], prefecture, city</div>
+        <div>isRecruiting</div>
+        <div><span class="fk">→ created_by</span></div>
+      </div>
+    </div>
+    <div class="er-table">
+      <div class="er-table-name t-music">band_members</div>
+      <div class="er-cols">
+        <div><span class="fk">→ band_id</span></div>
+        <div><span class="fk">→ user_id</span></div>
+        <div>role (leader/member)</div>
+      </div>
+    </div>
+    <div class="er-table">
+      <div class="er-table-name t-music">copy_songs</div>
+      <div class="er-cols">
+        <div><span class="pk">🔑 id</span></div>
+        <div><span class="fk">→ user_id</span></div>
+        <div>spotify_track_id</div>
+        <div>type (want/can)</div>
+      </div>
+    </div>
+    <div class="er-table">
+      <div class="er-table-name t-music">setlist_items</div>
+      <div class="er-cols">
+        <div><span class="fk">→ band_id</span></div>
+        <div>spotify_track_id</div>
+        <div>order, status</div>
+      </div>
+    </div>
+    <div class="er-table">
+      <div class="er-table-name t-music">events</div>
+      <div class="er-cols">
+        <div><span class="pk">🔑 id</span></div>
+        <div>title, venue, date</div>
+        <div>isOfficial, fee</div>
+        <div><span class="fk">→ organizer_id</span></div>
+      </div>
+    </div>
+
+    <div class="er-table">
+      <div class="er-table-name t-social">posts</div>
+      <div class="er-cols">
+        <div><span class="pk">🔑 id</span></div>
+        <div><span class="fk">→ user_id</span></div>
+        <div>type, content</div>
+      </div>
+    </div>
+    <div class="er-table">
+      <div class="er-table-name t-social">friend_relations</div>
+      <div class="er-cols">
+        <div><span class="fk">→ user_id</span></div>
+        <div><span class="fk">→ friend_id</span></div>
+        <div>status (pending/accepted)</div>
+      </div>
+    </div>
+    <div class="er-table">
+      <div class="er-table-name t-social">practice_logs</div>
+      <div class="er-cols">
+        <div><span class="pk">🔑 id</span></div>
+        <div><span class="fk">→ user_id</span></div>
+        <div>duration, date, memo</div>
+        <div><span class="fk">→ song_id</span></div>
+      </div>
+    </div>
+
+    <div class="er-table">
+      <div class="er-table-name t-payment">subscriptions</div>
+      <div class="er-cols">
+        <div><span class="pk">🔑 id</span></div>
+        <div><span class="fk">→ user_id</span></div>
+        <div>stripe_customer_id</div>
+        <div>stripe_subscription_id</div>
+        <div>plan, status</div>
+      </div>
+    </div>
+    <div class="er-table">
+      <div class="er-table-name t-payment">invitation_codes</div>
+      <div class="er-cols">
+        <div><span class="pk">🔑 code</span></div>
+        <div><span class="fk">→ created_by</span></div>
+        <div><span class="fk">→ used_by</span></div>
+        <div>used_at</div>
+      </div>
+    </div>
+
+    <div class="er-table">
+      <div class="er-table-name t-chat">chat_rooms</div>
+      <div class="er-cols">
+        <div><span class="pk">🔑 id</span></div>
+        <div>type (dm/group)</div>
+        <div><span class="fk">→ band_id</span></div>
+      </div>
+    </div>
+    <div class="er-table">
+      <div class="er-table-name t-chat">chat_messages</div>
+      <div class="er-cols">
+        <div><span class="pk">🔑 id</span></div>
+        <div><span class="fk">→ room_id</span></div>
+        <div><span class="fk">→ sender_id</span></div>
+        <div>content, created_at</div>
+      </div>
+    </div>
+
+    <div class="er-table">
+      <div class="er-table-name t-safety">user_reports</div>
+      <div class="er-cols">
+        <div><span class="fk">→ reporter_id</span></div>
+        <div><span class="fk">→ reported_id</span></div>
+        <div>category, status</div>
+      </div>
+    </div>
+    <div class="er-table">
+      <div class="er-table-name t-safety">user_blocks</div>
+      <div class="er-cols">
+        <div><span class="fk">→ blocker_id</span></div>
+        <div><span class="fk">→ blocked_id</span></div>
+      </div>
+    </div>
+    <div class="er-table">
+      <div class="er-table-name t-safety">reputation_scores</div>
+      <div class="er-cols">
+        <div><span class="fk">→ user_id</span></div>
+        <div>score (0-100)</div>
+        <div>last_updated</div>
+      </div>
+    </div>
+    <div class="er-table">
+      <div class="er-table-name t-core">notifications</div>
+      <div class="er-cols">
+        <div><span class="pk">🔑 id</span></div>
+        <div><span class="fk">→ user_id</span></div>
+        <div>type, title, message</div>
+        <div>read, link</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- API設計 -->
+<section id="api-endpoints">
+  <h2 class="section-title">API エンドポイント設計</h2>
+  <p class="section-desc">RESTful API + WebSocket の全エンドポイント</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>🔐 認証</h3>
+      <div class="api-group">
+        <div class="api-row"><span class="method method-post">POST</span><span class="api-path">/api/auth/register</span><span class="api-desc">ユーザー登録</span></div>
+        <div class="api-row"><span class="method method-post">POST</span><span class="api-path">/api/auth/login</span><span class="api-desc">ログイン</span></div>
+        <div class="api-row"><span class="method method-post">POST</span><span class="api-path">/api/auth/logout</span><span class="api-desc">ログアウト</span></div>
+        <div class="api-row"><span class="method method-post">POST</span><span class="api-path">/api/auth/reset-password</span><span class="api-desc">パスワードリセット</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>👤 プロフィール</h3>
+      <div class="api-group">
+        <div class="api-row"><span class="method method-get">GET</span><span class="api-path">/api/users/me</span><span class="api-desc">自分のプロフィール取得</span></div>
+        <div class="api-row"><span class="method method-put">PUT</span><span class="api-path">/api/users/me</span><span class="api-desc">プロフィール更新</span></div>
+        <div class="api-row"><span class="method method-post">POST</span><span class="api-path">/api/users/me/avatar</span><span class="api-desc">アバターアップロード</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>💕 マッチング</h3>
+      <div class="api-group">
+        <div class="api-row"><span class="method method-get">GET</span><span class="api-path">/api/matching</span><span class="api-desc">マッチングスコア算出</span></div>
+        <div class="api-row"><span class="method method-get">GET</span><span class="api-path">/api/matching/search</span><span class="api-desc">フィルター検索</span></div>
+        <div class="api-row"><span class="method method-post">POST</span><span class="api-path">/api/matching/request</span><span class="api-desc">いいね送信</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>🎸 バンド・セットリスト</h3>
+      <div class="api-group">
+        <div class="api-row"><span class="method method-post">POST</span><span class="api-path">/api/bands</span><span class="api-desc">バンド作成</span></div>
+        <div class="api-row"><span class="method method-get">GET</span><span class="api-path">/api/bands</span><span class="api-desc">バンド一覧</span></div>
+        <div class="api-row"><span class="method method-get">GET</span><span class="api-path">/api/bands/{id}</span><span class="api-desc">バンド詳細</span></div>
+        <div class="api-row"><span class="method method-post">POST</span><span class="api-path">/api/bands/{id}/schedules</span><span class="api-desc">練習日程提案</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>🎤 イベント・コミュニティ</h3>
+      <div class="api-group">
+        <div class="api-row"><span class="method method-get">GET</span><span class="api-path">/api/events</span><span class="api-desc">イベント一覧</span></div>
+        <div class="api-row"><span class="method method-post">POST</span><span class="api-path">/api/events</span><span class="api-desc">イベント作成</span></div>
+        <div class="api-row"><span class="method method-get">GET</span><span class="api-path">/api/posts</span><span class="api-desc">タイムライン</span></div>
+        <div class="api-row"><span class="method method-post">POST</span><span class="api-path">/api/posts</span><span class="api-desc">投稿作成</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>💬 チャット</h3>
+      <div class="api-group">
+        <div class="api-row"><span class="method method-get">GET</span><span class="api-path">/api/chat/rooms</span><span class="api-desc">チャットルーム一覧</span></div>
+        <div class="api-row"><span class="method method-get">GET</span><span class="api-path">/api/chat/messages</span><span class="api-desc">メッセージ取得</span></div>
+        <div class="api-row" style="border-top:1px dashed var(--border);padding-top:8px;margin-top:4px;">
+          <span class="method" style="background:rgba(234,179,8,0.15);color:var(--yellow);">WSS</span>
+          <span class="api-path">wss://chat.groovematch.jp</span>
+          <span class="api-desc">リアルタイム通信</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 認証フロー -->
+<section id="auth-flow">
+  <h2 class="section-title">認証フロー</h2>
+  <p class="section-desc">Amazon Cognito による JWT ベースの認証</p>
+  <div class="card">
+    <div class="flow">
+      <div class="flow-step fs-purple">👤 ユーザー</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step fs-pink">🔐 Cognito<div style="font-size:0.7rem;font-weight:400;margin-top:4px;">認証・JWT発行</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step fs-cyan">🎫 JWT トークン<div style="font-size:0.7rem;font-weight:400;margin-top:4px;">アクセス: 24h / リフレッシュ: 30日</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step fs-purple">🔍 API Routes<div style="font-size:0.7rem;font-weight:400;margin-top:4px;">トークン検証</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step fs-green">🗄️ DB操作<div style="font-size:0.7rem;font-weight:400;margin-top:4px;">Prisma経由</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Spotify連携 -->
+<section id="spotify-flow">
+  <h2 class="section-title">Spotify API データフロー</h2>
+  <p class="section-desc">曲データの検索・保存・表示フロー（Spotify IDのみDB保存）</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>🔍 曲を登録するとき</h3>
+      <div class="flow" style="flex-direction:column;align-items:stretch;">
+        <div class="flow-step fs-purple" style="width:100%;">① ユーザーが曲名を入力</div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-step fs-cyan" style="width:100%;">② Spotify API で検索（リアルタイムサジェスト）</div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-step fs-green" style="width:100%;">③ ユーザーが曲を選択</div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-step fs-yellow" style="width:100%;">④ <strong>Spotify track ID だけ</strong>をDBに保存<div style="font-size:0.75rem;font-weight:400;margin-top:4px;">曲名・アーティスト名はDBに保存しない</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>🎵 曲を表示するとき</h3>
+      <div class="flow" style="flex-direction:column;align-items:stretch;">
+        <div class="flow-step fs-green" style="width:100%;">① DBから Spotify track ID を取得</div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-step fs-orange" style="width:100%;">② Redis キャッシュを確認<div style="font-size:0.75rem;font-weight:400;margin-top:4px;">TTL: 曲情報24時間 / 検索結果1時間</div></div>
+        <div class="flow-arrow-down">↓ キャッシュなし</div>
+        <div class="flow-step fs-cyan" style="width:100%;">③ Spotify API から最新情報取得</div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-step fs-purple" style="width:100%;">④ 曲名・アーティスト名・ジャケット画像を表示</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PCI DSS -->
+<section id="pci-dss">
+  <h2 class="section-title">決済セキュリティ（PCI DSS SAQ-A準拠）</h2>
+  <p class="section-desc">カード情報をサーバーに一切保持しない設計</p>
+
+  <div class="card">
+    <h3>💳 Stripe Checkout 決済フロー</h3>
+    <div class="flow">
+      <div class="flow-step fs-purple">ユーザーが<br>Proプラン選択</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step fs-blue">Stripe Checkout<br>画面にリダイレクト<div style="font-size:0.7rem;font-weight:400;margin-top:4px;">カード入力は<br>Stripeのサーバー上</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step fs-green">決済完了<div style="font-size:0.7rem;font-weight:400;margin-top:4px;">Webhook通知</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step fs-yellow">DB更新<div style="font-size:0.7rem;font-weight:400;margin-top:4px;">顧客ID・サブスクIDのみ保存</div></div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:20px;">
+    <div class="card" style="border-color:rgba(34,197,94,0.3);">
+      <h3 style="color:var(--green);">✅ DBに保存するデータ</h3>
+      <div class="pci-row"><div class="pci-icon">✅</div><div><div class="pci-label">stripe_customer_id</div><div class="pci-desc">cus_xxx 形式の顧客ID</div></div></div>
+      <div class="pci-row"><div class="pci-icon">✅</div><div><div class="pci-label">stripe_subscription_id</div><div class="pci-desc">sub_xxx 形式のサブスクID</div></div></div>
+      <div class="pci-row"><div class="pci-icon">✅</div><div><div class="pci-label">plan / status</div><div class="pci-desc">free/pro、active/canceled</div></div></div>
+      <div class="pci-row" style="border:none;"><div class="pci-icon">✅</div><div><div class="pci-label">current_period_end</div><div class="pci-desc">現在の課金期間の終了日</div></div></div>
+    </div>
+    <div class="card" style="border-color:rgba(239,68,68,0.3);">
+      <h3 style="color:var(--red);">🚫 絶対に保存しないデータ</h3>
+      <div class="pci-row"><div class="pci-icon">❌</div><div><div class="pci-label">カード番号</div><div class="pci-desc">16桁の番号は一切サーバーに到達しない</div></div></div>
+      <div class="pci-row"><div class="pci-icon">❌</div><div><div class="pci-label">カード下4桁</div><div class="pci-desc">表示時はStripe APIからリアルタイム取得</div></div></div>
+      <div class="pci-row"><div class="pci-icon">❌</div><div><div class="pci-label">有効期限</div><div class="pci-desc">Stripeが管理</div></div></div>
+      <div class="pci-row" style="border:none;"><div class="pci-icon">❌</div><div><div class="pci-label">セキュリティコード（CVC）</div><div class="pci-desc">入力時のみStripeが使用</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 都道府県データ -->
+<section id="prefecture">
+  <h2 class="section-title">都道府県・市区町村データフロー</h2>
+  <p class="section-desc">RESAS API（内閣府）からの取得 + Redisキャッシュ</p>
+  <div class="card">
+    <div class="flow">
+      <div class="flow-step fs-blue">RESAS API<div style="font-size:0.7rem;font-weight:400;margin-top:4px;">内閣府 地域経済分析</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step fs-orange">Redis キャッシュ<div style="font-size:0.7rem;font-weight:400;margin-top:4px;">TTL: 30日</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step fs-purple">/api/prefectures<div style="font-size:0.7rem;font-weight:400;margin-top:4px;">47都道府県を返す</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step fs-cyan">都道府県選択<div style="font-size:0.7rem;font-weight:400;margin-top:4px;">→ 市区町村をフィルタ</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step fs-green">DB保存<div style="font-size:0.7rem;font-weight:400;margin-top:4px;">JIS X 0401/0402コード</div></div>
+    </div>
+    <div style="margin-top:16px; padding:12px 16px; background:rgba(249,115,22,0.08); border:1px solid rgba(249,115,22,0.2); border-radius:8px; font-size:0.85rem;">
+      <strong>フォールバック:</strong> RESAS API障害時 → Redisキャッシュ → 静的JSONファイル の3段階で提供
+    </div>
+  </div>
+</section>
+
+<!-- セキュリティ -->
+<section id="security">
+  <h2 class="section-title">セキュリティ多層防御</h2>
+  <p class="section-desc">フロントエンドからデータベースまでの全レイヤーで防御</p>
+
+  <div class="card">
+    <div class="security-layers">
+      <div class="sec-layer" style="background:rgba(59,130,246,0.1); border-color:rgba(59,130,246,0.3); color:var(--blue);">
+        🌐 CloudFront + WAF
+        <div class="sec-detail">DDoS防御、ボット対策、レートリミット、SQLi/XSSフィルタ</div>
+      </div>
+      <div class="sec-layer" style="background:rgba(124,58,237,0.1); border-color:rgba(124,58,237,0.3); color:var(--primary-light);">
+        🔒 HTTPS（TLS 1.2以上）
+        <div class="sec-detail">全通信を暗号化。ACM証明書。HTTP通信は一切許可しない</div>
+      </div>
+      <div class="sec-layer" style="background:rgba(236,72,153,0.1); border-color:rgba(236,72,153,0.3); color:var(--pink);">
+        🔐 Cognito認証 + JWT
+        <div class="sec-detail">パスワード: bcrypt暗号化。MFA対応。クロスタブ同期</div>
+      </div>
+      <div class="sec-layer" style="background:rgba(234,179,8,0.1); border-color:rgba(234,179,8,0.3); color:var(--yellow);">
+        🛡️ API Routes ミドルウェア
+        <div class="sec-detail">入力バリデーション、CSRF対策、認証ガード、管理者権限チェック</div>
+      </div>
+      <div class="sec-layer" style="background:rgba(6,182,212,0.1); border-color:rgba(6,182,212,0.3); color:var(--secondary);">
+        🗄️ Prisma ORM
+        <div class="sec-detail">パラメータバインディングでSQLインジェクション防止</div>
+      </div>
+      <div class="sec-layer" style="background:rgba(34,197,94,0.1); border-color:rgba(34,197,94,0.3); color:var(--green);">
+        🔑 RDS暗号化（AES-256）+ Secrets Manager
+        <div class="sec-detail">保存データ暗号化。APIキー・DB接続情報を安全に管理。自動ローテーション</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+</body>
+</html>

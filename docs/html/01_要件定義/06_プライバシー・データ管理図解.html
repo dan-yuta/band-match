@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Groove Match - プライバシー・データ管理図解</title>
+<style>
+  :root{--bg:#0a0a1a;--surface:#1a1a2e;--surface-light:#25253d;--primary:#7c3aed;--primary-light:#8b5cf6;--secondary:#06b6d4;--accent:#f97066;--green:#22c55e;--yellow:#eab308;--orange:#f59e0b;--pink:#ec4899;--blue:#3b82f6;--red:#ef4444;--text:#e2e8f0;--text-dim:#94a3b8;--text-muted:#64748b;--border:#334155}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+  .hero{background:linear-gradient(135deg,#1a1a2e 0%,#0a0a1a 50%,#1a1a2e 100%);border-bottom:1px solid var(--border);padding:70px 40px 50px;text-align:center;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 50%,rgba(59,130,246,0.08) 0%,transparent 50%),radial-gradient(circle at 70% 50%,rgba(34,197,94,0.06) 0%,transparent 50%);animation:hf 20s ease-in-out infinite}
+  @keyframes hf{0%,100%{transform:translate(0,0)}50%{transform:translate(-2%,2%)}}
+  .hero h1{font-size:2.8rem;font-weight:800;background:linear-gradient(135deg,var(--blue),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;margin-bottom:12px}
+  .hero .subtitle{font-size:1.15rem;color:var(--text-dim);position:relative;max-width:700px;margin:0 auto}
+  .container{max-width:1200px;margin:0 auto;padding:40px}
+  section{margin-bottom:60px}
+  .section-title{font-size:1.6rem;font-weight:700;margin-bottom:8px;padding-left:16px;border-left:4px solid var(--blue)}
+  .section-desc{color:var(--text-dim);margin-bottom:30px;padding-left:16px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:20px;transition:all .3s}
+  .card:hover{border-color:rgba(59,130,246,0.3);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+  .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(480px,1fr));gap:20px}
+  .grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+
+  .data-card{padding:14px;border-radius:10px;border:1px solid var(--border);background:var(--surface-light);transition:all .3s;font-size:.85rem}
+  .data-card:hover{border-color:rgba(59,130,246,0.3);transform:translateY(-2px)}
+  .data-item{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(51,65,85,0.3);font-size:.82rem}
+  .data-item:last-child{border:none}
+
+  .right-card{text-align:center;padding:20px;border-radius:12px;border:1px solid var(--border);background:var(--surface-light);transition:all .3s}
+  .right-card:hover{transform:translateY(-3px);border-color:rgba(34,197,94,0.4)}
+  .right-icon{font-size:2rem;margin-bottom:8px}
+  .right-name{font-weight:700;font-size:.9rem;margin-bottom:4px}
+  .right-desc{font-size:.78rem;color:var(--text-dim)}
+
+  .del-item{display:flex;gap:10px;padding:8px 12px;background:var(--surface-light);border-radius:6px;margin-bottom:6px;font-size:.82rem;align-items:center;transition:background .2s}
+  .del-item:hover{background:var(--surface)}
+
+  .enc-layer{padding:14px 20px;text-align:center;font-weight:600;border:1px solid;font-size:.9rem}
+  .enc-layer:first-child{border-radius:10px 10px 0 0}
+  .enc-layer:last-child{border-radius:0 0 10px 10px}
+
+  .dormant-step{display:flex;align-items:center;gap:16px;padding:16px;background:var(--surface-light);border-radius:10px;margin-bottom:8px;transition:all .3s}
+  .dormant-step:hover{transform:translateX(4px)}
+  .dormant-time{min-width:80px;font-size:1.2rem;font-weight:800;text-align:center}
+
+  @media(max-width:768px){.hero h1{font-size:1.8rem}.container{padding:20px}.grid-2,.grid-3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>🔒 プライバシー・データ管理図解</h1>
+  <p class="subtitle">収集データ分類・保持期間・削除方針・暗号化・GDPR対応</p>
+</div>
+
+<div class="container">
+
+<!-- データ収集分類 -->
+<section>
+  <h2 class="section-title">収集データの3分類</h2>
+  <p class="section-desc">ユーザーデータを「直接入力」「自動収集」「収集しない」に分類</p>
+
+  <div class="grid-3">
+    <div class="card" style="border-color:rgba(59,130,246,0.2);">
+      <h3 style="color:var(--blue);font-size:1rem;">📝 ユーザーが入力</h3>
+      <div class="data-item"><span>メールアドレス</span><span style="color:var(--green);">暗号化</span></div>
+      <div class="data-item"><span>パスワード</span><span style="color:var(--green);">bcrypt</span></div>
+      <div class="data-item"><span>ニックネーム</span><span>─</span></div>
+      <div class="data-item"><span>生年月日</span><span style="color:var(--green);">暗号化</span></div>
+      <div class="data-item"><span>都道府県・市区町村</span><span>─</span></div>
+      <div class="data-item"><span>楽器・ジャンル・スキル</span><span>─</span></div>
+      <div class="data-item"><span>やりたい曲</span><span>Spotify IDのみ</span></div>
+      <div class="data-item"><span>プロフィール画像</span><span style="color:var(--green);">SSE-S3</span></div>
+      <div class="data-item"><span>SNSアカウント</span><span>任意</span></div>
+    </div>
+    <div class="card" style="border-color:rgba(234,179,8,0.2);">
+      <h3 style="color:var(--yellow);font-size:1rem;">⚡ 自動収集</h3>
+      <div class="data-item"><span>ログイン日時</span><span>アカウント存続中</span></div>
+      <div class="data-item"><span>IPアドレス</span><span>30日保持</span></div>
+      <div class="data-item"><span>ユーザーエージェント</span><span>30日保持</span></div>
+      <div class="data-item"><span>マッチング行動</span><span>アカウント存続中</span></div>
+      <div class="data-item"><span>練習ログ</span><span>アカウント存続中</span></div>
+      <div class="data-item"><span>チャットメッセージ</span><span>アカウント存続中</span></div>
+      <div class="data-item"><span>Embeddingベクトル</span><span>更新時再生成</span></div>
+    </div>
+    <div class="card" style="border-color:rgba(239,68,68,0.2);">
+      <h3 style="color:var(--red);font-size:1rem;">🚫 収集しない</h3>
+      <div class="del-item"><span>❌</span><span><strong>クレジットカード番号</strong><br><span style="color:var(--text-muted);">Stripe/Apple/Googleに完全委託</span></span></div>
+      <div class="del-item"><span>❌</span><span><strong>位置情報（GPS）</strong><br><span style="color:var(--text-muted);">都道府県選択のみ</span></span></div>
+      <div class="del-item"><span>❌</span><span><strong>連絡先（電話帳）</strong></span></div>
+      <div class="del-item"><span>❌</span><span><strong>通話・音声データ</strong></span></div>
+      <div class="del-item"><span>❌</span><span><strong>実名（本名）</strong><br><span style="color:var(--text-muted);">ニックネームのみ</span></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- アカウント削除 -->
+<section>
+  <h2 class="section-title">アカウント削除時のデータ処理</h2>
+  <p class="section-desc">ユーザーがアカウント削除を要求した場合の処理</p>
+
+  <div class="grid-2">
+    <div class="card" style="border-color:rgba(34,197,94,0.2);">
+      <h3 style="color:var(--green);">✅ 即時完全削除</h3>
+      <div class="del-item"><span>🗑️</span><span>プロフィール情報（名前・自己紹介等）</span></div>
+      <div class="del-item"><span>🗑️</span><span>プロフィール画像（S3から削除）</span></div>
+      <div class="del-item"><span>🗑️</span><span>練習ログ・ストリーク</span></div>
+      <div class="del-item"><span>🗑️</span><span>マッチング履歴</span></div>
+      <div class="del-item"><span>🗑️</span><span>Embeddingベクトル</span></div>
+      <div class="del-item"><span>🗑️</span><span>Cognito ユーザー</span></div>
+      <div class="del-item"><span>🗑️</span><span>Stripe顧客データ（API経由で削除）</span></div>
+    </div>
+    <div class="card" style="border-color:rgba(234,179,8,0.2);">
+      <h3 style="color:var(--yellow);">⏳ 匿名化・遅延削除</h3>
+      <div class="del-item"><span>🔄</span><span>メールアドレス → ハッシュ化（1年後に削除）</span></div>
+      <div class="del-item"><span>🔄</span><span>チャットメッセージ → 送信者名を「退会済みユーザー」に置換</span></div>
+      <div class="del-item"><span>🔄</span><span>通報履歴（被通報）→ 匿名化保持（1年後削除）</span></div>
+      <div class="del-item"><span>🔄</span><span>バンドメンバーシップ → 脱退処理（バンドは残る）</span></div>
+      <div class="del-item"><span>🔄</span><span>CloudWatch ログ → 30日で自動削除</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 休眠アカウント -->
+<section>
+  <h2 class="section-title">休眠アカウント処理</h2>
+  <p class="section-desc">長期間未ログインのアカウントは段階的に処理</p>
+
+  <div class="card">
+    <div class="dormant-step">
+      <div class="dormant-time" style="color:var(--yellow);">6ヶ月</div>
+      <div><strong>メール通知</strong>「アカウントが休眠状態です」</div>
+    </div>
+    <div class="dormant-step">
+      <div class="dormant-time" style="color:var(--orange);">12ヶ月</div>
+      <div><strong>再通知 + マッチング結果から除外</strong>「休眠中」表示に変更</div>
+    </div>
+    <div class="dormant-step">
+      <div class="dormant-time" style="color:var(--red);">24ヶ月</div>
+      <div><strong>最終通知</strong> → 30日以内にログインがなければ<strong>アカウントデータ削除</strong></div>
+    </div>
+    <div style="margin-top:12px;padding:10px 14px;background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.2);border-radius:8px;font-size:.82rem;">
+      ⚠️ 有料サブスクリプションがアクティブな場合は休眠処理の対象外
+    </div>
+  </div>
+</section>
+
+<!-- 暗号化 -->
+<section>
+  <h2 class="section-title">暗号化レイヤー</h2>
+
+  <div class="card">
+    <div style="display:flex;flex-direction:column;gap:0;">
+      <div class="enc-layer" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.3);color:var(--blue);">
+        🌐 通信時（In Transit）: TLS 1.2以上 — HTTPS必須
+      </div>
+      <div class="enc-layer" style="background:rgba(124,58,237,0.08);border-color:rgba(124,58,237,0.3);color:var(--primary-light);">
+        🗄️ 保存時（At Rest）: AES-256 — RDS, S3, EBS, バックアップ
+      </div>
+      <div class="enc-layer" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.3);color:var(--pink);">
+        🔑 パスワード: bcrypt — Cognito標準
+      </div>
+      <div class="enc-layer" style="background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.3);color:var(--green);">
+        🎂 生年月日: アプリケーションレベル暗号化 — 年代計算以外でのアクセス防止
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GDPR権利 -->
+<section>
+  <h2 class="section-title">GDPR データ主体の権利</h2>
+  <p class="section-desc">ユーザーが行使できる6つの権利と実装方法</p>
+
+  <div class="grid-3">
+    <div class="right-card"><div class="right-icon">👁️</div><div class="right-name">アクセス権</div><div class="right-desc">プロフィール画面で自分のデータを確認可能</div></div>
+    <div class="right-card"><div class="right-icon">✏️</div><div class="right-name">訂正権</div><div class="right-desc">プロフィール編集機能</div></div>
+    <div class="right-card"><div class="right-icon">🗑️</div><div class="right-name">削除権</div><div class="right-desc">アカウント削除機能（F-07）</div></div>
+    <div class="right-card"><div class="right-icon">📦</div><div class="right-name">ポータビリティ権</div><div class="right-desc">データエクスポート（JSON形式）</div></div>
+    <div class="right-card"><div class="right-icon">⏸️</div><div class="right-name">処理制限権</div><div class="right-desc">アカウント一時停止機能</div></div>
+    <div class="right-card"><div class="right-icon">🚫</div><div class="right-name">異議申立権</div><div class="right-desc">AIマッチングのオプトアウト設定</div></div>
+  </div>
+</section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Groove Match - 外部連携要件図解</title>
+<style>
+  :root{--bg:#0a0a1a;--surface:#1a1a2e;--surface-light:#25253d;--primary:#7c3aed;--primary-light:#8b5cf6;--secondary:#06b6d4;--accent:#f97066;--green:#22c55e;--yellow:#eab308;--orange:#f59e0b;--pink:#ec4899;--blue:#3b82f6;--red:#ef4444;--text:#e2e8f0;--text-dim:#94a3b8;--text-muted:#64748b;--border:#334155}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+  .hero{background:linear-gradient(135deg,#1a1a2e 0%,#0a0a1a 50%,#1a1a2e 100%);border-bottom:1px solid var(--border);padding:70px 40px 50px;text-align:center;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 50%,rgba(124,58,237,0.08) 0%,transparent 50%),radial-gradient(circle at 70% 50%,rgba(249,112,102,0.06) 0%,transparent 50%);animation:hf 20s ease-in-out infinite}
+  @keyframes hf{0%,100%{transform:translate(0,0)}50%{transform:translate(-2%,2%)}}
+  .hero h1{font-size:2.8rem;font-weight:800;background:linear-gradient(135deg,var(--primary-light),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;margin-bottom:12px}
+  .hero .subtitle{font-size:1.15rem;color:var(--text-dim);position:relative;max-width:700px;margin:0 auto}
+  .nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 40px;display:flex;gap:0;overflow-x:auto;position:sticky;top:0;z-index:100}
+  .nav a{color:var(--text-dim);text-decoration:none;padding:14px 20px;font-size:.85rem;font-weight:500;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s}
+  .nav a:hover{color:var(--text);border-bottom-color:var(--primary);background:rgba(124,58,237,0.05)}
+  .container{max-width:1200px;margin:0 auto;padding:40px}
+  section{margin-bottom:60px}
+  .section-title{font-size:1.6rem;font-weight:700;margin-bottom:8px;padding-left:16px;border-left:4px solid var(--primary)}
+  .section-desc{color:var(--text-dim);margin-bottom:30px;padding-left:16px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:20px;transition:all .3s}
+  .card:hover{border-color:rgba(124,58,237,0.3);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+  .card h3{font-size:1.15rem;font-weight:700;margin-bottom:16px}
+  .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(480px,1fr));gap:20px}
+  .grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+
+  /* Hub-spoke */
+  .hub{text-align:center;padding:20px;}
+  .hub-center{display:inline-block;padding:24px 40px;border-radius:16px;background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(6,182,212,0.2));border:2px solid rgba(124,58,237,0.4);font-size:1.3rem;font-weight:800;margin-bottom:24px}
+  .spokes{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;max-width:800px;margin:0 auto}
+  .spoke{padding:14px 10px;border-radius:10px;text-align:center;border:1px solid var(--border);background:var(--surface-light);transition:all .3s;font-size:.82rem}
+  .spoke:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.3)}
+  .spoke .s-icon{font-size:1.5rem;margin-bottom:6px}
+  .spoke .s-name{font-weight:700;margin-bottom:4px}
+  .spoke .s-cost{font-size:.72rem;color:var(--text-muted)}
+
+  /* Service Cards */
+  .svc-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;transition:all .3s}
+  .svc-card:hover{border-color:rgba(124,58,237,0.3);transform:translateY(-2px)}
+  .svc-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .svc-header .svc-icon{font-size:1.5rem}
+  .svc-header .svc-title{font-weight:700;font-size:1rem}
+  .svc-row{display:flex;justify-content:space-between;padding:4px 0;font-size:.82rem;border-bottom:1px solid rgba(51,65,85,0.3)}
+  .svc-row:last-child{border:none}
+  .svc-label{color:var(--text-muted)}
+
+  /* Impact Matrix */
+  .impact-grid{display:grid;grid-template-columns:140px repeat(6,1fr);gap:2px;font-size:.72rem}
+  .impact-cell{padding:8px 4px;text-align:center;border-radius:4px;font-weight:600}
+  .impact-header{background:var(--surface-light);font-weight:700;color:var(--text-dim)}
+  .impact-ok{background:rgba(34,197,94,0.1);color:var(--green)}
+  .impact-degraded{background:rgba(234,179,8,0.1);color:var(--yellow)}
+  .impact-down{background:rgba(239,68,68,0.1);color:var(--red)}
+  .impact-na{background:rgba(100,116,139,0.05);color:var(--text-muted)}
+
+  /* Flow */
+  .flow{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center;padding:20px 0}
+  .flow-step{padding:12px 18px;border-radius:10px;text-align:center;font-size:.82rem;font-weight:600;min-width:110px;transition:all .3s;border:1px solid}
+  .flow-step:hover{transform:translateY(-3px)}
+  .flow-step .sub{font-size:.7rem;font-weight:400;color:var(--text-dim);margin-top:4px}
+  .flow-arrow{color:var(--text-muted);font-size:1.2rem;padding:0 8px}
+
+  @media(max-width:768px){.hero h1{font-size:1.8rem}.container{padding:20px}.grid-2,.grid-3{grid-template-columns:1fr}.spokes{grid-template-columns:repeat(3,1fr)}.impact-grid{font-size:.6rem}.impact-grid{grid-template-columns:100px repeat(6,1fr)}.flow{flex-direction:column}.flow-arrow{transform:rotate(90deg)}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>🔗 外部連携要件図解</h1>
+  <p class="subtitle">Groove Match が連携する12の外部サービス — 要件・障害影響・データフロー</p>
+</div>
+
+<div class="nav">
+  <a href="#map">サービスマップ</a>
+  <a href="#details">各サービス詳細</a>
+  <a href="#impact">障害影響マトリクス</a>
+  <a href="#stripe-flow">Stripe決済フロー</a>
+  <a href="#spotify-flow">Spotify連携フロー</a>
+</div>
+
+<div class="container">
+
+<!-- サービスマップ -->
+<section id="map">
+  <h2 class="section-title">外部サービスマップ</h2>
+  <p class="section-desc">Groove Matchを中心に12の外部サービスと連携</p>
+
+  <div class="hub">
+    <div class="hub-center">🎸 Groove Match</div>
+    <div class="spokes">
+      <div class="spoke" style="border-color:rgba(34,197,94,0.3);">
+        <div class="s-icon">🎵</div>
+        <div class="s-name">Spotify API</div>
+        <div class="s-cost">無料（要審査）</div>
+      </div>
+      <div class="spoke" style="border-color:rgba(6,182,212,0.3);">
+        <div class="s-icon">🎶</div>
+        <div class="s-name">MusicBrainz</div>
+        <div class="s-cost">無料</div>
+      </div>
+      <div class="spoke" style="border-color:rgba(236,72,153,0.3);">
+        <div class="s-icon">🔐</div>
+        <div class="s-name">Cognito</div>
+        <div class="s-cost">1万MAU無料</div>
+      </div>
+      <div class="spoke" style="border-color:rgba(234,179,8,0.3);">
+        <div class="s-icon">💳</div>
+        <div class="s-name">Stripe</div>
+        <div class="s-cost">3.6%+¥30/件</div>
+      </div>
+      <div class="spoke" style="border-color:rgba(59,130,246,0.3);">
+        <div class="s-icon">🍎</div>
+        <div class="s-name">App Store IAP</div>
+        <div class="s-cost">15〜30%</div>
+      </div>
+      <div class="spoke" style="border-color:rgba(34,197,94,0.3);">
+        <div class="s-icon">🤖</div>
+        <div class="s-name">Google Play</div>
+        <div class="s-cost">15〜30%</div>
+      </div>
+      <div class="spoke" style="border-color:rgba(124,58,237,0.3);">
+        <div class="s-icon">🧠</div>
+        <div class="s-name">OpenAI</div>
+        <div class="s-cost">$0.02/1Mトークン</div>
+      </div>
+      <div class="spoke" style="border-color:rgba(249,115,22,0.3);">
+        <div class="s-icon">🗾</div>
+        <div class="s-name">RESAS API</div>
+        <div class="s-cost">無料</div>
+      </div>
+      <div class="spoke" style="border-color:rgba(239,68,68,0.3);">
+        <div class="s-icon">🔵</div>
+        <div class="s-name">Google OAuth</div>
+        <div class="s-cost">無料</div>
+      </div>
+      <div class="spoke" style="border-color:rgba(100,116,139,0.3);">
+        <div class="s-icon">✖️</div>
+        <div class="s-name">X OAuth</div>
+        <div class="s-cost">無料〜有料</div>
+      </div>
+      <div class="spoke" style="border-color:rgba(236,72,153,0.3);">
+        <div class="s-icon">📸</div>
+        <div class="s-name">Instagram</div>
+        <div class="s-cost">無料</div>
+      </div>
+      <div class="spoke" style="border-color:rgba(34,197,94,0.3);">
+        <div class="s-icon">💬</div>
+        <div class="s-name">LINE</div>
+        <div class="s-cost">無料枠</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 障害影響マトリクス -->
+<section id="impact">
+  <h2 class="section-title">障害影響マトリクス</h2>
+  <p class="section-desc">各外部サービス障害時の機能別影響（🟢正常 🟡劣化 🔴停止）</p>
+
+  <div class="card" style="overflow-x:auto;">
+    <div class="impact-grid">
+      <div class="impact-cell impact-header">サービス</div>
+      <div class="impact-cell impact-header">マッチング</div>
+      <div class="impact-cell impact-header">チャット</div>
+      <div class="impact-cell impact-header">曲検索</div>
+      <div class="impact-cell impact-header">決済</div>
+      <div class="impact-cell impact-header">ログイン</div>
+      <div class="impact-cell impact-header">地域選択</div>
+
+      <div class="impact-cell impact-header">Spotify</div>
+      <div class="impact-cell impact-ok">🟢</div>
+      <div class="impact-cell impact-ok">🟢</div>
+      <div class="impact-cell impact-down">🔴 停止</div>
+      <div class="impact-cell impact-ok">🟢</div>
+      <div class="impact-cell impact-ok">🟢</div>
+      <div class="impact-cell impact-ok">🟢</div>
+
+      <div class="impact-cell impact-header">Stripe</div>
+      <div class="impact-cell impact-ok">🟢</div>
+      <div class="impact-cell impact-ok">🟢</div>
+      <div class="impact-cell impact-ok">🟢</div>
+      <div class="impact-cell impact-down">🔴 Web決済停止</div>
+      <div class="impact-cell impact-ok">🟢</div>
+      <div class="impact-cell impact-ok">🟢</div>
+
+      <div class="impact-cell impact-header">Cognito</div>
+      <div class="impact-cell impact-degraded">🟡 新規不可</div>
+      <div class="impact-cell impact-degraded">🟡 新規不可</div>
+      <div class="impact-cell impact-degraded">🟡 新規不可</div>
+      <div class="impact-cell impact-degraded">🟡 新規不可</div>
+      <div class="impact-cell impact-down">🔴 停止</div>
+      <div class="impact-cell impact-ok">🟢</div>
+
+      <div class="impact-cell impact-header">OpenAI</div>
+      <div class="impact-cell impact-degraded">🟡 AI精度低下</div>
+      <div class="impact-cell impact-ok">🟢</div>
+      <div class="impact-cell impact-ok">🟢</div>
+      <div class="impact-cell impact-ok">🟢</div>
+      <div class="impact-cell impact-ok">🟢</div>
+      <div class="impact-cell impact-ok">🟢</div>
+
+      <div class="impact-cell impact-header">RESAS</div>
+      <div class="impact-cell impact-ok">🟢</div>
+      <div class="impact-cell impact-ok">🟢</div>
+      <div class="impact-cell impact-ok">🟢</div>
+      <div class="impact-cell impact-ok">🟢</div>
+      <div class="impact-cell impact-ok">🟢</div>
+      <div class="impact-cell impact-ok">🟢 キャッシュ</div>
+
+      <div class="impact-cell impact-header">App Store/Play</div>
+      <div class="impact-cell impact-ok">🟢</div>
+      <div class="impact-cell impact-ok">🟢</div>
+      <div class="impact-cell impact-ok">🟢</div>
+      <div class="impact-cell impact-degraded">🟡 モバイル課金不可</div>
+      <div class="impact-cell impact-ok">🟢</div>
+      <div class="impact-cell impact-ok">🟢</div>
+    </div>
+  </div>
+</section>
+
+<!-- Stripe決済フロー -->
+<section id="stripe-flow">
+  <h2 class="section-title">Stripe 決済フロー（PCI DSS SAQ-A）</h2>
+  <p class="section-desc">カード情報はGroove Matchのサーバーに一切到達しない</p>
+
+  <div class="card">
+    <div class="flow">
+      <div class="flow-step" style="background:rgba(124,58,237,0.1);border-color:rgba(124,58,237,0.3);color:var(--primary-light);">Proプラン選択<div class="sub">ユーザー操作</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.3);color:var(--blue);">Stripe Checkout<div class="sub">Stripeのドメインで<br>カード入力</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="background:rgba(34,197,94,0.1);border-color:rgba(34,197,94,0.3);color:var(--green);">決済完了<div class="sub">Webhook<br>署名検証必須</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="background:rgba(234,179,8,0.1);border-color:rgba(234,179,8,0.3);color:var(--yellow);">DB更新<div class="sub">顧客ID・<br>サブスクIDのみ保存</div></div>
+    </div>
+    <div style="margin-top:16px;padding:14px 18px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:10px;font-size:.85rem;text-align:center;">
+      🚫 <strong>カード番号・下4桁・有効期限・CVC は絶対にサーバーに保存しない</strong>
+    </div>
+  </div>
+</section>
+
+<!-- Spotify連携フロー -->
+<section id="spotify-flow">
+  <h2 class="section-title">Spotify API 連携フロー</h2>
+  <p class="section-desc">曲検索 → Spotify ID保存 → キャッシュ経由で表示</p>
+
+  <div class="card">
+    <div class="flow">
+      <div class="flow-step" style="background:rgba(124,58,237,0.1);border-color:rgba(124,58,237,0.3);color:var(--primary-light);">曲名を入力<div class="sub">リアルタイム<br>サジェスト</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="background:rgba(34,197,94,0.1);border-color:rgba(34,197,94,0.3);color:var(--green);">Spotify API<div class="sub">検索結果取得</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="background:rgba(6,182,212,0.1);border-color:rgba(6,182,212,0.3);color:var(--secondary);">曲を選択<div class="sub">Spotify IDのみ<br>DBに保存</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="background:rgba(249,115,22,0.1);border-color:rgba(249,115,22,0.3);color:var(--orange);">Redis キャッシュ<div class="sub">曲情報: 24h<br>検索: 1h</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="background:rgba(124,58,237,0.1);border-color:rgba(124,58,237,0.3);color:var(--primary-light);">画面に表示<div class="sub">曲名・アーティスト<br>ジャケット画像</div></div>
+    </div>
+  </div>
+</section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Groove Match - SEO・マーケティング戦略図解</title>
+<style>
+  :root{--bg:#0a0a1a;--surface:#1a1a2e;--surface-light:#25253d;--primary:#7c3aed;--primary-light:#8b5cf6;--secondary:#06b6d4;--accent:#f97066;--green:#22c55e;--yellow:#eab308;--orange:#f59e0b;--pink:#ec4899;--blue:#3b82f6;--red:#ef4444;--text:#e2e8f0;--text-dim:#94a3b8;--text-muted:#64748b;--border:#334155}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+  .hero{background:linear-gradient(135deg,#1a1a2e 0%,#0a0a1a 50%,#1a1a2e 100%);border-bottom:1px solid var(--border);padding:70px 40px 50px;text-align:center;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 50%,rgba(249,115,22,0.08) 0%,transparent 50%),radial-gradient(circle at 70% 50%,rgba(236,72,153,0.06) 0%,transparent 50%);animation:hf 20s ease-in-out infinite}
+  @keyframes hf{0%,100%{transform:translate(0,0)}50%{transform:translate(-2%,2%)}}
+  .hero h1{font-size:2.8rem;font-weight:800;background:linear-gradient(135deg,var(--orange),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;margin-bottom:12px}
+  .hero .subtitle{font-size:1.15rem;color:var(--text-dim);position:relative;max-width:700px;margin:0 auto}
+  .container{max-width:1200px;margin:0 auto;padding:40px}
+  section{margin-bottom:60px}
+  .section-title{font-size:1.6rem;font-weight:700;margin-bottom:8px;padding-left:16px;border-left:4px solid var(--orange)}
+  .section-desc{color:var(--text-dim);margin-bottom:30px;padding-left:16px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:20px;transition:all .3s}
+  .card:hover{border-color:rgba(249,115,22,0.3);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+  .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(480px,1fr));gap:20px}
+  .grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+  .grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+
+  /* SEO Checklist */
+  .seo-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface-light);border-radius:8px;margin-bottom:6px;font-size:.85rem;transition:all .2s}
+  .seo-item:hover{background:var(--surface)}
+  .seo-check{color:var(--green);font-size:1.1rem;min-width:24px}
+
+  /* Funnel */
+  .funnel{display:flex;flex-direction:column;align-items:center;gap:0}
+  .funnel-step{padding:16px;text-align:center;font-weight:600;font-size:.9rem;border:1px solid;transition:all .3s;position:relative}
+  .funnel-step:hover{transform:scale(1.02)}
+
+  /* Phase Strategy */
+  .phase-strat{padding:20px;border-radius:12px;border:1px solid var(--border);background:var(--surface-light);transition:all .3s}
+  .phase-strat:hover{border-color:rgba(249,115,22,0.3);transform:translateY(-2px)}
+  .ps-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .ps-badge{padding:4px 12px;border-radius:6px;font-size:.78rem;font-weight:700}
+  .ps-channel{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .ch-tag{padding:4px 10px;border-radius:6px;font-size:.75rem;font-weight:600;background:var(--surface);border:1px solid var(--border)}
+
+  /* CAC */
+  .cac-bar{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+  .cac-label{width:120px;font-size:.85rem;font-weight:600}
+  .cac-viz{flex:1;height:32px;border-radius:6px;background:var(--surface-light);position:relative;overflow:hidden}
+  .cac-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:12px;font-size:.78rem;font-weight:700}
+
+  /* Retention */
+  .ret-card{text-align:center;padding:18px;border-radius:12px;border:1px solid var(--border);background:var(--surface-light);transition:all .3s}
+  .ret-card:hover{transform:translateY(-3px);border-color:rgba(236,72,153,0.4)}
+  .ret-icon{font-size:2rem;margin-bottom:8px}
+  .ret-name{font-weight:700;font-size:.9rem;margin-bottom:4px}
+  .ret-desc{font-size:.78rem;color:var(--text-dim)}
+
+  @media(max-width:768px){.hero h1{font-size:1.8rem}.container{padding:20px}.grid-2,.grid-3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>📈 SEO・マーケティング戦略図解</h1>
+  <p class="subtitle">SEO/ASO・集客チャネル・ユーザー獲得コスト・リテンション施策</p>
+</div>
+
+<div class="container">
+
+<!-- SEO -->
+<section>
+  <h2 class="section-title">SEO チェックリスト</h2>
+  <p class="section-desc">検索エンジン最適化の基本設定8項目</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3 style="font-size:1rem;">🔍 基本SEO設定</h3>
+      <div class="seo-item"><span class="seo-check">✅</span><span><strong>title</strong> タグ — ページごとに固有</span></div>
+      <div class="seo-item"><span class="seo-check">✅</span><span><strong>meta description</strong> — 120文字以内</span></div>
+      <div class="seo-item"><span class="seo-check">✅</span><span><strong>OGP</strong> — og:title, og:description, og:image</span></div>
+      <div class="seo-item"><span class="seo-check">✅</span><span><strong>Twitter Card</strong> — twitter:card, title, image</span></div>
+      <div class="seo-item"><span class="seo-check">✅</span><span><strong>canonical URL</strong> — 重複コンテンツ防止</span></div>
+      <div class="seo-item"><span class="seo-check">✅</span><span><strong>sitemap.xml</strong> — 公開ページ自動生成</span></div>
+      <div class="seo-item"><span class="seo-check">✅</span><span><strong>robots.txt</strong> — 管理画面・APIを除外</span></div>
+      <div class="seo-item"><span class="seo-check">✅</span><span><strong>構造化データ</strong> — JSON-LD（Eventスキーマ）</span></div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:1rem;">⚡ 技術的SEO</h3>
+      <div class="seo-item"><span class="seo-check">✅</span><span><strong>SSR</strong> — ランディング・イベント一覧はSSRで配信</span></div>
+      <div class="seo-item"><span class="seo-check">✅</span><span><strong>Core Web Vitals</strong> — LCP < 2.5s, FID < 100ms, CLS < 0.1</span></div>
+      <div class="seo-item"><span class="seo-check">✅</span><span><strong>モバイルフレンドリー</strong> — レスポンシブデザイン</span></div>
+      <div class="seo-item"><span class="seo-check">✅</span><span><strong>HTTPS</strong> — 全ページHTTPS</span></div>
+      <div class="seo-item"><span class="seo-check">✅</span><span><strong>CDN</strong> — CloudFront + next/image最適化</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ASO -->
+<section>
+  <h2 class="section-title">ASO（App Store 最適化）</h2>
+  <p class="section-desc">App Store / Google Play での表示最適化</p>
+
+  <div class="grid-2">
+    <div class="card" style="border-color:rgba(59,130,246,0.2);">
+      <h3 style="color:var(--blue);">🍎 App Store (iOS)</h3>
+      <div style="font-size:.85rem;">
+        <div style="padding:6px 0;border-bottom:1px solid rgba(51,65,85,0.3);"><strong>アプリ名:</strong> Groove Match - コピバンメンバー募集</div>
+        <div style="padding:6px 0;border-bottom:1px solid rgba(51,65,85,0.3);"><strong>サブタイトル:</strong> やりたい曲で仲間を見つけてライブへ</div>
+        <div style="padding:6px 0;border-bottom:1px solid rgba(51,65,85,0.3);"><strong>キーワード:</strong> コピバン, バンドメンバー募集, マッチング, ライブ</div>
+        <div style="padding:6px 0;border-bottom:1px solid rgba(51,65,85,0.3);"><strong>スクリーンショット:</strong> 5枚</div>
+        <div style="padding:6px 0;"><strong>カテゴリ:</strong> 音楽 / ソーシャルネットワーキング</div>
+      </div>
+    </div>
+    <div class="card" style="border-color:rgba(34,197,94,0.2);">
+      <h3 style="color:var(--green);">🤖 Google Play (Android)</h3>
+      <div style="font-size:.85rem;">
+        <div style="padding:6px 0;border-bottom:1px solid rgba(51,65,85,0.3);"><strong>アプリ名:</strong> Groove Match - コピバンメンバー募集</div>
+        <div style="padding:6px 0;border-bottom:1px solid rgba(51,65,85,0.3);"><strong>短い説明:</strong> 好きな曲で仲間を見つけて、コピバン組んで、ライブに出よう</div>
+        <div style="padding:6px 0;border-bottom:1px solid rgba(51,65,85,0.3);"><strong>フィーチャーグラフィック:</strong> 1024x500px バナー</div>
+        <div style="padding:6px 0;border-bottom:1px solid rgba(51,65,85,0.3);"><strong>スクリーンショット:</strong> 最低4枚</div>
+        <div style="padding:6px 0;"><strong>カテゴリ:</strong> 音楽＆オーディオ</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ファネル -->
+<section>
+  <h2 class="section-title">ユーザー獲得ファネル</h2>
+  <p class="section-desc">認知 → ダウンロード → 登録 → アクティブ化 → リテンション</p>
+
+  <div class="card" style="text-align:center;">
+    <div class="funnel">
+      <div class="funnel-step" style="width:100%;background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.3);color:var(--blue);border-radius:12px 12px 0 0;">
+        🌐 認知（Awareness）<div style="font-size:.78rem;font-weight:400;color:var(--text-dim);margin-top:4px;">SEO・SNS・広告・口コミでアプリを知る</div>
+      </div>
+      <div class="funnel-step" style="width:85%;margin:0 auto;background:rgba(124,58,237,0.08);border-color:rgba(124,58,237,0.3);color:var(--primary-light);">
+        📥 ダウンロード / アクセス<div style="font-size:.78rem;font-weight:400;color:var(--text-dim);margin-top:4px;">App Store / Google Play / Web</div>
+      </div>
+      <div class="funnel-step" style="width:70%;margin:0 auto;background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.3);color:var(--green);">
+        📝 登録完了<div style="font-size:.78rem;font-weight:400;color:var(--text-dim);margin-top:4px;">5ステップ登録 → Proトライアル開始</div>
+      </div>
+      <div class="funnel-step" style="width:50%;margin:0 auto;background:rgba(234,179,8,0.08);border-color:rgba(234,179,8,0.3);color:var(--yellow);">
+        ⭐ アクティブ化<div style="font-size:.78rem;font-weight:400;color:var(--text-dim);margin-top:4px;">初回マッチング成立 / バンド作成</div>
+      </div>
+      <div class="funnel-step" style="width:35%;margin:0 auto;background:rgba(249,115,22,0.08);border-color:rgba(249,115,22,0.3);color:var(--orange);border-radius:0 0 12px 12px;">
+        💎 リテンション / Pro転換<div style="font-size:.78rem;font-weight:400;color:var(--text-dim);margin-top:4px;">目標: Pro転換率 10〜15%</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- フェーズ別戦略 -->
+<section>
+  <h2 class="section-title">フェーズ別集客戦略</h2>
+
+  <div class="grid-3">
+    <div class="phase-strat">
+      <div class="ps-header">
+        <span class="ps-badge" style="background:rgba(236,72,153,0.15);color:var(--pink);">Phase 5</span>
+        <strong>クローズドベータ（100名）</strong>
+      </div>
+      <div style="font-size:.82rem;color:var(--text-dim);margin-bottom:8px;">予算: <strong>¥0</strong>（全オーガニック）</div>
+      <div class="ps-channel">
+        <span class="ch-tag">軽音サークルDM 30名</span>
+        <span class="ch-tag">音楽コミュニティ 20名</span>
+        <span class="ch-tag">X（開発発信）30名</span>
+        <span class="ch-tag">知人紹介 20名</span>
+      </div>
+    </div>
+    <div class="phase-strat">
+      <div class="ps-header">
+        <span class="ps-badge" style="background:rgba(124,58,237,0.15);color:var(--primary-light);">Phase 6</span>
+        <strong>一般公開（〜MAU 1,000）</strong>
+      </div>
+      <div style="font-size:.82rem;color:var(--text-dim);margin-bottom:8px;">予算: <strong>¥30,000/月</strong></div>
+      <div class="ps-channel">
+        <span class="ch-tag">X/Instagram ¥0</span>
+        <span class="ch-tag">PR TIMES ¥30K</span>
+        <span class="ch-tag">口コミ・招待 ¥0</span>
+        <span class="ch-tag">SEOブログ ¥0</span>
+      </div>
+    </div>
+    <div class="phase-strat">
+      <div class="ps-header">
+        <span class="ps-badge" style="background:rgba(249,115,22,0.15);color:var(--orange);">Phase 7</span>
+        <strong>成長期（MAU 1,000〜5,000）</strong>
+      </div>
+      <div style="font-size:.82rem;color:var(--text-dim);margin-bottom:8px;">予算: <strong>¥100,000〜210,000/月</strong></div>
+      <div class="ps-channel">
+        <span class="ch-tag">SNS広告 ¥30-50K</span>
+        <span class="ch-tag">Google広告 ¥20-30K</span>
+        <span class="ch-tag">インフルエンサー ¥50-100K</span>
+        <span class="ch-tag">ライブハウス提携 ¥10-30K</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CAC -->
+<section>
+  <h2 class="section-title">ユーザー獲得コスト（CAC）目標</h2>
+
+  <div class="card">
+    <div class="cac-bar">
+      <div class="cac-label" style="color:var(--green);">オーガニック</div>
+      <div class="cac-viz"><div class="cac-fill" style="width:20%;background:linear-gradient(90deg,rgba(34,197,94,0.4),rgba(34,197,94,0.7));color:var(--green);">¥0〜500/人</div></div>
+    </div>
+    <div class="cac-bar">
+      <div class="cac-label" style="color:var(--orange);">広告併用</div>
+      <div class="cac-viz"><div class="cac-fill" style="width:55%;background:linear-gradient(90deg,rgba(249,115,22,0.4),rgba(249,115,22,0.7));color:var(--orange);">¥500〜1,500/人</div></div>
+    </div>
+    <div class="cac-bar">
+      <div class="cac-label" style="color:var(--primary-light);">Pro会員LTV</div>
+      <div class="cac-viz"><div class="cac-fill" style="width:100%;background:linear-gradient(90deg,rgba(124,58,237,0.4),rgba(124,58,237,0.7));color:var(--primary-light);">¥2,616（¥436 × 平均6ヶ月）</div></div>
+    </div>
+    <div style="margin-top:12px;padding:10px 14px;background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:8px;font-size:.82rem;">
+      ✅ <strong>目標:</strong> CACをLTVの半分以下（¥1,300以下）に維持
+    </div>
+  </div>
+</section>
+
+<!-- リテンション -->
+<section>
+  <h2 class="section-title">リテンション施策</h2>
+  <p class="section-desc">ユーザーを継続利用させる4つの施策</p>
+
+  <div class="grid-4">
+    <div class="ret-card"><div class="ret-icon">📱</div><div class="ret-name">プッシュ通知</div><div class="ret-desc">ストリーク危機・新着マッチング・イベント情報で再来訪</div></div>
+    <div class="ret-card"><div class="ret-icon">🎮</div><div class="ret-name">ゲーミフィケーション</div><div class="ret-desc">ストリーク・バッジ・ランキングでDAU/MAU向上</div></div>
+    <div class="ret-card"><div class="ret-icon">📧</div><div class="ret-name">メールマーケティング</div><div class="ret-desc">週次ダイジェスト（新マッチング候補・フレンド活動）</div></div>
+    <div class="ret-card"><div class="ret-icon">🎁</div><div class="ret-name">招待コード</div><div class="ret-desc">紹介者・被紹介者の双方に特典（Pro延長）</div></div>
+  </div>
+</section>
+
+</div>
+</body>
+</html>
