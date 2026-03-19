@@ -69,16 +69,18 @@
 
 <div class="hero">
   <h1>🎸 機能一覧図解</h1>
-  <p class="subtitle">12カテゴリの全機能 — ユーザーストーリー・Free/Pro比較・課金フロー・イベント権限</p>
+  <p class="subtitle">全機能 — ユーザーストーリー・オンボーディング・Free/Pro比較・課金・管理ダッシュボード</p>
 </div>
 
 <div class="nav">
   <a href="#stories">ユーザーストーリー</a>
+  <a href="#onboarding">オンボーディング</a>
   <a href="#features">機能カテゴリ</a>
   <a href="#comparison">Free vs Pro</a>
   <a href="#billing">課金フロー</a>
   <a href="#events">イベント権限</a>
   <a href="#referral">招待コード</a>
+  <a href="#admin">管理ダッシュボード</a>
 </div>
 
 <div class="container">
@@ -108,6 +110,61 @@
     <div class="us-card"><span class="us-id" style="background:rgba(234,179,8,0.15);color:var(--yellow);">US-08</span><div class="us-text">Proプランで無制限にマッチング・チャットを使いたい</div></div>
     <div class="us-card"><span class="us-id" style="background:rgba(239,68,68,0.15);color:var(--red);">US-09</span><div class="us-text">管理者として通報を確認し不正ユーザーに対処したい</div></div>
     <div class="us-card"><span class="us-id" style="background:rgba(249,112,102,0.15);color:var(--accent);">US-10</span><div class="us-text">Proユーザーとして自主企画ライブイベントを登録したい</div></div>
+  </div>
+</section>
+
+<!-- オンボーディング -->
+<section id="onboarding">
+  <h2 class="section-title">オンボーディングミッション（初回チュートリアル）</h2>
+  <p class="section-desc">初回ログイン時に5段階ミッションで使い方を自然に理解。全完了でバッジ獲得</p>
+
+  <div class="card">
+    <!-- Progress Bar -->
+    <div style="display:flex;gap:6px;margin-bottom:24px;">
+      <div style="flex:1;height:8px;border-radius:4px;background:linear-gradient(90deg,rgba(124,58,237,0.6),rgba(6,182,212,0.6));"></div>
+      <div style="flex:1;height:8px;border-radius:4px;background:linear-gradient(90deg,rgba(6,182,212,0.6),rgba(34,197,94,0.6));"></div>
+      <div style="flex:1;height:8px;border-radius:4px;background:linear-gradient(90deg,rgba(34,197,94,0.6),rgba(234,179,8,0.6));"></div>
+      <div style="flex:1;height:8px;border-radius:4px;background:rgba(234,179,8,0.15);"></div>
+      <div style="flex:1;height:8px;border-radius:4px;background:rgba(249,115,22,0.15);"></div>
+    </div>
+    <div style="text-align:center;font-size:.85rem;color:var(--text-muted);margin-bottom:20px;">3/5 完了</div>
+
+    <div class="grid-3" style="gap:12px;">
+      <div style="padding:16px;border-radius:12px;border:2px solid var(--green);background:rgba(34,197,94,0.05);text-align:center;transition:all .3s;">
+        <div style="font-size:1.5rem;margin-bottom:6px;">✅</div>
+        <div style="font-weight:700;font-size:.9rem;margin-bottom:4px;">Mission 1</div>
+        <div style="font-size:.82rem;color:var(--green);font-weight:600;">プロフィールを完成させよう</div>
+        <div style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">完成度80%以上 → Lv.1昇格</div>
+      </div>
+      <div style="padding:16px;border-radius:12px;border:2px solid var(--green);background:rgba(34,197,94,0.05);text-align:center;transition:all .3s;">
+        <div style="font-size:1.5rem;margin-bottom:6px;">✅</div>
+        <div style="font-weight:700;font-size:.9rem;margin-bottom:4px;">Mission 2</div>
+        <div style="font-size:.82rem;color:var(--green);font-weight:600;">最初のマッチングを探そう</div>
+        <div style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">マッチング画面に1回アクセス</div>
+      </div>
+      <div style="padding:16px;border-radius:12px;border:2px solid var(--green);background:rgba(34,197,94,0.05);text-align:center;transition:all .3s;">
+        <div style="font-size:1.5rem;margin-bottom:6px;">✅</div>
+        <div style="font-weight:700;font-size:.9rem;margin-bottom:4px;">Mission 3</div>
+        <div style="font-size:.82rem;color:var(--green);font-weight:600;">気になる人にいいねしよう</div>
+        <div style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">いいね1回送信</div>
+      </div>
+      <div style="padding:16px;border-radius:12px;border:2px solid rgba(234,179,8,0.4);background:rgba(234,179,8,0.05);text-align:center;transition:all .3s;">
+        <div style="font-size:1.5rem;margin-bottom:6px;">🎸</div>
+        <div style="font-weight:700;font-size:.9rem;margin-bottom:4px;">Mission 4</div>
+        <div style="font-size:.82rem;color:var(--yellow);font-weight:600;">バンドを作ろう or 参加しよう</div>
+        <div style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">バンド1つに所属</div>
+      </div>
+      <div style="padding:16px;border-radius:12px;border:2px solid rgba(249,115,22,0.3);background:rgba(249,115,22,0.03);text-align:center;transition:all .3s;">
+        <div style="font-size:1.5rem;margin-bottom:6px;">🔥</div>
+        <div style="font-weight:700;font-size:.9rem;margin-bottom:4px;">Mission 5</div>
+        <div style="font-size:.82rem;color:var(--orange);font-weight:600;">練習を記録してストリーク開始</div>
+        <div style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">練習ログ1件記録 → 🏅バッジ獲得</div>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;padding:14px 18px;background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.2);border-radius:10px;font-size:.85rem;text-align:center;">
+      🏅 全5ミッション完了で <strong style="color:var(--yellow);">「Groove Matchデビュー」バッジ</strong> を獲得！ — スキップも可能（強制しない）
+    </div>
   </div>
 </section>
 
@@ -222,6 +279,161 @@
       <div style="padding:14px;background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.2);border-radius:8px;text-align:center;">
         <div style="font-weight:700;color:var(--primary-light);margin-bottom:4px;">紹介者</div>
         <div style="font-size:.85rem;">Proプラン <strong>1週間延長</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 管理ダッシュボード -->
+<section id="admin">
+  <h2 class="section-title">管理ダッシュボード（管理者専用）</h2>
+  <p class="section-desc">KPI・ユーザー分析・課金分析・安全管理・システムヘルスを一元管理</p>
+
+  <!-- KPIカード -->
+  <div class="grid-3" style="margin-bottom:24px;">
+    <div class="card" style="text-align:center;border-color:rgba(124,58,237,0.2);">
+      <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:4px;">総ユーザー数</div>
+      <div style="font-size:2.2rem;font-weight:800;color:var(--primary-light);">1,247</div>
+      <div style="font-size:.78rem;color:var(--green);">+120 ↑12% (前月比)</div>
+    </div>
+    <div class="card" style="text-align:center;border-color:rgba(6,182,212,0.2);">
+      <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:4px;">MAU / DAU</div>
+      <div style="font-size:2.2rem;font-weight:800;color:var(--secondary);">980 <span style="font-size:1rem;color:var(--text-muted);">/</span> <span style="font-size:1.4rem;">312</span></div>
+      <div style="font-size:.78rem;color:var(--green);">DAU/MAU比: 31.8% ✅</div>
+    </div>
+    <div class="card" style="text-align:center;border-color:rgba(34,197,94,0.2);">
+      <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:4px;">Pro会員 / 転換率</div>
+      <div style="font-size:2.2rem;font-weight:800;color:var(--green);">142 <span style="font-size:1rem;color:var(--text-muted);">/</span> <span style="font-size:1.4rem;">11.4%</span></div>
+      <div style="font-size:.78rem;color:var(--yellow);">目標: 10〜15%</div>
+    </div>
+    <div class="card" style="text-align:center;border-color:rgba(234,179,8,0.2);">
+      <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:4px;">月間売上（MRR）</div>
+      <div style="font-size:2.2rem;font-weight:800;color:var(--yellow);">¥61,912</div>
+      <div style="font-size:.78rem;color:var(--green);">損益分岐点到達まで あと5名</div>
+    </div>
+    <div class="card" style="text-align:center;border-color:rgba(249,115,22,0.2);">
+      <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:4px;">バンド数 / イベント数</div>
+      <div style="font-size:2.2rem;font-weight:800;color:var(--orange);">87 <span style="font-size:1rem;color:var(--text-muted);">/</span> <span style="font-size:1.4rem;">23</span></div>
+      <div style="font-size:.78rem;color:var(--text-muted);">募集中: 34バンド</div>
+    </div>
+    <div class="card" style="text-align:center;border-color:rgba(239,68,68,0.2);">
+      <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:4px;">未対応通報</div>
+      <div style="font-size:2.2rem;font-weight:800;color:var(--red);">3</div>
+      <div style="font-size:.78rem;color:var(--accent);">Critical: 0 / High: 1 / Medium: 2</div>
+    </div>
+  </div>
+
+  <!-- 分析セクション -->
+  <div class="grid-2">
+    <div class="card">
+      <h3 style="font-size:1rem;">📊 ユーザーアクティビティ分析</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:.85rem;">
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--surface-light);border-radius:6px;">
+          <span>登録推移（日別/週別/月別）</span><span style="color:var(--green);">📈</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--surface-light);border-radius:6px;">
+          <span>登録完了率ファネル（ステップ別離脱率）</span><span style="color:var(--yellow);">📊</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--surface-light);border-radius:6px;">
+          <span>オンボーディングミッション完了率</span><span style="color:var(--secondary);">🎯</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--surface-light);border-radius:6px;">
+          <span>リテンション率（1日/7日/30日）</span><span style="color:var(--primary-light);">📉</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--surface-light);border-radius:6px;">
+          <span>セッション時間・回数</span><span style="color:var(--orange);">⏱️</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:1rem;">💳 課金・売上分析</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:.85rem;">
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--surface-light);border-radius:6px;">
+          <span>売上推移グラフ（日別/月別）</span><span style="color:var(--green);">💰</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--surface-light);border-radius:6px;">
+          <span>Free→Pro転換率推移</span><span style="color:var(--yellow);">📈</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--surface-light);border-radius:6px;">
+          <span>トライアル→Pro継続率 / 解約理由</span><span style="color:var(--accent);">📊</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--surface-light);border-radius:6px;">
+          <span>ARPU / LTV / MRR</span><span style="color:var(--secondary);">📉</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--surface-light);border-radius:6px;">
+          <span>プラットフォーム別売上（Web/iOS/Android）</span><span style="color:var(--blue);">📱</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:1rem;">🎸 マッチング・バンド分析</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:.85rem;">
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--surface-light);border-radius:6px;">
+          <span>マッチング統計（いいね数/成立数/成立率）</span><span style="color:var(--pink);">💕</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--surface-light);border-radius:6px;">
+          <span>人気の楽器・ジャンル・曲ランキング</span><span style="color:var(--primary-light);">🏆</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--surface-light);border-radius:6px;">
+          <span>地域分布ヒートマップ</span><span style="color:var(--green);">🗾</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--surface-light);border-radius:6px;">
+          <span>バンド統計（総数/活動中/募集中）</span><span style="color:var(--orange);">🎸</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:1rem;">🛡️ 安全・システム管理</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:.85rem;">
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--surface-light);border-radius:6px;">
+          <span>通報キュー（未対応一覧・SLA達成率）</span><span style="color:var(--red);">🚨</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--surface-light);border-radius:6px;">
+          <span>エスカレーション履歴（警告→制限→停止→BAN）</span><span style="color:var(--accent);">⚠️</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--surface-light);border-radius:6px;">
+          <span>サービスヘルス（DB/Redis/Spotify/Stripe）</span><span style="color:var(--green);">✅</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--surface-light);border-radius:6px;">
+          <span>AWSコスト / エラー率 / レスポンスタイム</span><span style="color:var(--secondary);">⚙️</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ユーザー管理 -->
+  <div class="card" style="margin-top:16px;">
+    <h3 style="font-size:1rem;">👥 ユーザー管理機能</h3>
+    <div class="grid-3" style="gap:10px;">
+      <div style="padding:12px;background:var(--surface-light);border-radius:8px;text-align:center;font-size:.85rem;">
+        <div style="font-size:1.2rem;margin-bottom:4px;">🔍</div>
+        <div style="font-weight:600;">ユーザー検索</div>
+        <div style="font-size:.75rem;color:var(--text-muted);">メール・ニックネーム・IDで検索</div>
+      </div>
+      <div style="padding:12px;background:var(--surface-light);border-radius:8px;text-align:center;font-size:.85rem;">
+        <div style="font-size:1.2rem;margin-bottom:4px;">💳</div>
+        <div style="font-weight:600;">プラン変更</div>
+        <div style="font-size:.75rem;color:var(--text-muted);">Free↔Pro手動切替（特別対応）</div>
+      </div>
+      <div style="padding:12px;background:var(--surface-light);border-radius:8px;text-align:center;font-size:.85rem;">
+        <div style="font-size:1.2rem;margin-bottom:4px;">🚫</div>
+        <div style="font-weight:600;">アカウント停止/BAN</div>
+        <div style="font-size:.75rem;color:var(--text-muted);">違反ユーザーへの措置</div>
+      </div>
+      <div style="padding:12px;background:var(--surface-light);border-radius:8px;text-align:center;font-size:.85rem;">
+        <div style="font-size:1.2rem;margin-bottom:4px;">🎫</div>
+        <div style="font-weight:600;">招待コード管理</div>
+        <div style="font-size:.75rem;color:var(--text-muted);">一括生成・使用状況確認</div>
+      </div>
+      <div style="padding:12px;background:var(--surface-light);border-radius:8px;text-align:center;font-size:.85rem;">
+        <div style="font-size:1.2rem;margin-bottom:4px;">🎤</div>
+        <div style="font-weight:600;">イベント承認</div>
+        <div style="font-size:.75rem;color:var(--text-muted);">Pro投稿イベントの承認・却下</div>
+      </div>
+      <div style="padding:12px;background:var(--surface-light);border-radius:8px;text-align:center;font-size:.85rem;">
+        <div style="font-size:1.2rem;margin-bottom:4px;">📋</div>
+        <div style="font-weight:600;">ユーザー詳細</div>
+        <div style="font-size:.75rem;color:var(--text-muted);">プロフィール・通報履歴・レピュテーション</div>
       </div>
     </div>
   </div>
