@@ -415,7 +415,7 @@ GitHub Issueの自動分類・管理に使用するラベル体系。
 | PHASE (8) | `phase:1-requirements`〜`phase:7-deployment` | SDKフェーズ |
 | HIERARCHY (4) | `hierarchy:root`, `hierarchy:parent`, `hierarchy:child` | Issue階層 |
 
-**詳細**: `docs/LABEL_SYSTEM_GUIDE.md`
+**詳細**: `docs/md/05_開発ガイド/02_ラベルシステムガイド.md`
 
 **セットアップ**: `ccagi-sdk init` でリポジトリに60ラベルを自動設定
 
