@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Groove Match - 運用・保守図解</title>
+<style>
+  :root{--bg:#0a0a1a;--surface:#1a1a2e;--surface-light:#25253d;--primary:#7c3aed;--primary-light:#8b5cf6;--secondary:#06b6d4;--accent:#f97066;--green:#22c55e;--yellow:#eab308;--orange:#f59e0b;--pink:#ec4899;--blue:#3b82f6;--red:#ef4444;--text:#e2e8f0;--text-dim:#94a3b8;--text-muted:#64748b;--border:#334155}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+  .hero{background:linear-gradient(135deg,#1a1a2e 0%,#0a0a1a 50%,#1a1a2e 100%);border-bottom:1px solid var(--border);padding:70px 40px 50px;text-align:center;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 50%,rgba(6,182,212,0.08) 0%,transparent 50%),radial-gradient(circle at 70% 50%,rgba(124,58,237,0.06) 0%,transparent 50%);animation:hf 20s ease-in-out infinite}
+  @keyframes hf{0%,100%{transform:translate(0,0)}50%{transform:translate(-2%,2%)}}
+  .hero h1{font-size:2.8rem;font-weight:800;background:linear-gradient(135deg,var(--secondary),var(--primary-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;margin-bottom:12px}
+  .hero .subtitle{font-size:1.15rem;color:var(--text-dim);position:relative;max-width:700px;margin:0 auto}
+  .container{max-width:1200px;margin:0 auto;padding:40px}
+  section{margin-bottom:60px}
+  .section-title{font-size:1.6rem;font-weight:700;margin-bottom:8px;padding-left:16px;border-left:4px solid var(--secondary)}
+  .section-desc{color:var(--text-dim);margin-bottom:30px;padding-left:16px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:20px;transition:all .3s}
+  .card:hover{border-color:rgba(6,182,212,0.3);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+  .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(480px,1fr));gap:20px}
+  .grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+
+  .deploy-step{padding:16px 20px;border-radius:10px;border:1px solid var(--border);background:var(--surface-light);margin-bottom:8px;transition:all .3s;font-size:.85rem}
+  .deploy-step:hover{transform:translateX(4px);border-color:rgba(6,182,212,0.3)}
+
+  .maint-card{padding:16px;border-radius:10px;border:1px solid var(--border);background:var(--surface-light);transition:all .3s}
+  .maint-card:hover{border-color:rgba(6,182,212,0.3);transform:translateY(-2px)}
+  .maint-icon{font-size:1.3rem;margin-bottom:6px}
+  .maint-title{font-weight:700;font-size:.9rem;margin-bottom:4px}
+  .maint-desc{font-size:.78rem;color:var(--text-dim)}
+  .maint-freq{font-size:.72rem;color:var(--secondary);margin-top:4px}
+
+  .incident-level{padding:14px;border-radius:10px;border:1px solid;text-align:center;transition:all .3s}
+  .incident-level:hover{transform:translateY(-3px)}
+  .il-name{font-size:1rem;font-weight:800;margin-bottom:4px}
+  .il-time{font-size:.85rem;font-weight:600;margin-bottom:6px}
+  .il-example{font-size:.75rem;color:var(--text-dim)}
+
+  .scale-step{display:flex;align-items:center;gap:16px;padding:14px 18px;background:var(--surface-light);border-radius:10px;margin-bottom:8px;transition:all .3s}
+  .scale-step:hover{transform:translateX(4px)}
+  .scale-mau{min-width:100px;font-size:1.1rem;font-weight:800}
+
+  @media(max-width:768px){.hero h1{font-size:1.8rem}.container{padding:20px}.grid-2,.grid-3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>🔧 運用・保守図解</h1>
+  <p class="subtitle">バックアップ・無停止デプロイ・月次メンテナンス・インシデント対応・スケーリング</p>
+</div>
+
+<div class="container">
+
+<!-- バックアップ -->
+<section>
+  <h2 class="section-title">バックアップ戦略</h2>
+  <div class="grid-3">
+    <div class="card" style="text-align:center;">
+      <div style="font-size:2rem;margin-bottom:8px;">🔄</div>
+      <div style="font-size:1.8rem;font-weight:800;color:var(--green);margin-bottom:4px;">毎日</div>
+      <div style="font-weight:700;margin-bottom:4px;">RDS自動バックアップ</div>
+      <div style="font-size:.82rem;color:var(--text-dim);">7日間保持<br>RDS標準機能</div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div style="font-size:2rem;margin-bottom:8px;">📸</div>
+      <div style="font-size:1.8rem;font-weight:800;color:var(--secondary);margin-bottom:4px;">週1回</div>
+      <div style="font-weight:700;margin-bottom:4px;">手動スナップショット</div>
+      <div style="font-size:.82rem;color:var(--text-dim);">30日間保持<br>毎週日曜深夜</div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div style="font-size:2rem;margin-bottom:8px;">🌍</div>
+      <div style="font-size:1.8rem;font-weight:800;color:var(--yellow);margin-bottom:4px;">東京→米国</div>
+      <div style="font-weight:700;margin-bottom:4px;">クロスリージョン</div>
+      <div style="font-size:.82rem;color:var(--text-dim);">AES-256暗号化<br>月1回リストアテスト</div>
+    </div>
+  </div>
+</section>
+
+<!-- 無停止デプロイ -->
+<section>
+  <h2 class="section-title">無停止デプロイ（ローリング）</h2>
+  <p class="section-desc">ECS Fargate + ALB によるダウンタイムゼロの更新</p>
+
+  <div class="card">
+    <div class="deploy-step" style="border-color:rgba(59,130,246,0.3);">
+      <strong style="color:var(--blue);">① デプロイ前</strong>
+      <div style="color:var(--text-dim);">ALB → [タスクA 旧版] [タスクB 旧版]</div>
+    </div>
+    <div class="deploy-step" style="border-color:rgba(234,179,8,0.3);">
+      <strong style="color:var(--yellow);">② 新タスク起動</strong>
+      <div style="color:var(--text-dim);">ALB → [タスクA 旧版] [タスクC <span style="color:var(--green);">新版</span>] ← ヘルスチェック合格後にタスクBを停止</div>
+    </div>
+    <div class="deploy-step" style="border-color:rgba(34,197,94,0.3);">
+      <strong style="color:var(--green);">③ デプロイ完了</strong>
+      <div style="color:var(--text-dim);">ALB → [タスクC <span style="color:var(--green);">新版</span>] [タスクD <span style="color:var(--green);">新版</span>] ← ユーザーに影響なし</div>
+    </div>
+  </div>
+</section>
+
+<!-- 月次メンテナンス -->
+<section>
+  <h2 class="section-title">月次メンテナンス</h2>
+  <p class="section-desc">月1回、深夜帯（2:00-5:00）に実施</p>
+
+  <div class="grid-3">
+    <div class="maint-card"><div class="maint-icon">🗄️</div><div class="maint-title">DBメンテナンス</div><div class="maint-desc">VACUUM ANALYZE / インデックス再構築 / 不要データ削除</div><div class="maint-freq">月1回</div></div>
+    <div class="maint-card"><div class="maint-icon">🔒</div><div class="maint-title">セキュリティ</div><div class="maint-desc">OS/ランタイムパッチ適用 / 依存パッケージ更新</div><div class="maint-freq">月1回</div></div>
+    <div class="maint-card"><div class="maint-icon">📊</div><div class="maint-title">モニタリング</div><div class="maint-desc">コスト確認 / パフォーマンスレビュー / ログ確認</div><div class="maint-freq">月1回</div></div>
+    <div class="maint-card"><div class="maint-icon">💾</div><div class="maint-title">バックアップ検証</div><div class="maint-desc">スナップショットからの復元テスト</div><div class="maint-freq">月1回</div></div>
+  </div>
+</section>
+
+<!-- インシデント対応 -->
+<section>
+  <h2 class="section-title">障害レベルと対応時間</h2>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+    <div class="incident-level" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.3);">
+      <div class="il-name" style="color:var(--red);">Critical</div>
+      <div class="il-time" style="color:var(--red);">30分以内</div>
+      <div class="il-example">サービス全停止<br>DB障害</div>
+    </div>
+    <div class="incident-level" style="background:rgba(249,115,22,0.08);border-color:rgba(249,115,22,0.3);">
+      <div class="il-name" style="color:var(--orange);">High</div>
+      <div class="il-time" style="color:var(--orange);">1時間以内</div>
+      <div class="il-example">主要機能停止<br>決済エラー</div>
+    </div>
+    <div class="incident-level" style="background:rgba(234,179,8,0.08);border-color:rgba(234,179,8,0.3);">
+      <div class="il-name" style="color:var(--yellow);">Medium</div>
+      <div class="il-time" style="color:var(--yellow);">4時間以内</div>
+      <div class="il-example">一部機能影響<br>画像アップロード障害</div>
+    </div>
+    <div class="incident-level" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.3);">
+      <div class="il-name" style="color:var(--blue);">Low</div>
+      <div class="il-time" style="color:var(--blue);">24時間以内</div>
+      <div class="il-example">ユーザー影響なし<br>ログ収集遅延</div>
+    </div>
+  </div>
+</section>
+
+<!-- スケーリング -->
+<section>
+  <h2 class="section-title">スケーリングの流れ</h2>
+  <div class="card">
+    <div class="scale-step">
+      <div class="scale-mau" style="color:var(--green);">MAU 500</div>
+      <div><strong>Fargate 2タスク</strong><div style="font-size:.82rem;color:var(--text-dim);">同時100接続程度で十分</div></div>
+    </div>
+    <div class="scale-step">
+      <div class="scale-mau" style="color:var(--secondary);">MAU 5K</div>
+      <div><strong>Fargate 2〜4タスク（オートスケーリング）+ Redis</strong><div style="font-size:.82rem;color:var(--text-dim);">同時300〜1,000接続</div></div>
+    </div>
+    <div class="scale-step">
+      <div class="scale-mau" style="color:var(--yellow);">MAU 20K</div>
+      <div><strong>Fargate 4〜6タスク + Aurora + Redis + CloudFront</strong><div style="font-size:.82rem;color:var(--text-dim);">同時1,000接続以上</div></div>
+    </div>
+  </div>
+</section>
+
+</div>
+</body>
+</html>

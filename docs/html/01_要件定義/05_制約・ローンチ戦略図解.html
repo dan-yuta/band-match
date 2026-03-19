@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Groove Match - 制約・ローンチ戦略図解</title>
+<style>
+  :root{--bg:#0a0a1a;--surface:#1a1a2e;--surface-light:#25253d;--primary:#7c3aed;--primary-light:#8b5cf6;--secondary:#06b6d4;--accent:#f97066;--green:#22c55e;--yellow:#eab308;--orange:#f59e0b;--pink:#ec4899;--blue:#3b82f6;--red:#ef4444;--text:#e2e8f0;--text-dim:#94a3b8;--text-muted:#64748b;--border:#334155}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+  .hero{background:linear-gradient(135deg,#1a1a2e 0%,#0a0a1a 50%,#1a1a2e 100%);border-bottom:1px solid var(--border);padding:70px 40px 50px;text-align:center;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 50%,rgba(234,179,8,0.08) 0%,transparent 50%),radial-gradient(circle at 70% 50%,rgba(249,115,22,0.06) 0%,transparent 50%);animation:hf 20s ease-in-out infinite}
+  @keyframes hf{0%,100%{transform:translate(0,0)}50%{transform:translate(-2%,2%)}}
+  .hero h1{font-size:2.8rem;font-weight:800;background:linear-gradient(135deg,var(--yellow),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;margin-bottom:12px}
+  .hero .subtitle{font-size:1.15rem;color:var(--text-dim);position:relative;max-width:700px;margin:0 auto}
+  .container{max-width:1200px;margin:0 auto;padding:40px}
+  section{margin-bottom:60px}
+  .section-title{font-size:1.6rem;font-weight:700;margin-bottom:8px;padding-left:16px;border-left:4px solid var(--yellow)}
+  .section-desc{color:var(--text-dim);margin-bottom:30px;padding-left:16px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:20px;transition:all .3s}
+  .card:hover{border-color:rgba(234,179,8,0.3);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+  .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(480px,1fr));gap:20px}
+  .grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+  .grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+  .constraint{padding:16px;border-radius:10px;border:1px solid var(--border);background:var(--surface-light);transition:all .3s}
+  .constraint:hover{transform:translateY(-2px);border-color:rgba(234,179,8,0.3)}
+  .c-icon{font-size:1.5rem;margin-bottom:8px}
+  .c-title{font-weight:700;font-size:.95rem;margin-bottom:6px}
+  .c-desc{font-size:.82rem;color:var(--text-dim)}
+
+  /* Beta */
+  .beta-flow{display:flex;flex-direction:column;gap:0;align-items:stretch}
+  .beta-step{padding:14px 20px;border-radius:10px;font-size:.85rem;font-weight:600;border:1px solid;transition:all .3s}
+  .beta-step:hover{transform:translateX(4px)}
+  .beta-step .sub{font-size:.72rem;font-weight:400;color:var(--text-dim);margin-top:4px}
+  .beta-arrow{text-align:center;color:var(--text-muted);font-size:1.2rem;padding:4px 0}
+
+  /* Gauge */
+  .gauge-row{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .gauge-label{width:140px;font-size:.85rem;font-weight:600}
+  .gauge-bar{flex:1;height:28px;border-radius:6px;background:var(--surface-light);overflow:hidden}
+  .gauge-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:12px;font-size:.75rem;font-weight:700;transition:width .5s}
+
+  /* Legal */
+  .legal-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface-light);border-radius:8px;margin-bottom:6px;font-size:.85rem;transition:background .2s}
+  .legal-item:hover{background:var(--surface)}
+
+  /* Test categories */
+  .test-cat{padding:16px;border-radius:12px;border:1px solid var(--border);background:var(--surface-light);transition:all .3s}
+  .test-cat:hover{border-color:rgba(234,179,8,0.3);transform:translateY(-2px)}
+  .test-cat-title{font-weight:700;font-size:.95rem;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .test-item{font-size:.82rem;color:var(--text-dim);padding:3px 0;border-bottom:1px solid rgba(51,65,85,0.3)}
+  .test-item:last-child{border:none}
+
+  @media(max-width:768px){.hero h1{font-size:1.8rem}.container{padding:20px}.grid-2,.grid-3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>📋 制約・ローンチ戦略図解</h1>
+  <p class="subtitle">開発体制・予算制約・法的要件・クローズドベータ戦略（100名招待制）</p>
+</div>
+
+<div class="container">
+
+<!-- 制約 -->
+<section>
+  <h2 class="section-title">開発・インフラ制約</h2>
+  <div class="grid-4">
+    <div class="constraint"><div class="c-icon">👤</div><div class="c-title">シングル開発者</div><div class="c-desc">MVP優先のスモールスタート。AIアシスト活用</div></div>
+    <div class="constraint"><div class="c-icon">☁️</div><div class="c-title">AWS Only</div><div class="c-desc">東京リージョン。CloudFormation (IaC)</div></div>
+    <div class="constraint"><div class="c-icon">💰</div><div class="c-title">初期予算 ¥60K-65K/月</div><div class="c-desc">dev/staging必要時のみ起動でコスト抑制</div></div>
+    <div class="constraint"><div class="c-icon">🔧</div><div class="c-title">GitHub Actions CI/CD</div><div class="c-desc">2,000分/月の無料枠で十分</div></div>
+  </div>
+</section>
+
+<!-- 予算 -->
+<section>
+  <h2 class="section-title">予算制約（フェーズ別）</h2>
+  <div class="card">
+    <div class="gauge-row">
+      <div class="gauge-label" style="color:var(--green);">初期（〜MAU 1K）</div>
+      <div class="gauge-bar"><div class="gauge-fill" style="width:32%;background:linear-gradient(90deg,rgba(34,197,94,0.4),rgba(34,197,94,0.7));color:var(--green);">¥60K〜65K</div></div>
+    </div>
+    <div class="gauge-row">
+      <div class="gauge-label" style="color:var(--yellow);">成長期（〜MAU 5K）</div>
+      <div class="gauge-bar"><div class="gauge-fill" style="width:55%;background:linear-gradient(90deg,rgba(234,179,8,0.4),rgba(234,179,8,0.7));color:var(--yellow);">¥100K〜150K</div></div>
+    </div>
+    <div class="gauge-row">
+      <div class="gauge-label" style="color:var(--orange);">拡大期（MAU 5K+）</div>
+      <div class="gauge-bar"><div class="gauge-fill" style="width:100%;background:linear-gradient(90deg,rgba(249,115,22,0.4),rgba(249,115,22,0.7));color:var(--orange);">¥200K〜300K</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 法的 -->
+<section>
+  <h2 class="section-title">法的・規制上の制約</h2>
+  <div class="card">
+    <div class="legal-item"><span style="color:var(--green);">✅</span><strong>個人情報保護法</strong> — プライバシーポリシー整備必須</div>
+    <div class="legal-item"><span style="color:var(--green);">✅</span><strong>特定商取引法</strong> — 有料サービスのため特商法表記必須</div>
+    <div class="legal-item"><span style="color:var(--green);">✅</span><strong>異性紹介事業</strong> — 音楽目的のため非該当。ToSに恋愛禁止を明記</div>
+    <div class="legal-item"><span style="color:var(--green);">✅</span><strong>著作権</strong> — Spotify/MusicBrainz API経由。楽曲配信なし</div>
+    <div class="legal-item"><span style="color:var(--green);">✅</span><strong>PCI DSS</strong> — カード情報はサーバーに一切保持しない（SAQ-A）</div>
+    <div class="legal-item"><span style="color:var(--green);">✅</span><strong>App Store審査</strong> — Apple HIG準拠</div>
+  </div>
+</section>
+
+<!-- ベータ戦略 -->
+<section>
+  <h2 class="section-title">クローズドベータ戦略（100名招待制）</h2>
+  <p class="section-desc">ローンチ後1ヶ月間は招待制。テストユーザーからフィードバックを収集</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3 style="font-size:1rem;">🎫 招待フロー</h3>
+      <div class="beta-flow">
+        <div class="beta-step" style="background:rgba(124,58,237,0.1);border-color:rgba(124,58,237,0.3);color:var(--primary-light);">管理者が招待コード100件を生成<div class="sub">管理ダッシュボードから一括生成</div></div>
+        <div class="beta-arrow">↓</div>
+        <div class="beta-step" style="background:rgba(6,182,212,0.1);border-color:rgba(6,182,212,0.3);color:var(--secondary);">軽音サークル・音楽コミュニティ・SNSで配布<div class="sub">目標: 30+20+30+20=100名</div></div>
+        <div class="beta-arrow">↓</div>
+        <div class="beta-step" style="background:rgba(34,197,94,0.1);border-color:rgba(34,197,94,0.3);color:var(--green);">テストユーザーが招待コードで登録<div class="sub">全員Proプラン無料提供</div></div>
+        <div class="beta-arrow">↓</div>
+        <div class="beta-step" style="background:rgba(234,179,8,0.1);border-color:rgba(234,179,8,0.3);color:var(--yellow);">1ヶ月間テスト → フィードバック収集<div class="sub">アンケート + 1on1インタビュー + 利用データ分析</div></div>
+        <div class="beta-arrow">↓</div>
+        <div class="beta-step" style="background:rgba(249,115,22,0.1);border-color:rgba(249,115,22,0.3);color:var(--orange);">判定基準クリア → 一般公開へ</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:1rem;">📊 一般公開の判定基準</h3>
+      <div class="gauge-row">
+        <div class="gauge-label">致命的バグ</div>
+        <div class="gauge-bar"><div class="gauge-fill" style="width:100%;background:linear-gradient(90deg,rgba(34,197,94,0.4),rgba(34,197,94,0.7));color:var(--green);">0件 ✅</div></div>
+      </div>
+      <div class="gauge-row">
+        <div class="gauge-label">登録完了率</div>
+        <div class="gauge-bar"><div class="gauge-fill" style="width:70%;background:linear-gradient(90deg,rgba(6,182,212,0.4),rgba(6,182,212,0.7));color:var(--secondary);">70%以上</div></div>
+      </div>
+      <div class="gauge-row">
+        <div class="gauge-label">DAU/MAU比</div>
+        <div class="gauge-bar"><div class="gauge-fill" style="width:20%;background:linear-gradient(90deg,rgba(124,58,237,0.4),rgba(124,58,237,0.7));color:var(--primary-light);">20%以上</div></div>
+      </div>
+      <div class="gauge-row">
+        <div class="gauge-label">マッチング成立率</div>
+        <div class="gauge-bar"><div class="gauge-fill" style="width:30%;background:linear-gradient(90deg,rgba(234,179,8,0.4),rgba(234,179,8,0.7));color:var(--yellow);">30%以上</div></div>
+      </div>
+      <div class="gauge-row">
+        <div class="gauge-label">NPS</div>
+        <div class="gauge-bar"><div class="gauge-fill" style="width:50%;background:linear-gradient(90deg,rgba(249,115,22,0.4),rgba(249,115,22,0.7));color:var(--orange);">0以上</div></div>
+      </div>
+      <div class="gauge-row">
+        <div class="gauge-label">セキュリティ</div>
+        <div class="gauge-bar"><div class="gauge-fill" style="width:100%;background:linear-gradient(90deg,rgba(34,197,94,0.4),rgba(34,197,94,0.7));color:var(--green);">漏洩ゼロ ✅</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- テスト観点 -->
+<section>
+  <h2 class="section-title">ユーザーテスト観点</h2>
+  <div class="grid-3">
+    <div class="test-cat">
+      <div class="test-cat-title"><span style="color:var(--blue);">🔧</span> 機能テスト</div>
+      <div class="test-item">ユーザー登録フロー（離脱ポイント）</div>
+      <div class="test-item">マッチング精度（一緒にやりたいか？）</div>
+      <div class="test-item">チャット体験（日程調整のスムーズさ）</div>
+      <div class="test-item">コピバン結成（セットリスト使いやすさ）</div>
+      <div class="test-item">イベントボード（応募しやすさ）</div>
+      <div class="test-item">練習トラッカー（継続モチベーション）</div>
+    </div>
+    <div class="test-cat">
+      <div class="test-cat-title"><span style="color:var(--pink);">🎨</span> UX・デザインテスト</div>
+      <div class="test-item">初回体験（何をすれば良いか分かるか）</div>
+      <div class="test-item">ナビゲーション（目的画面に辿り着けるか）</div>
+      <div class="test-item">モバイル操作性（スマホ操作は快適か）</div>
+      <div class="test-item">表示速度（体感として遅くないか）</div>
+      <div class="test-item">ダークモードUI（文字の視認性）</div>
+    </div>
+    <div class="test-cat">
+      <div class="test-cat-title"><span style="color:var(--red);">🛡️</span> セキュリティテスト</div>
+      <div class="test-item">通報ボタンの発見しやすさ</div>
+      <div class="test-item">ブロック後の完全除外確認</div>
+      <div class="test-item">禁止ワードフィルタの動作</div>
+      <div class="test-item">安全アドバイスの表示タイミング</div>
+    </div>
+  </div>
+</section>
+
+</div>
+</body>
+</html>
