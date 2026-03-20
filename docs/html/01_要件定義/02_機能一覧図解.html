@@ -78,6 +78,7 @@
   <a href="#onboarding">オンボーディング</a>
   <a href="#features">機能カテゴリ</a>
   <a href="#comparison">Free vs Pro</a>
+  <a href="#ai-matching">AIマッチング</a>
   <a href="#billing">課金フロー</a>
   <a href="#events">イベント権限</a>
   <a href="#referral">招待コード</a>
@@ -292,6 +293,38 @@
         <tr><td>SNS連携</td><td class="col-free"><span class="limit">1つ</span></td><td class="col-pro"><span class="check">✓ 無制限</span></td></tr>
       </tbody>
     </table>
+  </div>
+</section>
+
+<!-- AI マッチング方針 -->
+<section id="ai-matching">
+  <h2 class="section-title">マッチングのAI利用方針</h2>
+  <p class="section-desc">Version A（AI不使用）とVersion B（AI利用）の2バージョンを用意</p>
+
+  <div class="grid-2">
+    <div class="card" style="border-color:rgba(34,197,94,0.3);">
+      <h3 style="color:var(--green);font-size:1.1rem;">Version A: ルールベース（AI不使用）</h3>
+      <div style="font-size:.85rem;">
+        <div style="padding:6px 0;border-bottom:1px solid var(--border);"><strong>方式:</strong> 6要素の加重スコアリングのみ</div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border);"><strong>追加コスト:</strong> <span style="color:var(--green);font-weight:700;">¥0</span></div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border);"><strong>対象:</strong> Freeプラン</div>
+        <div style="padding:6px 0;"><strong>利点:</strong> コストゼロ・決定論的・説明可能</div>
+      </div>
+    </div>
+    <div class="card" style="border-color:rgba(74,186,164,0.3);">
+      <h3 style="color:var(--primary);font-size:1.1rem;">Version B: ハイブリッド（AI利用）</h3>
+      <div style="font-size:.85rem;">
+        <div style="padding:6px 0;border-bottom:1px solid var(--border);"><strong>方式:</strong> ルールベース×0.85 + Embedding類似度×0.15</div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border);"><strong>AIモデル:</strong> OpenAI text-embedding-3-small（推奨）or AWS Bedrock Titan V2</div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border);"><strong>追加コスト:</strong> ¥3,003〜5,060/月</div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border);"><strong>対象:</strong> Proプラン限定</div>
+        <div style="padding:6px 0;"><strong>精度向上:</strong> +8〜15%</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:12px;padding:12px 16px;background:rgba(74,186,164,0.06);border:1px solid rgba(74,186,164,0.2);border-radius:8px;font-size:.82rem;">
+    <strong>Phase 2（MAU 2K〜5K）:</strong> LLM推薦テキスト追加。「なぜマッチしたか」をPro会員に自然言語で説明
   </div>
 </section>
 
