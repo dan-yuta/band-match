@@ -709,6 +709,105 @@
   </div>
 </section>
 
+<!-- トラブル予防設計（追加セクション） -->
+<section id="prevention" style="max-width:1200px;margin:0 auto 40px;padding:0 40px;">
+  <h2 style="font-size:1.6rem;font-weight:700;margin-bottom:8px;padding-left:16px;border-left:4px solid #f59e0b;">トラブル予防設計（プロアクティブ対策）</h2>
+  <p style="color:#94a3b8;margin-bottom:24px;padding-left:16px;">事後対応だけでなく、トラブルが発生する前に防ぐ仕組み</p>
+
+  <!-- 信頼レベル -->
+  <div style="background:#1a1a2e;border:1px solid #334155;border-radius:16px;padding:28px;margin-bottom:20px;">
+    <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:16px;">🔒 段階的信頼レベル（Trust Level）</h3>
+    <p style="color:#94a3b8;font-size:.85rem;margin-bottom:16px;">新規ユーザーには段階的に機能を解放。スパム・勧誘を未然に防止</p>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+      <div style="padding:14px 10px;border-radius:10px;text-align:center;border:1px solid #334155;background:#25253d;">
+        <div style="font-size:1.3rem;font-weight:800;color:#64748b;margin-bottom:4px;">Lv.0</div>
+        <div style="font-weight:600;font-size:.85rem;margin-bottom:6px;">新規</div>
+        <div style="font-size:.72rem;color:#94a3b8;">登録直後<br>閲覧のみ<br>いいね不可</div>
+      </div>
+      <div style="padding:14px 10px;border-radius:10px;text-align:center;border:1px solid rgba(59,130,246,0.3);background:rgba(59,130,246,0.05);">
+        <div style="font-size:1.3rem;font-weight:800;color:#3b82f6;margin-bottom:4px;">Lv.1</div>
+        <div style="font-weight:600;font-size:.85rem;margin-bottom:6px;">基本</div>
+        <div style="font-size:.72rem;color:#94a3b8;">プロフィール80%+<br>メール認証完了<br>いいね可能</div>
+      </div>
+      <div style="padding:14px 10px;border-radius:10px;text-align:center;border:1px solid rgba(34,197,94,0.3);background:rgba(34,197,94,0.05);">
+        <div style="font-size:1.3rem;font-weight:800;color:#22c55e;margin-bottom:4px;">Lv.2</div>
+        <div style="font-weight:600;font-size:.85rem;margin-bottom:6px;">活動中</div>
+        <div style="font-size:.72rem;color:#94a3b8;">マッチング1件+<br>登録3日+<br>チャット可能</div>
+      </div>
+      <div style="padding:14px 10px;border-radius:10px;text-align:center;border:1px solid rgba(234,179,8,0.3);background:rgba(234,179,8,0.05);">
+        <div style="font-size:1.3rem;font-weight:800;color:#eab308;margin-bottom:4px;">Lv.3</div>
+        <div style="font-weight:600;font-size:.85rem;margin-bottom:6px;">信頼済</div>
+        <div style="font-size:.72rem;color:#94a3b8;">練習参加1回+<br>★3以上<br>イベント作成可</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 自動保護トリガー -->
+  <div style="background:#1a1a2e;border:1px solid #334155;border-radius:16px;padding:28px;margin-bottom:20px;">
+    <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:16px;">⚡ 自動保護トリガー</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;">
+      <div style="padding:12px 16px;background:#25253d;border-radius:8px;font-size:.85rem;border-left:3px solid #ef4444;">
+        <strong style="color:#ef4444;">複数通報の蓄積</strong><br><span style="color:#94a3b8;">72時間以内に3件以上 → マッチング・チャット一時停止</span>
+      </div>
+      <div style="padding:12px 16px;background:#25253d;border-radius:8px;font-size:.85rem;border-left:3px solid #f59e0b;">
+        <strong style="color:#f59e0b;">大量いいね</strong><br><span style="color:#94a3b8;">1日50件以上 → いいね24時間停止 + 運営通知</span>
+      </div>
+      <div style="padding:12px 16px;background:#25253d;border-radius:8px;font-size:.85rem;border-left:3px solid #eab308;">
+        <strong style="color:#eab308;">ゴースト傾向</strong><br><span style="color:#94a3b8;">3件連続72時間無返信 → 表示順位を下げる</span>
+      </div>
+      <div style="padding:12px 16px;background:#25253d;border-radius:8px;font-size:.85rem;border-left:3px solid #8b5cf6;">
+        <strong style="color:#8b5cf6;">不自然なプロフィール</strong><br><span style="color:#94a3b8;">登録直後にURL多数 → 手動審査キューに追加</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 相互評価 -->
+  <div style="background:#1a1a2e;border:1px solid #334155;border-radius:16px;padding:28px;margin-bottom:20px;">
+    <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:16px;">⭐ 相互評価の仕組み</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;">
+      <div style="padding:14px;background:#25253d;border-radius:8px;text-align:center;font-size:.85rem;">
+        <div style="font-size:1.3rem;margin-bottom:6px;">📅</div>
+        <div style="font-weight:600;">評価タイミング</div>
+        <div style="font-size:.78rem;color:#94a3b8;">練習完了後48時間以内に通知</div>
+      </div>
+      <div style="padding:14px;background:#25253d;border-radius:8px;text-align:center;font-size:.85rem;">
+        <div style="font-size:1.3rem;margin-bottom:6px;">📝</div>
+        <div style="font-weight:600;">評価項目</div>
+        <div style="font-size:.78rem;color:#94a3b8;">時間厳守・協力的・また一緒に（5段階）</div>
+      </div>
+      <div style="padding:14px;background:#25253d;border-radius:8px;text-align:center;font-size:.85rem;">
+        <div style="font-size:1.3rem;margin-bottom:6px;">🔒</div>
+        <div style="font-weight:600;">匿名性</div>
+        <div style="font-size:.78rem;color:#94a3b8;">誰が何点を付けたかは非公開</div>
+      </div>
+      <div style="padding:14px;background:#25253d;border-radius:8px;text-align:center;font-size:.85rem;">
+        <div style="font-size:1.3rem;margin-bottom:6px;">📊</div>
+        <div style="font-weight:600;">レピュテーション反映</div>
+        <div style="font-size:.78rem;color:#94a3b8;">高評価+3〜5 / 低評価-2〜3</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- リスク一覧 -->
+  <div style="background:#1a1a2e;border:1px solid #334155;border-radius:16px;padding:28px;margin-bottom:20px;">
+    <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:16px;">⚠️ 想定リスク一覧</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px;">
+      <div style="padding:12px 16px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:8px;font-size:.85rem;">
+        <strong style="color:#ef4444;">Critical</strong> 詐欺・金銭トラブル / 犯罪行為
+      </div>
+      <div style="padding:12px 16px;background:rgba(249,115,22,0.06);border:1px solid rgba(249,115,22,0.2);border-radius:8px;font-size:.85rem;">
+        <strong style="color:#f59e0b;">High</strong> MLM勧誘 / なりすまし
+      </div>
+      <div style="padding:12px 16px;background:rgba(234,179,8,0.06);border:1px solid rgba(234,179,8,0.2);border-radius:8px;font-size:.85rem;">
+        <strong style="color:#eab308;">Medium</strong> 宣伝スパム / 恋愛目的
+      </div>
+      <div style="padding:12px 16px;background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.2);border-radius:8px;font-size:.85rem;">
+        <strong style="color:#3b82f6;">音楽業界特有</strong> 偽ブッキング / 偽レーベル / 機材詐欺
+      </div>
+    </div>
+  </div>
+</section>
+
 </main>
 
 <footer>

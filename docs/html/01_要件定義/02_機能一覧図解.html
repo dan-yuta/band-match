@@ -74,12 +74,14 @@
 
 <div class="nav">
   <a href="#stories">ユーザーストーリー</a>
+  <a href="#profile">プロフィール</a>
   <a href="#onboarding">オンボーディング</a>
   <a href="#features">機能カテゴリ</a>
   <a href="#comparison">Free vs Pro</a>
   <a href="#billing">課金フロー</a>
   <a href="#events">イベント権限</a>
   <a href="#referral">招待コード</a>
+  <a href="#safety">安全機能</a>
   <a href="#admin">管理ダッシュボード</a>
 </div>
 
@@ -110,6 +112,30 @@
     <div class="us-card"><span class="us-id" style="background:rgba(234,179,8,0.15);color:var(--yellow);">US-08</span><div class="us-text">Proプランで無制限にマッチング・チャットを使いたい</div></div>
     <div class="us-card"><span class="us-id" style="background:rgba(239,68,68,0.15);color:var(--red);">US-09</span><div class="us-text">管理者として通報を確認し不正ユーザーに対処したい</div></div>
     <div class="us-card"><span class="us-id" style="background:rgba(249,112,102,0.15);color:var(--accent);">US-10</span><div class="us-text">Proユーザーとして自主企画ライブイベントを登録したい</div></div>
+  </div>
+</section>
+
+<!-- プロフィール管理 -->
+<section id="profile">
+  <h2 class="section-title">プロフィール管理</h2>
+  <p class="section-desc">ユーザーが登録・管理する情報の一覧</p>
+
+  <div class="grid-3">
+    <div class="feat-card" style="text-align:left;">
+      <div class="feat-icon" style="text-align:center;">👤</div>
+      <div class="feat-name" style="text-align:center;">基本情報</div>
+      <div style="font-size:.82rem;color:var(--text-dim);">名前・ニックネーム・アバター・自己紹介<br>年代表示（「20代前半」等。生年月日は非公開）</div>
+    </div>
+    <div class="feat-card" style="text-align:left;">
+      <div class="feat-icon" style="text-align:center;">🎵</div>
+      <div class="feat-name" style="text-align:center;">音楽情報</div>
+      <div style="font-size:.82rem;color:var(--text-dim);">楽器（複数可）・スキルレベル・ジャンル（複数可）<br>やりたい曲・弾ける曲（Spotify API検索）</div>
+    </div>
+    <div class="feat-card" style="text-align:left;">
+      <div class="feat-icon" style="text-align:center;">📍</div>
+      <div class="feat-name" style="text-align:center;">活動情報</div>
+      <div style="font-size:.82rem;color:var(--text-dim);">都道府県・市区町村（RESAS API連携）<br>練習スケジュール（曜日・時間帯）<br>SNS連携（X/Instagram/LINE/YouTube）</div>
+    </div>
   </div>
 </section>
 
@@ -281,6 +307,22 @@
         <div style="font-size:.85rem;">Proプラン <strong>1週間延長</strong></div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- 安全・信頼機能 -->
+<section id="safety">
+  <h2 class="section-title">安全・信頼機能</h2>
+  <p class="section-desc">ユーザー間トラブルの防止と健全なコミュニティ維持</p>
+
+  <div class="grid-4">
+    <div class="feat-card"><div class="feat-icon">🚨</div><div class="feat-name">通報</div><div class="feat-desc">ユーザー・メッセージ・コピバンを通報可能</div><div class="feat-badges"><span class="fb fb-free">Free ✓</span><span class="fb fb-pro">Pro ✓</span></div></div>
+    <div class="feat-card"><div class="feat-icon">🚫</div><div class="feat-name">ブロック</div><div class="feat-desc">マッチング・フレンド・タイムラインから完全除外</div><div class="feat-badges"><span class="fb fb-free">Free ✓</span><span class="fb fb-pro">Pro ✓</span></div></div>
+    <div class="feat-card"><div class="feat-icon">⭐</div><div class="feat-name">レピュテーション</div><div class="feat-desc">活動実績に基づく信頼度（★1〜5）</div><div class="feat-badges"><span class="fb fb-free">Free ✓</span><span class="fb fb-pro">Pro ✓</span></div></div>
+    <div class="feat-card"><div class="feat-icon">🛡️</div><div class="feat-name">チャット安全</div><div class="feat-desc">禁止ワード・URL警告・レート制限</div><div class="feat-badges"><span class="fb fb-pro">Pro 限定</span></div></div>
+  </div>
+  <div style="margin-top:12px;padding:10px 14px;background:rgba(249,112,102,0.06);border:1px solid rgba(249,112,102,0.2);border-radius:8px;font-size:.82rem;text-align:center;">
+    詳細は <a href="04_安全対策・リスク管理図解.html" style="color:var(--accent);text-decoration:none;font-weight:600;">安全対策・リスク管理図解</a> を参照
   </div>
 </section>
 
