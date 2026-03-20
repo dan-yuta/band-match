@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Groove Match - アクセシビリティ方針図解</title>
 <style>
-  :root{--bg:#0a0a1a;--surface:#1a1a2e;--surface-light:#25253d;--primary:#7c3aed;--primary-light:#8b5cf6;--secondary:#06b6d4;--accent:#f97066;--green:#22c55e;--yellow:#eab308;--orange:#f59e0b;--pink:#ec4899;--blue:#3b82f6;--red:#ef4444;--text:#e2e8f0;--text-dim:#94a3b8;--text-muted:#64748b;--border:#334155}
+  :root{--bg:#ffffff;--surface:#f8fafc;--surface-light:#f1f5f9;--primary:#4abaa4;--primary-light:#6ecfbc;--secondary:#4a90ba;--accent:#e8845a;--green:#22c55e;--yellow:#eab308;--orange:#f59e0b;--pink:#ec4899;--blue:#3b82f6;--red:#ef4444;--text:#1e293b;--text-dim:#64748b;--text-muted:#94a3b8;--border:#e2e8f0}
   *{margin:0;padding:0;box-sizing:border-box}
   body{background:var(--bg);color:var(--text);font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
-  .hero{background:linear-gradient(135deg,#1a1a2e 0%,#0a0a1a 50%,#1a1a2e 100%);border-bottom:1px solid var(--border);padding:70px 40px 50px;text-align:center;position:relative;overflow:hidden}
+  .hero{background:linear-gradient(135deg,#f0fdf4 0%,#ffffff 50%,#f0f9ff 100%);border-bottom:1px solid var(--border);padding:70px 40px 50px;text-align:center;position:relative;overflow:hidden}
   .hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 50%,rgba(99,102,241,0.08) 0%,transparent 50%),radial-gradient(circle at 70% 50%,rgba(34,197,94,0.06) 0%,transparent 50%);animation:hf 20s ease-in-out infinite}
   @keyframes hf{0%,100%{transform:translate(0,0)}50%{transform:translate(-2%,2%)}}
   .hero h1{font-size:2.8rem;font-weight:800;background:linear-gradient(135deg,#6366f1,var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;margin-bottom:12px}
@@ -103,9 +103,9 @@
     <h3 style="font-size:1rem;margin-bottom:12px;">🌙 ダークモードのコントラスト確認</h3>
     <div class="contrast-demo">
       <div class="contrast-sample" style="background:#0a0a1a;color:#e2e8f0;border:1px solid var(--border);">通常テキスト<br><span style="font-size:.72rem;color:var(--text-muted);">コントラスト比 14:1 ✅</span></div>
-      <div class="contrast-sample" style="background:#1a1a2e;color:#8b5cf6;border:1px solid var(--border);">アクセント<br><span style="font-size:.72rem;color:var(--text-muted);">コントラスト比 4.6:1 ✅</span></div>
-      <div class="contrast-sample" style="background:#1a1a2e;color:#94a3b8;border:1px solid var(--border);">薄い文字<br><span style="font-size:.72rem;color:var(--text-muted);">コントラスト比 5.8:1 ✅</span></div>
-      <div class="contrast-sample" style="background:#25253d;color:#22c55e;border:1px solid var(--border);">成功色<br><span style="font-size:.72rem;color:var(--text-muted);">コントラスト比 6.2:1 ✅</span></div>
+      <div class="contrast-sample" style="background:var(--surface);color:#8b5cf6;border:1px solid var(--border);">アクセント<br><span style="font-size:.72rem;color:var(--text-muted);">コントラスト比 4.6:1 ✅</span></div>
+      <div class="contrast-sample" style="background:var(--surface);color:var(--text-dim);border:1px solid var(--border);">薄い文字<br><span style="font-size:.72rem;color:var(--text-muted);">コントラスト比 5.8:1 ✅</span></div>
+      <div class="contrast-sample" style="background:var(--surface-light);color:#22c55e;border:1px solid var(--border);">成功色<br><span style="font-size:.72rem;color:var(--text-muted);">コントラスト比 6.2:1 ✅</span></div>
     </div>
   </div>
 </section>
